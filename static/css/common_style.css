@@ -1,0 +1,22 @@
+:root {
+    --break-point-mobile: 768px;
+    --default-bg-color: #383838;
+    --default-text-color: #F8F8F8;
+}
+
+.site-default {
+    background-color: var(--default-bg-color);
+    color: var(--default-text-color);
+}
+
+.mobile-hidden {}
+@media(max-width: var(--break-point-mobile) {
+    display: none;
+}
+
+.content-center {
+    display: flex;
+    justify-content: center!important;
+    align-items: center;
+    min-height: 100dvh;
+}

@@ -15,17 +15,20 @@
     {% endblock %}
     <title>스크리머{% block sub_title %}{% endblock %}</title>
 </head>
-<body>
-    <div class="row gx-0 min-vh-100 site-default">
-        <div class="col-2 left-content">
+<body class="site-default word-break-keep">
+    <div class="fixed-top">
+        {% include 'gnb.html' %}
+    </div>
+    <div class="row gx-0">
+        <div class="col-lg-2 left-content">
             {% block left_content %}
             {% endblock %}
         </div>
-        <div class="col-8 main-content">
+        <div class="col-lg-8 main-content min-vh-100">
             {% block main_content %}
             {% endblock %}
         </div>
-        <div class="col-2 right-content">
+        <div class="col-lg-2 right-content">
             {% block right_content %}
             {% endblock %}
         </div>

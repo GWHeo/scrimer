@@ -6,13 +6,50 @@
 {% endblock %}
 
 {% block main_content %}
-<div class="d-flex min-vh-100 justify-content-center align-items-center">
-    <div class="row justify-content-center" style="height: calc(100vh * 0.2);">
-        <div class="col-2">
-            <img src="{% static 'images/logo.png' %}" class="img-fluid object-fit-cover">
+<div class="mobile-hidden" style="height: 25dvh;">
+</div>
+<div class="p-2"></div>
+<div class="row justify-content-center align-items-center m-2 p-2">
+    <div class="col-lg-6 py-4">
+        <img src="{% static 'images/banner.png' %}" class="w-100">
+    </div>
+    <div class="text-center fs-5">
+        <b>공정하고 편리한 리그 오브 레전드 사설 게임 팀 뽑기 도우미</b>
+    </div>
+</div>
+<div class="py-4"></div>
+<div class="row justify-content-center align-items-center m-2 p-2 text-center">
+    <p class="py-2">
+        사설 게임 인원이 모두 모였나요? 스크리머로 팀을 뽑아 보세요!
+    </p>
+    <div class="d-grid gap-2 col-lg-6 mx-auto my-3">
+        <div class="text-center fs-small">
+            <span class="text-darker">
+                참여 링크가 있으신가요?
+            </span>
         </div>
-        <div class="col-6">
-            <img src="{% static 'images/banner.png' %}" class="img-fluid object-fit-cover">
+        <button class="btn btn-theme-outline p-3">
+            참여하기
+        </button>
+        <div class="text-center fs-small">
+            <a href="#" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                <i class="bi bi-book me-2"></i>참여 가이드
+            </a>
+        </div>
+    </div>
+    <div class="d-grid gap-2 col-lg-6 mx-auto my-3">
+        <div class="text-center fs-small">
+            <span class="text-darker">
+                사설 게임 방장이신가요?
+            </span>
+        </div>
+        <button class="btn btn-theme p-3">
+            방 만들기
+        </button>
+        <div class="text-center fs-small">
+            <a href="#" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                <i class="bi bi-book me-2"></i>생성 가이드
+            </a>
         </div>
     </div>
 </div>

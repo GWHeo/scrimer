@@ -1,27 +1,35 @@
 {% load static %}
-
+<script>
+    const userInfoUrl = '{{ user_info_url }}';
+</script>
+<script type="text/javascript" src="{% static 'javascript/create_room.js' %}"></script>
 <div class="modal modal-dark fade" id="createRoomModal" tabindex="-1" aria-labelledby="createRoomModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="createRoomModalLabel">팀 뽑기 방 생성</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-light" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div>
-                    리그 오브 레전드 닉네임을 입력하세요
+                    참여 할 리그 오브 레전드 소환사 명을 입력하세요
                 </div>
-                <div>
+                <form method="post" id="create-room">
+                    {% csrf_token %}
                     <div class="input-group p-3">
-                        <input type="text" class="form-control" id="maker-nickname" placeholder="닉네임" aria-label="nickname">
+                        <input type="text" class="form-control" id="maker-gamename" placeholder="이름" aria-label="gamename" required>
                         <span class="input-group-text">#</span>
-                        <input type="text" class="form-control" id="maker-tag" placeholder="태그" aria-label="tag">
+                        <input type="text" class="form-control" id="maker-tag" placeholder="태그" aria-label="tag" required>
                     </div>
-                </div>
+                </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                <button type="button" class="btn btn-primary" onclick="createRoom()">생성</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    닫기
+                </button>
+                <button type="button" id="create-button" class="btn btn-primary" onclick="createRoom()">
+                    생성
+                </button>
             </div>
         </div>
     </div>

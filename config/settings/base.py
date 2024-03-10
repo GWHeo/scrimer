@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'common',
+    'room',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'room.context_processors.request_urls',
             ],
         },
     },
@@ -232,3 +234,7 @@ LOGGING = {
         }
     }
 }
+
+
+# Riot
+RIOT_TOKEN = env('RIOT_TOKEN')

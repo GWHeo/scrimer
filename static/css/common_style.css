@@ -104,3 +104,10 @@
     --bs-btn-active-bg: var(--theme-color-dark);
     --bs-btn-active-border-color: var(--theme-color-dark);
 }
+
+/* modal */
+.modal.modal-dark {
+    --bs-modal-bg: var(--default-bg-color);
+    --bs-modal-header-border-color: rgba(var(--default-font-color-rgb), 0.5);
+    --bs-modal-footer-border-color: rgba(var(--default-font-color-rgb), 0.5);
+}

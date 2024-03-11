@@ -1,7 +1,3 @@
-function sleep(ms) {
-  return new Promise((r) => setTimeout(r, ms));
-}
-
 async function createRoom() {
     var gameName = document.getElementById('maker-gamename').value;
     var tag = document.getElementById('maker-tag').value;
@@ -13,7 +9,7 @@ async function createRoom() {
     button.disabled = true;
     userInfo = await fetchUserInfo(gameName, tag);
     if (userInfo.status == 200) {
-        var data = userInfo.json()
+        var data = await userInfo.json()
         roomIdInput.value = data['roomId'];
         form.submit();
     } else if (userInfo.status == 302) {

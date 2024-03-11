@@ -60,5 +60,4 @@ def enter_room(request):
 
 
 def room_view(request, room_id, user_id):
-    print(room_id, user_id)
     return render(request, 'room/base.html')

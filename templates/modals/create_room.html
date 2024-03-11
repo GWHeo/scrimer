@@ -14,13 +14,14 @@
                 <div>
                     참여 할 리그 오브 레전드 소환사 명을 입력하세요
                 </div>
-                <form method="post" id="create-room">
+                <form method="post" id="create-room" action="{% url 'room:enter_room' %}">
                     {% csrf_token %}
                     <div class="input-group p-3">
-                        <input type="text" class="form-control" id="maker-gamename" placeholder="이름" aria-label="gamename" required>
+                        <input type="text" class="form-control" id="maker-gamename" name="gamename" placeholder="이름" aria-label="gamename" required>
                         <span class="input-group-text">#</span>
-                        <input type="text" class="form-control" id="maker-tag" placeholder="태그" aria-label="tag" required>
+                        <input type="text" class="form-control" id="maker-tag" name="tag" placeholder="태그" aria-label="tag" required>
                     </div>
+                    <input type="hidden" id="maker-room-id" name="room_id">
                 </form>
             </div>
             <div class="modal-footer">

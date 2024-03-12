@@ -1,10 +1,63 @@
-<div class="fixed-bottom" id="chat-box">
+{% load static %}
+
+<div class="chat-icon" id="chatBubble">
+    <i class="bi bi-chat-right-text-fill"></i>
+</div>
+<div class="chat-box" id="chatBox">
+    <div class="chat-header flex justify-content-end align-items-center" id="chatHeader">
+        <button id="minimizeBtn">
+            <i class="bi bi-dash-lg"></i>
+        </button>
+    </div>
+    <div class="chat-body" id="chatBody">
+        asdf
+    </div>
+    <div class="chat-footer flex align-items-center" id="chatFooter">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Text input" aria-describedby="sendBtn">
+            <button class="btn btn-outline-secondary" type="button" id="sendBtn">
+                <i class="bi bi-send"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--
+<div class="fixed-bottom" id="chat-box" >
     <div class="row justify-content-center m-2">
         <div class="col-lg-6 border p-0">
             <div class="overflow-auto" style="height: 200px; background-color: black;" id="chat-board">
                 a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>
             </div>
-            <div class=""
+
         </div>
     </div>
 </div>
+
+
+<div id="chatIcon" class="chat-icon fixed bottom-4 right-4 z-50">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M7 14h10M4 6h16v12H4z" />
+  </svg>
+</div>
+
+<div id="chatBox" class="chat-box">
+  <div class="chat-header flex justify-between items-center">
+    <span class="font-semibold">Chat box</span>
+    <button id="minimizeButton">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  <div class="chat-body">
+  </div>
+  <div class="chat-footer flex items-center">
+    <input type="text" placeholder="Text input" class="flex-1 border-none p-2 rounded mr-2">
+    <button class="p-2 bg-blue-500 text-white rounded">
+      Send
+    </button>
+  </div>
+</div>
+-->
+

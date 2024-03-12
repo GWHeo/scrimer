@@ -21,23 +21,23 @@
         {% include 'gnb.html' %}
     </div>
     <div class="row gx-0" id="content">
-        <div class="col-lg-2 left-content">
+        <div class="col-lg-2" id="left-content">
             {% block left_content %}
             {% endblock %}
         </div>
-        <div class="col-lg-8 main-content">
+        <div class="col-lg-8" id="main-content">
             {% block main_content %}
             {% endblock %}
         </div>
-        <div class="col-lg-2 right-content">
+        <div class="col-lg-2" id="right-content">
             {% block right_content %}
             {% endblock %}
         </div>
     </div>
+    {% include 'footer.html' %}
+
     {% block body_scripts %}
     {% endblock %}
-
-    {% include 'footer.html' %}
 </body>
 
 </html>

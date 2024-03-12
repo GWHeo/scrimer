@@ -2,6 +2,10 @@
 
 {% load static %}
 
+{% block head_scripts %}
+<link rel="stylesheet"  type="text/css" href="{% static 'css/chatbox.css' %}">
+{% endblock %}
+
 {% block main_content %}
 <div>
     <a href="{% url 'common:index' %}">홈</a>
@@ -9,4 +13,8 @@
 
 {% include 'components/chat.html' %}
 
+{% endblock %}
+
+{% block body_scripts %}
+<script type="text/javascript" src="{% static 'javascript/chat.js' %}"></script>
 {% endblock %}

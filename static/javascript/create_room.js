@@ -13,7 +13,7 @@ async function createRoom() {
         roomIdInput.value = data['roomId'];
         form.submit();
     } else if (userInfo.status == 302) {
-        var data = await userInfo.json()
+        var data = await userInfo.json()speech bubble
         window.alert('이미 생성된 방이 있습니다!')
         roomIdInput.value = data['roomId'];
         form.submit();

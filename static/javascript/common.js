@@ -25,7 +25,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-async function fetchUserInfo(gameName, tag) {
+async function fetchUserInfo(gameName, tag, userType) {
     var csrftoken = getCookie('csrftoken');
     var response = await fetch(userInfoUrl, {
         method: 'POST',
@@ -36,7 +36,8 @@ async function fetchUserInfo(gameName, tag) {
         },
         body: JSON.stringify({
             'gameName': gameName,
-            'tag': tag
+            'tag': tag,
+            'userType': userType
         })
     })
     return await response

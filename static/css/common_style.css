@@ -1,5 +1,6 @@
 :root {
     --default-bg-color: #383838;
+    --default-bg-color-rgb: 56, 56, 56;
     --default-font-color: #F8F8F8;
     --default-font-color-rgb: 248, 248, 248;
     --theme-color: #0E962E;
@@ -58,8 +59,21 @@
     right: 0;
 }
 
+.fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
 .word-break-keep {
     word-break: keep-all;
+}
+
+/* tags */
+/* ** a ** */
+.deco-none {
+    decoration: none;
 }
 
 /* buttons */
@@ -116,3 +130,6 @@
     --bs-modal-header-border-color: rgba(var(--default-font-color-rgb), 0.5);
     --bs-modal-footer-border-color: rgba(var(--default-font-color-rgb), 0.5);
 }
+
+
+/* utility */

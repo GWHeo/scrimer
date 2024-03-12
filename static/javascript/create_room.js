@@ -7,13 +7,16 @@ async function createRoom() {
 
     button.innerHTML = spinnerDOM();
     button.disabled = true;
-    userInfo = await fetchUserInfo(gameName, tag);
+    userInfo = await fetchUserInfo(gameName, tag, 'creator');
     if (userInfo.status == 200) {
         var data = await userInfo.json()
         roomIdInput.value = data['roomId'];
         form.submit();
     } else if (userInfo.status == 302) {
+        var data = await userInfo.json()
         window.alert('이미 생성된 방이 있습니다!')
+        roomIdInput.value = data['roomId'];
+        form.submit();
     } else if (userInfo.status == 400) {
         window.alert('닉네임과 태그를 모두 입력해주세요.')
     } else {

@@ -1,6 +1,13 @@
+{% load static %}
+
 <nav class="p-2 default-bg">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
+    <div class="d-flex justify-content-between align-items-center h-100 px-2">
+        <div class="h-100">
+            {% if request.path != '/' %}
+            <a class="navbar-brand" href="{% url 'common:index' %}">
+                <img src="{% static 'images/banner.png' %}" style="height: 40px;">
+            </a>
+            {% endif %}
         </div>
         <div>
             <button class="btn btn-sm btn-white-outline">

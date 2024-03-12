@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main_content %}
+<div>
+    <a href="{% url 'common:index' %}">홈</a>
+</div>
+
+{% include 'components/chat.html' %}
+
+{% endblock %}

@@ -10,12 +10,13 @@ import uuid
 import time
 
 
-def user_validation(request):
+def user_validation(request, room_id=None):
     if request.method != 'POST':
         return HttpResponseNotAllowed('POST')
     data = json.loads(request.body.decode('utf-8'))
     game_name = data['gameName']
     tag = data['tag']
+    user_type = data['userType']        # 'creator' or 'competitor'
     if game_name == '' or tag == '':
         return HttpResponse(status=400)
     
@@ -32,18 +33,38 @@ def user_validation(request):
     if response.status_code != 200:
         return HttpResponse(status=response.status_code)
     user_data = response.json()
-    try:
-        user = ChannelUser.objects.get(game_name=game_name, tag=tag, owner=True)
-        return HttpResponse(status=302)
-    except ObjectDoesNotExist:
-        room = Room.objects.create(code=uuid.uuid4())
-    user = ChannelUser.objects.create(
-        room=room,
-        puuid=user_data['puuid'],
-        game_name=user_data['gameName'],
-        tag=user_data['tagLine'],
-        owner=True
-    )
+    if user_type == 'creator':
+        try:
+            user = ChannelUser.objects.get(game_name=game_name, tag=tag, owner=True)
+            room = user.room
+            return JsonResponse({'roomId': room.code}, status=302)
+        except ObjectDoesNotExist:
+            room = Room.objects.create(code=uuid.uuid4())
+        user = ChannelUser.objects.create(
+            room=room,
+            puuid=user_data['puuid'],
+            game_name=user_data['gameName'],
+            tag=user_data['tagLine'],
+            owner=True
+        )
+    elif user_type == 'competitor':
+        try:
+            room = Room.objects.get(code=room_id)
+        except ObjectDoesNotExist:
+            return HttpResponse(status=404)
+        # check if user already participated
+        try:
+            user = ChannelUser.objects.get(room=room, puuid=data['puuid'])
+        except ObjectDoesNotExist:
+            user = ChannelUser.objects.create(
+                room=room,
+                puuid=user_data['puuid'],
+                game_name=user_data['gameName'],
+                tag=user_data['tagLine'],
+                owner=False
+            )
+    else:
+        return HttpResponse(status=400)
     
     return JsonResponse({'roomId': room.code}, status=200)
 
@@ -56,8 +77,8 @@ def enter_room(request):
         room = Room.objects.get(code=form.cleaned_data['room_id'])
         user = ChannelUser.objects.get(room=room, game_name=form.cleaned_data['gamename'], tag=form.cleaned_data['tag'])
         return redirect('room:room_view', room_id=room.code, user_id=user.pk)
-    return HttpResponse(status=404)
+    return HttpResponse(status=400)
 
 
 def room_view(request, room_id, user_id):
-    return render(request, 'room/base.html')
+    return render(request, 'room/main.html')

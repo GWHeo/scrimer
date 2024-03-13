@@ -1,5 +1,7 @@
 {% load static %}
-
+<script>
+    const messageHtml = `{% include 'components/chat_message.html' %}`;
+</script>
 <div class="chat-icon" id="chatBubble">
     <i class="bi bi-chat-right-text-fill fs-4"></i>
 </div>
@@ -9,12 +11,11 @@
         </button>
     </div>
     <div class="chat-body" id="chatBody">
-        asdf
     </div>
     <div class="chat-footer flex align-items-center" id="chatFooter">
         <div class="input-group">
-            <input type="text" class="form-control chat-input" aria-describedby="sendBtn">
-            <button class="btn btn-theme-outline" type="button" id="sendBtn">
+            <input type="text" class="form-control chat-input" id="chatInput" aria-describedby="sendBtn" oninput="chatInputBtnControl()">
+            <button class="btn btn-theme-outline" type="button" id="sendBtn" onclick="sendMessage()" disabled>
                 <i class="bi bi-send"></i>
             </button>
         </div>

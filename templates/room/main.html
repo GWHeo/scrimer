@@ -10,7 +10,13 @@
 <div>
     <a href="{% url 'common:index' %}">홈</a>
 </div>
-
+<div>
+    {% if channel_user.owner %}
+    방장
+    {% else %}
+    참가자
+    {% endif %}
+</div>
 {% include 'components/chat.html' %}
 
 {% endblock %}

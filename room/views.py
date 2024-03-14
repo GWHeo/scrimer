@@ -69,6 +69,16 @@ def user_validation(request, room_id=None):
     return JsonResponse({'roomId': room.code}, status=200)
 
 
+def room_validation(request, room_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed('POST')
+    try:
+        room = Room.objects.get(code=room_id)
+    except ObjectDoesNotExist:
+        return HttpResponse(status=404)
+    return JsonResponse({'roomId': room.code}, status=200)
+
+
 def enter_room(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed('POST')
@@ -81,4 +91,8 @@ def enter_room(request):
 
 
 def room_view(request, room_id, user_id):
-    return render(request, 'room/main.html')
+    user = ChannelUser.objects.get(id=user_id)
+    data = {
+        'channel_user': user
+    }
+    return render(request, 'room/main.html', data)

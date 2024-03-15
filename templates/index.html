@@ -6,7 +6,13 @@
 {% endblock %}
 
 {% block head_scripts %}
-<script>const userInfoUrl = '{{ user_info_url }}';</script>
+<script>
+    const userInfoUrl = '{{ user_info_url }}';
+    const roomInfoUrl = '{{ room_info_url }}';
+    const isLinkAccess = {{ link_access|lower }};
+</script>
+<script type="text/javascript" src="{% static 'javascript/create_room.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascript/participate_room.js' %}"></script>
 {% endblock %}
 
 {% block main_content %}
@@ -32,7 +38,7 @@
                 참여 링크가 있으신가요?
             </span>
         </div>
-        <button class="btn btn-theme-outline p-3" data-bs-toggle="modal" data-bs-target="#participateRoomModal">
+        <button class="btn btn-theme-outline p-3" data-bs-toggle="modal" data-bs-target="#validateRoomModal">
             참여하기
         </button>
         {% include 'modals/participate_room.html' %}

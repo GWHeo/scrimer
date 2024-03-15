@@ -42,3 +42,19 @@ async function fetchUserInfo(gameName, tag, userType) {
     })
     return await response
 }
+
+async function fetchRoomInfo(link) {
+    var csrftoken = getCookie('csrftoken');
+    var response = await fetch(roomInfoUrl, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({
+            'link': link
+        })
+    })
+    return await response
+}

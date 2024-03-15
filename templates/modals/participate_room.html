@@ -1,13 +1,13 @@
 {% load static %}
-<div class="modal modal-dark fade" id="participateRoomModal" tabindex="-1" aria-labelledby="participateRoomModalLabel" aria-hidden="true">
+<div class="modal modal-dark fade" id="validateRoomModal" tabindex="-1" aria-labelledby="validateRoomModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="participateRoomModalLabel">팀 뽑기 방 참여</h1>
+                <h1 class="modal-title fs-5" id="validateRoomModalLabel">팀 뽑기 방 참여</h1>
                 <button type="button" class="btn-close btn-close-light" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="participateRoomModalBody">
-                <form method="post" id="participate-room">
+            <div class="modal-body" id="validateRoomModalBody">
+                <form method="post" id="validate-room">
                     {% csrf_token %}
                     <div class="row g-3 align-items-center">
                         <div class="col-lg-auto">
@@ -23,44 +23,43 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     닫기
                 </button>
-                <button type="button" id="participate-button" class="btn btn-primary" onclick="participateRoom()">
+                <button type="button" id="participate-button" class="btn btn-primary" onclick="validateLink()">
                     입장
                 </button>
             </div>
         </div>
     </div>
 </div>
-<!--<script type="text/javascript" src="{% static 'javascript/create_room.js' %}"></script>
-<div class="modal modal-dark fade" id="createRoomModal" tabindex="-1" aria-labelledby="createRoomModalLabel" aria-hidden="true">
+
+<div class="modal modal-dark fade" id="participateRoomModal" tabindex="-1" aria-labelledby="participateRoomModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="createRoomModalLabel">팀 뽑기 방 참여</h1>
+                <h1 class="modal-title fs-5" id="participateRoomModalLabel">팀 뽑기 방 참여</h1>
                 <button type="button" class="btn-close btn-close-light" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div>
                     참여 할 리그 오브 레전드 소환사 명을 입력하세요
                 </div>
-                <form method="post" id="create-room" action="{% url 'room:enter_room' %}">
+                <form method="post" id="participate-room" action="{% url 'room:enter_room' %}">
                     {% csrf_token %}
                     <div class="input-group p-3">
-                        <input type="text" class="form-control" id="maker-gamename" name="gamename" placeholder="이름" aria-label="gamename" required>
+                        <input type="text" class="form-control" id="participant-gamename" name="gamename" placeholder="이름" aria-label="gamename" required>
                         <span class="input-group-text">#</span>
-                        <input type="text" class="form-control" id="maker-tag" name="tag" placeholder="태그" aria-label="tag" required>
+                        <input type="text" class="form-control" id="participant-tag" name="tag" placeholder="태그" aria-label="tag" required>
                     </div>
-                    <input type="hidden" id="maker-room-id" name="room_id">
+                    <input type="hidden" id="participant-room-id" name="room_id">
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     닫기
                 </button>
-                <button type="button" id="create-button" class="btn btn-primary" onclick="createRoom()">
+                <button type="button" id="create-button" class="btn btn-primary" onclick="participateRoom()">
                     생성
                 </button>
             </div>
         </div>
     </div>
 </div>
--->

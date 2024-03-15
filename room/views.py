@@ -1,13 +1,22 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpResponseNotAllowed, HttpResponse, JsonResponse
+from django.contrib.sites.shortcuts import get_current_site
 from .models import Room, ChannelUser
 from .forms import EnterRoom
 import requests
 import json
 import uuid
 import time
+
+
+def link_access(request, room_id):
+    try:
+        room = Room.objects.get(code=room_id)
+    except (ObjectDoesNotExist, ValidationError):
+        return HttpResponse(status=404)
+    return render(request, 'index.html', {'link_access': True})
 
 
 def user_validation(request, room_id=None):
@@ -69,9 +78,19 @@ def user_validation(request, room_id=None):
     return JsonResponse({'roomId': room.code}, status=200)
 
 
-def room_validation(request, room_id):
+def room_validation(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed('POST')
+    data = json.loads(request.body.decode('utf-8'))
+    if data['link'] == '':
+        return HttpResponse(status=400)
+    link_info = data['link'].split('/')
+    if len(link_info) != 6:
+        return HttpResponse(status=404)
+    domain = link_info[2]
+    room_id = link_info[4]
+    if domain != get_current_site(request).domain:
+        return HttpResponse(status=403)
     try:
         room = Room.objects.get(code=room_id)
     except ObjectDoesNotExist:

@@ -1,20 +1,20 @@
 {% load static %}
-<div class="modal modal-dark fade" id="validateRoomModal" tabindex="-1" aria-labelledby="validateRoomModalLabel" aria-hidden="true">
+<div class="modal modal-dark fade" id="validateLinkModal" tabindex="-1" aria-labelledby="validateLinkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="validateRoomModalLabel">팀 뽑기 방 참여</h1>
+                <h1 class="modal-title fs-5" id="validateLinkModalLabel">팀 뽑기 방 참여</h1>
                 <button type="button" class="btn-close btn-close-light" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="validateRoomModalBody">
+            <div class="modal-body" id="validateLinkModalBody">
                 <form method="post" id="validate-room">
                     {% csrf_token %}
                     <div class="row g-3 align-items-center">
                         <div class="col-lg-auto">
-                            <label for="room-code-input" class="form-label">초대 링크</label>
+                            <label for="link-input" class="form-label">초대 링크</label>
                         </div>
                         <div class="col-lg">
-                            <input type="text" class="form-control form-control-sm" id="room-code-input" name="room-code-input" placeholder="링크 ctrl+v" required>
+                            <input type="text" class="form-control form-control-sm" id="link-input" name="link-input" placeholder="링크 ctrl+v" required>
                         </div>
                     </div>
                 </form>
@@ -30,7 +30,7 @@
         </div>
     </div>
 </div>
-
+<!--
 <div class="modal modal-dark fade" id="participateRoomModal" tabindex="-1" aria-labelledby="participateRoomModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -63,3 +63,4 @@
         </div>
     </div>
 </div>
+-->

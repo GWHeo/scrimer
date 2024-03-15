@@ -1,19 +1,19 @@
 async function validateLink() {
-    var roomCodeInput = document.getElementById('room-code-input');
+    var LinkInput = document.getElementById('link-input');
     var button = document.getElementById('participate-button');
     var form = document.getElementById('validate-room');
-    var roomIdInput = document.getElementById('participant-room-id');
+    var roomIdInput = document.getElementById('room-id');
 
     button.innerHTML = spinnerDOM();
     button.disabled = true;
-    roomInfo = await fetchRoomInfo(roomCodeInput.value);
+    roomInfo = await fetchRoomInfo(LinkInput.value);
     status = roomInfo.status;
     if(status == 200) {
         var data = await roomInfo.json();
-        roomIdInput.value = data['roomId'];
         // jquery
-        $('#validateRoomModal').modal('hide');
-        $('#participateRoomModal').modal('show');
+        $('#validateLinkModal').modal('hide');
+        $('#userNameModal').modal('show');
+        roomIdInput.value = data['roomId'];
     } else if (status == 400) {
         window.alert('초대 링크를 입력하세요.')
     } else if (status == 403) {
@@ -24,12 +24,13 @@ async function validateLink() {
     }
     button.innerHTML = '입장';
     button.disabled = false;
-
 }
+
+
 
 window.onload = function() {
     if (isLinkAccess) {
-        console.log($('#participateRoomModal'))
-        $('#participateRoomModal').modal('show');
+        $('#userNameModal').modal('show');
+        changeRole('participant');
     }
 }

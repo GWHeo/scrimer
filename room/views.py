@@ -16,18 +16,20 @@ def link_access(request, room_id):
         room = Room.objects.get(code=room_id)
     except (ObjectDoesNotExist, ValidationError):
         return HttpResponse(status=404)
-    return render(request, 'index.html', {'link_access': True})
+    return render(request, 'index.html', {'link_access': True, 'room_id': room.code})
 
 
-def user_validation(request, room_id=None):
+def user_validation(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed('POST')
     data = json.loads(request.body.decode('utf-8'))
     game_name = data['gameName']
     tag = data['tag']
-    user_type = data['userType']        # 'creator' or 'competitor'
+    user_role = data['userRole']        # 'creator' or 'participant'
     if game_name == '' or tag == '':
         return HttpResponse(status=400)
+    if user_role not in ['creator', 'participant']:
+        return HttpResponse(status=404)
     
     # do request to riot api
     riot_account_url = f'https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{game_name}/{tag}'
@@ -42,38 +44,26 @@ def user_validation(request, room_id=None):
     if response.status_code != 200:
         return HttpResponse(status=response.status_code)
     user_data = response.json()
-    if user_type == 'creator':
-        try:
-            user = ChannelUser.objects.get(game_name=game_name, tag=tag, owner=True)
-            room = user.room
-            return JsonResponse({'roomId': room.code}, status=302)
-        except ObjectDoesNotExist:
+    
+    try:
+        user = ChannelUser.objects.get(game_name=game_name, tag=tag)
+        room = user.room
+        if user_role == 'participant' and room.code == data['roomId']:
+            if not user.owner:
+                raise ObjectDoesNotExist
+        return JsonResponse({'roomId': room.code}, status=302)
+    except ObjectDoesNotExist:
+        if user_role == 'creator':
             room = Room.objects.create(code=uuid.uuid4())
-        user = ChannelUser.objects.create(
-            room=room,
-            puuid=user_data['puuid'],
-            game_name=user_data['gameName'],
-            tag=user_data['tagLine'],
-            owner=True
-        )
-    elif user_type == 'competitor':
-        try:
-            room = Room.objects.get(code=room_id)
-        except ObjectDoesNotExist:
-            return HttpResponse(status=404)
-        # check if user already participated
-        try:
-            user = ChannelUser.objects.get(room=room, puuid=data['puuid'])
-        except ObjectDoesNotExist:
-            user = ChannelUser.objects.create(
-                room=room,
-                puuid=user_data['puuid'],
-                game_name=user_data['gameName'],
-                tag=user_data['tagLine'],
-                owner=False
-            )
-    else:
-        return HttpResponse(status=400)
+        else:
+            room = Room.objects.get(code=data['roomId'])
+    user = ChannelUser.objects.create(
+        room=room,
+        puuid=user_data['puuid'],
+        game_name=user_data['gameName'],
+        tag=user_data['tagLine'],
+        owner=True if user_role == 'creator' else False
+    )
     
     return JsonResponse({'roomId': room.code}, status=200)
 

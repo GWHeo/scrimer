@@ -1,31 +1,31 @@
 {% load static %}
-<div class="modal modal-dark fade" id="createRoomModal" tabindex="-1" aria-labelledby="createRoomModalLabel" aria-hidden="true">
+<div class="modal modal-dark fade" id="userNameModal" tabindex="-1" aria-labelledby="userNameModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="createRoomModalLabel">팀 뽑기 방 생성</h1>
+                <h1 class="modal-title fs-5" id="userNameModalLabel">팀 뽑기 방 <span class="user-role"></span></h1>
                 <button type="button" class="btn-close btn-close-light" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div>
                     참여 할 리그 오브 레전드 소환사 명을 입력하세요
                 </div>
-                <form method="post" id="create-room" action="{% url 'room:enter_room' %}">
+                <form method="post" id="enter-room" action="{% url 'room:enter_room' %}">
                     {% csrf_token %}
                     <div class="input-group p-3">
-                        <input type="text" class="form-control" id="maker-gamename" name="gamename" placeholder="이름" aria-label="gamename" required>
+                        <input type="text" class="form-control" id="gamename" name="gamename" placeholder="이름" aria-label="gamename" required>
                         <span class="input-group-text">#</span>
-                        <input type="text" class="form-control" id="maker-tag" name="tag" placeholder="태그" aria-label="tag" required>
+                        <input type="text" class="form-control" id="tag" name="tag" placeholder="태그" aria-label="tag" required>
                     </div>
-                    <input type="hidden" id="maker-room-id" name="room_id">
+                    <input type="hidden" id="room-id" name="room_id" {% if link_access %}value="{{ room_id }}"{% endif %}>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     닫기
                 </button>
-                <button type="button" id="create-button" class="btn btn-primary" onclick="createRoom()">
-                    생성
+                <button type="button" id="enter-button" class="btn btn-primary" onclick="validateUserName()">
+                    <span class="user-role"></span>
                 </button>
             </div>
         </div>

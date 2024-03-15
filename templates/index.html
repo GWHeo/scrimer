@@ -10,8 +10,9 @@
     const userInfoUrl = '{{ user_info_url }}';
     const roomInfoUrl = '{{ room_info_url }}';
     const isLinkAccess = {{ link_access|lower }};
+    var role = 'creator';
 </script>
-<script type="text/javascript" src="{% static 'javascript/create_room.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascript/enter_room.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/participate_room.js' %}"></script>
 {% endblock %}
 
@@ -38,10 +39,10 @@
                 참여 링크가 있으신가요?
             </span>
         </div>
-        <button class="btn btn-theme-outline p-3" data-bs-toggle="modal" data-bs-target="#validateRoomModal">
+        <button class="btn btn-theme-outline p-3" data-bs-toggle="modal" data-bs-target="#validateLinkModal" onclick="changeRole('participant')">
             참여하기
         </button>
-        {% include 'modals/participate_room.html' %}
+        {% include 'modals/link_modal.html' %}
         <div class="text-center fs-small">
             <a href="#" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                 <i class="bi bi-book me-2"></i>참여 가이드
@@ -54,10 +55,10 @@
                 사설 게임 방장이신가요?
             </span>
         </div>
-        <button class="btn btn-theme p-3" data-bs-toggle="modal" data-bs-target="#createRoomModal">
+        <button class="btn btn-theme p-3" data-bs-toggle="modal" data-bs-target="#userNameModal" onclick="changeRole('creator')">
             방 만들기
         </button>
-        {% include 'modals/create_room.html' %}
+        {% include 'modals/name_modal.html' %}
         <div class="text-center fs-small">
             <a href="#" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                 <i class="bi bi-book me-2"></i>생성 가이드

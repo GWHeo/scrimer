@@ -25,7 +25,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-async function fetchUserInfo(gameName, tag, userType) {
+async function fetchUserInfo(gameName, tag, userRole, roomId) {
     var csrftoken = getCookie('csrftoken');
     var response = await fetch(userInfoUrl, {
         method: 'POST',
@@ -37,7 +37,8 @@ async function fetchUserInfo(gameName, tag, userType) {
         body: JSON.stringify({
             'gameName': gameName,
             'tag': tag,
-            'userType': userType
+            'userRole': userRole,
+            'roomId': roomId
         })
     })
     return await response
@@ -57,4 +58,19 @@ async function fetchRoomInfo(link) {
         })
     })
     return await response
+}
+
+function changeRole(userRole) {
+    var roleSpan = document.querySelectorAll('.user-role');
+    role = userRole;
+
+    if (role == 'creator') {
+        roleText = '생성';
+    } else {
+        roleText = '참여';
+    }
+
+    roleSpan.forEach((el) => {
+        el.innerHTML = roleText
+    });
 }

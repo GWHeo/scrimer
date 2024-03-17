@@ -6,7 +6,10 @@ async function validateLink() {
 
     button.innerHTML = spinnerDOM();
     button.disabled = true;
-    roomInfo = await fetchRoomInfo(LinkInput.value);
+    // roomInfo = await fetchRoomInfo(LinkInput.value);
+    roomInfo = await requestPost(roomInfoUrl, {
+        'link': LinkInput.value
+    })
     status = roomInfo.status;
     if(status == 200) {
         var data = await roomInfo.json();

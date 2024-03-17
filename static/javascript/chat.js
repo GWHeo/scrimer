@@ -36,7 +36,6 @@ function chatBodySizing() {
     } else {
         chatBody.style.height = '240px';
     }
-    console.log(chatBody.style.height)
 }
 
 chatMarginSetting(992);
@@ -67,13 +66,15 @@ chatInput.addEventListener('keyup', function(e) {
 })
 
 // chat message
-function sendMessage() {
+async function sendMessage() {
     text = chatInput.value;
-    chatBody.innerHTML += messageHtml;
-
-    var messageContainer = document.getElementsByClassName('chat-message');
-    messageContainer[messageContainer.length - 1].innerHTML = text + '<br>';
-    chatBody.scrollTo(0, chatBody.scrollHeight);
+    response = await requestPost(sendChatUrl, {
+        'message': text
+    })
+    switch(response.status) {
+        case 200:
+            break;
+    }
     chatInput.value = '';
     sendBtn.disabled = true;
 }
@@ -84,4 +85,59 @@ function chatInputBtnControl() {
     } else {
         sendBtn.disabled = false;
     }
+}
+
+function reprMessage(data) {
+    chatBody.innerHTML += messageHtml;
+    var userClass = '';
+    var userType = '';
+
+    if (data.isSystem) {
+        userClass = 'chat-user-system';
+        userType = '(시스템)';
+    } else {
+        if (data.owner) {
+            userClass = 'chat-user-creator';
+            userType = '(방장)';
+        }
+        switch(data.role) {
+            case 'leader':
+                userClass = 'chat-user-leader';
+                userType = '(주장)';
+                break;
+            case 'participant':
+                userClass = 'chat-user-participant';
+                userType = '';
+                break;
+        }
+    }
+
+    var messageContainers = document.getElementsByClassName('chat-message-wrapper');
+    var container = messageContainers[messageContainers.length - 1];
+    if (data.userId == user) {
+        container.classList.add('my-chat');
+    }
+    var children = container.children;
+    for (let i=0; i<children.length; i++){
+        if (children[i].classList.contains('chat-user')) {
+            if (!data.isSystem) {
+                children[i].classList.add(userClass);
+                children[i].innerHTML = `${data.name}${userType}:`
+            }
+        }
+        if (children[i].classList.contains('chat-message')) {
+            if (data.isSystem) {
+                children[i].classList.add(userClass);
+            }
+            children[i].innerHTML = data.context;
+        }
+    }
+    chatBody.scrollTo(0, chatBody.scrollHeight);
+}
+
+// websocket
+const socket = new WebSocket(chatWsUrl);
+socket.onmessage = function(event) {
+    var data = JSON.parse(event.data);
+    reprMessage(data.message);
 }

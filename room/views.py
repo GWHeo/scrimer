@@ -5,6 +5,7 @@ from django.http import HttpResponseNotAllowed, HttpResponse, JsonResponse
 from django.contrib.sites.shortcuts import get_current_site
 from .models import Room, ChannelUser
 from .forms import EnterRoom
+from wss.consumer import send_websocket_message
 import requests
 import json
 import uuid
@@ -102,6 +103,29 @@ def enter_room(request):
 def room_view(request, room_id, user_id):
     user = ChannelUser.objects.get(id=user_id)
     data = {
+        'room_id': room_id,
         'channel_user': user
     }
     return render(request, 'room/main.html', data)
+
+
+def send_chat(request, room_id, user_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed('POST')
+    data = json.loads(request.body.decode('utf-8'))
+    message = data['message']
+    user = ChannelUser.objects.get(id=user_id)
+    try:
+        send_websocket_message(
+            room_id,
+            False,
+            user.pk,
+            user.owner,
+            user.role,
+            f"{user.game_name}#{user.tag}",
+            message
+        )
+        return HttpResponse(status=200)
+    except Exception as e:
+        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500)
+        

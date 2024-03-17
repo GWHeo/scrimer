@@ -51,6 +51,32 @@
     overflow-y: auto;
 }
 
+.chat-message-wrapper {
+    max-width: 80%;
+}
+
+.chat-message-wrapper.my-chat {
+    margin-right: 0;
+    margin-left: auto;
+}
+
+.chat-user-system {
+    color: #feee48;
+}
+
+.chat-user-participant {
+    color: #f4f4f4;
+}
+
+.chat-user-leader {
+    color: #facd8d;
+}
+
+.col.chat-message {
+    padding-right: 0;
+    padding-left: 0;
+}
+
 .chat-footer {
     padding: 0.5rem;
     border: 1px solid rgba(var(--default-font-color-rgb), 0.5);

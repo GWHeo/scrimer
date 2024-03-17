@@ -10,12 +10,17 @@ class Room(models.Model, models.Manager):
         
 
 class ChannelUser(models.Model, models.Manager):
+    ROLE_CHOICES = [
+        ('leader', '주장'),
+        ('participant', '참가자')
+    ]
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     join_date = models.DateTimeField(auto_now_add=True)
     puuid = models.CharField(max_length=78)
     game_name = models.CharField(max_length=16)
     tag = models.CharField(max_length=8)
     owner = models.BooleanField()
+    role = models.CharField(max_length=12, choices=ROLE_CHOICES, null=True, default=None)
     
     class Meta:
         db_table = 'channel_users'

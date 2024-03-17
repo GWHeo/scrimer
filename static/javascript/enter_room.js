@@ -7,7 +7,13 @@ async function validateUserName() {
 
     button.innerHTML = spinnerDOM();
     button.disabled = true;
-    userInfo = await fetchUserInfo(gameName, tag, role, roomIdInput.value);
+    //userInfo = await fetchUserInfo(gameName, tag, role, roomIdInput.value);
+    userInfo = await requestPost(userInfoUrl, {
+        'gameName': gameName,
+        'tag': tag,
+        'userRole': role,
+        'roomId': roomIdInput.value
+    })
     if (userInfo.status == 200) {
         var data = await userInfo.json()
         roomIdInput.value = data['roomId'];

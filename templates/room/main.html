@@ -22,5 +22,11 @@
 {% endblock %}
 
 {% block body_scripts %}
+<script>
+    const roomId = '{{ room_id }}'
+    const user = {{ channel_user.id }};
+    const chatWsUrl = '{{ chat_ws_url }}{{ room_id }}/'
+    const sendChatUrl = window.location.pathname + 'chat/send/'
+</script>
 <script type="text/javascript" src="{% static 'javascript/chat.js' %}"></script>
 {% endblock %}

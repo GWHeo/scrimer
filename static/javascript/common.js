@@ -25,6 +25,21 @@ function getCookie(name) {
     return cookieValue;
 }
 
+async function requestPost(url, data) {
+    var csrftoken = getCookie('csrftoken');
+    var response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(data)
+    })
+    return await response
+}
+
+/*
 async function fetchUserInfo(gameName, tag, userRole, roomId) {
     var csrftoken = getCookie('csrftoken');
     var response = await fetch(userInfoUrl, {
@@ -42,8 +57,9 @@ async function fetchUserInfo(gameName, tag, userRole, roomId) {
         })
     })
     return await response
-}
+}*/
 
+/*
 async function fetchRoomInfo(link) {
     var csrftoken = getCookie('csrftoken');
     var response = await fetch(roomInfoUrl, {
@@ -58,7 +74,7 @@ async function fetchRoomInfo(link) {
         })
     })
     return await response
-}
+}*/
 
 function changeRole(userRole) {
     var roleSpan = document.querySelectorAll('.user-role');

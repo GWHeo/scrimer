@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'common',
     'room',
+    'wss',
 ]
 
 MIDDLEWARE = [
@@ -77,6 +79,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# Websocket
+ASGI_APPLICATION = "config.asgi.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)]
+        }
+    }
+}
+
+SITE_ID = 1
+
+SESSION_COOKIE_AGE = 60 * 5     # seconds
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -169,6 +185,14 @@ CACHES = {
     }
 }
 
+
+# Celery
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
 
 # Logging settings
 LOGGING = {

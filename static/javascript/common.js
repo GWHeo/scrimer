@@ -39,42 +39,12 @@ async function requestPost(url, data) {
     return await response
 }
 
-/*
-async function fetchUserInfo(gameName, tag, userRole, roomId) {
-    var csrftoken = getCookie('csrftoken');
-    var response = await fetch(userInfoUrl, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
-        },
-        body: JSON.stringify({
-            'gameName': gameName,
-            'tag': tag,
-            'userRole': userRole,
-            'roomId': roomId
-        })
+async function requestGet(url) {
+    var response = await fetch(url, {
+        method: 'GET',
     })
     return await response
-}*/
-
-/*
-async function fetchRoomInfo(link) {
-    var csrftoken = getCookie('csrftoken');
-    var response = await fetch(roomInfoUrl, {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
-        },
-        body: JSON.stringify({
-            'link': link
-        })
-    })
-    return await response
-}*/
+}
 
 function changeRole(userRole) {
     var roleSpan = document.querySelectorAll('.user-role');
@@ -89,4 +59,8 @@ function changeRole(userRole) {
     roleSpan.forEach((el) => {
         el.innerHTML = roleText
     });
+}
+
+function sleep(sec) {
+    return new Promise(resolve => setTimeout(resolve, sec * 1000));
 }

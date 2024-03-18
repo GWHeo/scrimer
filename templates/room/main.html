@@ -4,29 +4,44 @@
 
 {% block head_scripts %}
 <link rel="stylesheet"  type="text/css" href="{% static 'css/chatbox.css' %}">
+<script>
+    const roomId = '{{ room_id }}';
+    const user = {{ channel_user.id }};
+    const chatWsUrl = '{{ chat_ws_url }}{{ room_id }}/';
+    const sendChatUrl = window.location.pathname + 'chat/send/';
+    const userDetailUrl = window.location.pathname + 'detail/';
+    const profileIconUrl = '{{ profile_icon_url }}';
+</script>
+<script type="text/javascript" src="{% static 'javascript/myProfile.js' %}"></script>
 {% endblock %}
 
 {% block main_content %}
-<div>
-    <a href="{% url 'common:index' %}">홈</a>
+<div class="my-4">
+    <div class="m-2 d-flex justify-content-center">
+        <div class="input-group mw-75">
+            <input type="text" id="invite-link" class="form-control bar-dark" aria-describedby="copy-button" value="{{ invite_link }}" readonly>
+            <button class="btn btn-theme" id="copy-button"><i class="bi bi-copy"></i></button>
+        </div>
+        <input type="hidden" id="copy-timer" value="false">
+    </div>
+    <div class="text-center fs-small text-darker">
+        참가자들에게 링크를 공유하세요!
+    </div>
 </div>
-<div>
-    {% if channel_user.owner %}
-    방장
-    {% else %}
-    참가자
-    {% endif %}
+<div class="row justify-content-center align-items-center my-4">
+    <div class="col-auto my-profile-icon-wrapper m-2">
+        <img class="my-profile-icon rounded-circle" src="" id="my-profile-icon">
+    </div>
+    <div class="col-5">
+        <span class="h4 me-1" id="my-profile-gamename"></span>
+        <span class="h5 text-darker" id="my-profile-tag"></span>
+    </div>
 </div>
 {% include 'components/chat.html' %}
 
 {% endblock %}
 
 {% block body_scripts %}
-<script>
-    const roomId = '{{ room_id }}'
-    const user = {{ channel_user.id }};
-    const chatWsUrl = '{{ chat_ws_url }}{{ room_id }}/'
-    const sendChatUrl = window.location.pathname + 'chat/send/'
-</script>
+<script type="text/javascript" src="{% static 'javascript/room.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/chat.js' %}"></script>
 {% endblock %}

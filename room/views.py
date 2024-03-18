@@ -3,8 +3,10 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpResponseNotAllowed, HttpResponse, JsonResponse
 from django.contrib.sites.shortcuts import get_current_site
+from django.db.transaction import atomic
 from .models import Room, ChannelUser
 from .forms import EnterRoom
+from .external import request_get
 from wss.consumer import send_websocket_message
 import requests
 import json
@@ -20,6 +22,7 @@ def link_access(request, room_id):
     return render(request, 'index.html', {'link_access': True, 'room_id': room.code})
 
 
+@atomic
 def user_validation(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed('POST')
@@ -30,44 +33,53 @@ def user_validation(request):
     if game_name == '' or tag == '':
         return HttpResponse(status=400)
     if user_role not in ['creator', 'participant']:
-        return HttpResponse(status=404)
+        return HttpResponse(status=403)
     
     # do request to riot api
-    riot_account_url = f'https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{game_name}/{tag}'
-    headers = {
-        "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
-        "X-Riot-Token": settings.RIOT_TOKEN
-    }
-    response = requests.get(
-        riot_account_url,
-        headers=headers,
-    )
+    riot_account_url = f'{settings.RIOT_API_ENDPOINTS["account"]}/{game_name}/{tag}'
+    response = request_get(riot_account_url)
     if response.status_code != 200:
         return HttpResponse(status=response.status_code)
     user_data = response.json()
-    
-    try:
-        user = ChannelUser.objects.get(game_name=game_name, tag=tag)
-        room = user.room
-        if user_role == 'participant' and room.code == data['roomId']:
-            if not user.owner:
-                raise ObjectDoesNotExist
-        return JsonResponse({'roomId': room.code}, status=302)
-    except ObjectDoesNotExist:
-        if user_role == 'creator':
-            room = Room.objects.create(code=uuid.uuid4())
-        else:
-            room = Room.objects.get(code=data['roomId'])
-    user = ChannelUser.objects.create(
-        room=room,
-        puuid=user_data['puuid'],
-        game_name=user_data['gameName'],
-        tag=user_data['tagLine'],
-        owner=True if user_role == 'creator' else False
-    )
-    
-    return JsonResponse({'roomId': room.code}, status=200)
 
+    # user save
+    if user_role == 'creator':
+        channel_user = ChannelUser.objects.filter(game_name=game_name, tag=tag, owner=True)
+        if channel_user.exists():
+            for user in channel_user:
+                return JsonResponse({'roomId': user.room.code}, status=302)
+        room = Room.objects.create(code=uuid.uuid4())
+        ChannelUser.objects.create(
+            room=room,
+            puuid=user_data['puuid'],
+            game_name=user_data['gameName'],
+            tag=user_data['tagLine'],
+            owner=True,
+            role='participant',
+        )
+        return JsonResponse({'roomId': room.code}, status=200)
+    
+    elif user_role == 'participant':
+        try:
+            room = Room.objects.filter(code=data['roomId']).first()
+            if not room.exists():
+                raise ObjectDoesNotExist
+        except (ObjectDoesNotExist, ValidationError):
+            return HttpResponse(status=404)
+        user = ChannelUser.objects.filter(game_name=game_name, tag=tag, room=room)
+        if user.exists():
+            return JsonResponse({'roomId': room.code}, status=302)
+        else:
+            ChannelUser.objects.create(
+                room=room,
+                puuid=user_data['puuid'],
+                game_name=user_data['gameName'],
+                tag=user_data['tagLine'],
+                owner=False,
+                role='participant',
+            )
+            return JsonResponse({'roomId': room.code}, status=200)
+       
 
 def room_validation(request):
     if request.method != 'POST':
@@ -102,9 +114,19 @@ def enter_room(request):
 
 def room_view(request, room_id, user_id):
     user = ChannelUser.objects.get(id=user_id)
+    path = request.build_absolute_uri().split('/')[:-2]
+    invite_link = ''
+    for p in path:
+        invite_link += p + '/'
+    ddragon_version_url = 'https://ddragon.leagueoflegends.com/api/versions.json'
+    version_response = request_get(ddragon_version_url)
+    version_latest = version_response.json()[0]
+    ddragon_profile_icon_url = f"https://ddragon.leagueoflegends.com/cdn/{version_latest}/img/profileicon"
     data = {
         'room_id': room_id,
-        'channel_user': user
+        'channel_user': user,
+        'invite_link': invite_link,
+        'profile_icon_url': ddragon_profile_icon_url
     }
     return render(request, 'room/main.html', data)
 
@@ -117,15 +139,29 @@ def send_chat(request, room_id, user_id):
     user = ChannelUser.objects.get(id=user_id)
     try:
         send_websocket_message(
-            room_id,
-            False,
-            user.pk,
-            user.owner,
-            user.role,
-            f"{user.game_name}#{user.tag}",
-            message
+            room_id=room_id,
+            is_system=False,
+            user_id=user.pk,
+            owner=user.owner,
+            role=user.role,
+            name=f"{user.game_name}#{user.tag}",
+            message=message
         )
         return HttpResponse(status=200)
     except Exception as e:
         return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500)
         
+        
+def fetch_user_detail(request, room_id, user_id):
+    if request.method != 'GET':
+        return HttpResponseNotAllowed('GET')
+    try:
+        user = ChannelUser.objects.get(id=user_id)
+    except ObjectDoesNotExist:
+        return HttpResponse(status=404)
+    riot_summoner_url = f"{settings.RIOT_API_ENDPOINTS['summoner']}/{user.puuid}"
+    response = request_get(riot_summoner_url)
+    data = response.json()
+    data['gameName'] = user.game_name
+    data['tag'] = user.tag
+    return JsonResponse(json.dumps(data), status=response.status_code, safe=False)

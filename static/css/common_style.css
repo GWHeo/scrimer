@@ -1,5 +1,6 @@
 :root {
     --default-bg-color: #383838;
+    --default-bg-color-light: #575757;
     --default-bg-color-rgb: 56, 56, 56;
     --default-font-color: #F8F8F8;
     --default-font-color-rgb: 248, 248, 248;
@@ -27,7 +28,7 @@
 }
 
 .text-darker {
-    color: rgba(var(--default-font-color-rgb), 0.5);
+    color: rgba(var(--default-font-color-rgb), 0.5)!important;
 }
 
 .default-bg {
@@ -35,23 +36,6 @@
 }
 
 .mobile-hidden {}
-@media(max-width: 992px) {
-    .mobile-hidden {
-        display: none;
-    }
-    .site-default {
-        background-color: var(--default-bg-color);
-        color: var(--default-font-color);
-        word-break: keep-all;
-        font-size: var(--mobile-font-size);
-    }
-    .fs-default {
-        font-size: var(--mobile-font-size);
-    }
-    .fs-small {
-        font-size: var(--mobile-font-size-small);
-    }
-}
 
 .fixed-top {
     position: fixed;
@@ -140,3 +124,43 @@
 
 
 /* utility */
+.form-control.bar-dark {
+    background-color: var(--default-bg-color-light);
+    border-color: rgba(var(--default-font-color-rgb), 0.5);
+    color: rgba(var(--default-font-color-rgb), 0.8);
+}
+.form-control.bar-dark:focus {
+    background-color: var(--default-bg-color-light);
+    border-color: rgba(var(--default-font-color-rgb), 0.5);
+    color: rgba(var(--default-font-color-rgb), 0.8);
+}
+.mw-75 {
+    max-width: 40rem;
+}
+.my-profile-icon {
+    max-width: 6rem;
+    max-height: 6rem;
+}
+
+/* Mobile */
+@media(max-width: 992px) {
+    .mobile-hidden {
+        display: none;
+    }
+    .site-default {
+        background-color: var(--default-bg-color);
+        color: var(--default-font-color);
+        word-break: keep-all;
+        font-size: var(--mobile-font-size);
+    }
+    .fs-default {
+        font-size: var(--mobile-font-size);
+    }
+    .fs-small {
+        font-size: var(--mobile-font-size-small);
+    }
+    .my-profile-icon {
+        max-width: 4rem;
+        max-height: 4rem;
+    }
+}

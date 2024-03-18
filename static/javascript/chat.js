@@ -28,34 +28,32 @@ function chatBodySizing() {
     var topMargin = document.getElementById('gnb').offsetHeight;
     var bottomMargin = document.getElementById('footer').offsetHeight;
 
-
-
     var contentHeight = innerHeight - topMargin - bottomMargin;
     if (contentHeight <= 400) {
         chatBody.style.height = `${contentHeight - chatHeader.offsetHeight - chatFooter.offsetHeight - 32}px`;
+        console.log(contentHeight, chatHeader.offsetHeight, chatFooter.offsetHeight)
+        console.log(chatBody.style.height)
     } else {
         chatBody.style.height = '240px';
     }
 }
 
 chatMarginSetting(992);
+chatBodySizing();
 
 window.onresize = function(e) {
-    var topMargin = document.getElementById('gnb').offsetHeight;
-    var bottomMargin = document.getElementById('footer').offsetHeight;
-
     chatMarginSetting(992);
     chatBodySizing();
 }
 
 chatBubble.addEventListener('click', () => {
-    chatBox.style.display = 'flex';
-    chatBubble.style.display = 'none';
+    chatBox.style.visibility = 'visible';
+    chatBubble.style.visibility = 'hidden';
 });
 
 minimizeButton.addEventListener('click', () => {
-    chatBox.style.display = 'none';
-    chatBubble.style.display = 'flex';
+    chatBox.style.visibility = 'hidden';
+    chatBubble.style.visibility = 'visible';
 });
 
 chatInput.addEventListener('keyup', function(e) {
@@ -97,6 +95,7 @@ function reprMessage(data) {
         userType = '(시스템)';
     } else {
         if (data.owner) {
+            console.
             userClass = 'chat-user-creator';
             userType = '(방장)';
         }

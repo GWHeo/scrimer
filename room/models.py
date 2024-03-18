@@ -21,6 +21,6 @@ class ChannelUser(models.Model, models.Manager):
     tag = models.CharField(max_length=8)
     owner = models.BooleanField()
     role = models.CharField(max_length=12, choices=ROLE_CHOICES, null=True, default=None)
-    
+
     class Meta:
         db_table = 'channel_users'

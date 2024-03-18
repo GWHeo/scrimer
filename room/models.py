@@ -17,10 +17,16 @@ class ChannelUser(models.Model, models.Manager):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     join_date = models.DateTimeField(auto_now_add=True)
     puuid = models.CharField(max_length=78)
+    summoner_id = models.CharField(max_length=46, default=None, null=True)
     game_name = models.CharField(max_length=16)
     tag = models.CharField(max_length=8)
     owner = models.BooleanField()
-    role = models.CharField(max_length=12, choices=ROLE_CHOICES, null=True, default=None)
+    role = models.CharField(max_length=12, choices=ROLE_CHOICES, default='participant')
+    profile = models.IntegerField(null=True, default=None)
+    rank = models.TextField(default=None, null=True)
+    most = models.IntegerField(null=True, default=None)
+    lane = models.CharField(max_length=7, null=True, default=None)
+    win_rate = models.FloatField(null=True, default=None)
 
     class Meta:
         db_table = 'channel_users'

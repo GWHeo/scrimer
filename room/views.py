@@ -122,11 +122,16 @@ def room_view(request, room_id, user_id):
     version_response = request_get(ddragon_version_url)
     version_latest = version_response.json()[0]
     ddragon_profile_icon_url = f"https://ddragon.leagueoflegends.com/cdn/{version_latest}/img/profileicon"
+    ddragon_champ_json_url = f"https://ddragon.leagueoflegends.com/cdn/{version_latest}/data/en_US/champion.json"
+    ddragon_champ_icon_url = f"https://ddragon.leagueoflegends.com/cdn/{version_latest}/img/champion"
     data = {
         'room_id': room_id,
         'channel_user': user,
         'invite_link': invite_link,
-        'profile_icon_url': ddragon_profile_icon_url
+        'profile_icon_url': ddragon_profile_icon_url,
+        'champ_json_url': ddragon_champ_json_url,
+        'champ_icon_url': ddragon_champ_icon_url,
+        'game_version': version_latest
     }
     return render(request, 'room/main.html', data)
 
@@ -159,9 +164,49 @@ def fetch_user_detail(request, room_id, user_id):
         user = ChannelUser.objects.get(id=user_id)
     except ObjectDoesNotExist:
         return HttpResponse(status=404)
-    riot_summoner_url = f"{settings.RIOT_API_ENDPOINTS['summoner']}/{user.puuid}"
-    response = request_get(riot_summoner_url)
-    data = response.json()
+    
+    endpoints = settings.RIOT_API_ENDPOINTS
+    
+    # profile icon
+    if user.profile is None:
+        riot_summoner_url = f"{endpoints['summoner']}/{user.puuid}"
+        detail_response = request_get(riot_summoner_url)
+        data_json = detail_response.json()
+        user.profile = data_json['profileIconId']
+        user.summoner_id = data_json['id']
+        user.save()
+        data = {
+            'profileIconId': data_json['profileIconId'],
+            'summonerId': data_json['id'],
+        }
+    else:
+        data = {
+            'profileIconId': user.profile,
+            'summonerId': user.summoner_id,
+        }
     data['gameName'] = user.game_name
     data['tag'] = user.tag
-    return JsonResponse(json.dumps(data), status=response.status_code, safe=False)
+    
+    # rank info
+    if user.rank is None:
+        riot_rank_url = f"{endpoints['league']}/{data['summonerId']}"
+        rank_response = request_get(riot_rank_url)
+        rank = rank_response.json()
+        user.rank = rank
+        user.save()
+    else:
+        rank = user.rank
+    data['rank'] = rank
+    
+    # most champion
+    if user.most is None:
+        riot_most_url = f"{endpoints['champion_mastery']}/{user.puuid}/top?count=1"
+        most_response = request_get(riot_most_url)
+        most = most_response.json()[0]['championId']
+        user.most = most
+        user.save()
+    else:
+        most = user.most
+    data['most'] = most
+    print(data)
+    return JsonResponse(json.dumps(data), status=200, safe=False)

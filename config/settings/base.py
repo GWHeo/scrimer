@@ -265,5 +265,7 @@ RIOT_TOKEN = env('RIOT_TOKEN')
 
 RIOT_API_ENDPOINTS = {
     'account': 'https://asia.api.riotgames.com/riot/account/v1/accounts/by-riot-id',
-    'summoner': 'https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-puuid'
+    'summoner': 'https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-puuid',
+    'champion_mastery': 'https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid',
+    'league': 'https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner'
 }

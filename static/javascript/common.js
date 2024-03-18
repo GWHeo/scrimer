@@ -64,3 +64,19 @@ function changeRole(userRole) {
 function sleep(sec) {
     return new Promise(resolve => setTimeout(resolve, sec * 1000));
 }
+
+function toList(obj) {
+    return Object.keys(obj).map(key => ({
+        name: key,
+        value: obj[key]
+    }))
+}
+
+async function setChampIcon(imgNode, champData, champId) {
+    for (let i=0; i<champData.length; i++){
+        if (champData[i].value.key == champId) {
+            imgNode.src = champIconUrl + `/${champData[i].value.name}.png`;
+            break;
+        }
+    }
+}

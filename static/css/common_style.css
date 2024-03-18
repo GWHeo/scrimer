@@ -11,6 +11,11 @@
     --chat-body-bg-color: #3e3e4f;
     --mobile-font-size: 14px;
     --mobile-font-size-small: 12px;
+
+    --creator-color: #006FCB;
+    --leader-color: #D16F00;
+    --participant-color: #878787;
+    --system-color: #feee48;
 }
 
 .site-default {
@@ -140,6 +145,29 @@
 .my-profile-icon {
     max-width: 6rem;
     max-height: 6rem;
+}
+.my-detail-icon {
+    max-width: 3rem;
+    max-height: 3rem;
+}
+
+.bg-system {
+    background-color: var(--system-color);
+}
+.bg-creator {
+    background-color: var(--creator-color);
+}
+.bg-leader {
+    background-color: var(--leader-color);
+}
+.bg-participant {
+    background-color: var(--participant-color);
+}
+
+.level-badge {
+    border-radius: 10%;
+    width: fit-content;
+    padding: .1rem .2rem .1rem .2rem;
 }
 
 /* Mobile */

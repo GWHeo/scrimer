@@ -29,8 +29,6 @@ async function validateLink() {
     button.disabled = false;
 }
 
-
-
 window.onload = function() {
     if (isLinkAccess) {
         $('#userNameModal').modal('show');

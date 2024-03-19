@@ -129,6 +129,13 @@
 
 
 /* utility */
+.content-wrapper {
+    background-color: var(--chat-body-bg-color);
+    border: 1px solid;
+    border-color: var(--default-bg-color-light);
+    border-radius: 1rem 1rem 1rem 1rem;
+}
+
 .form-control.bar-dark {
     background-color: var(--default-bg-color-light);
     border-color: rgba(var(--default-font-color-rgb), 0.5);

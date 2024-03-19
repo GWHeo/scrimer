@@ -31,8 +31,6 @@ function chatBodySizing() {
     var contentHeight = innerHeight - topMargin - bottomMargin;
     if (contentHeight <= 400) {
         chatBody.style.height = `${contentHeight - chatHeader.offsetHeight - chatFooter.offsetHeight - 32}px`;
-        console.log(contentHeight, chatHeader.offsetHeight, chatFooter.offsetHeight)
-        console.log(chatBody.style.height)
     } else {
         chatBody.style.height = '240px';
     }

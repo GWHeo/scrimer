@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpResponseNotAllowed, HttpResponse, JsonResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.transaction import atomic
+from django.core.serializers.json import DjangoJSONEncoder
 from .models import Room, ChannelUser
 from .forms import EnterRoom
 from .external import request_get
@@ -122,7 +123,7 @@ def room_view(request, room_id, user_id):
     version_response = request_get(ddragon_version_url)
     version_latest = version_response.json()[0]
     ddragon_profile_icon_url = f"https://ddragon.leagueoflegends.com/cdn/{version_latest}/img/profileicon"
-    ddragon_champ_json_url = f"https://ddragon.leagueoflegends.com/cdn/{version_latest}/data/en_US/champion.json"
+    ddragon_champ_json_url = f"https://ddragon.leagueoflegends.com/cdn/{version_latest}/data/ko_KR/champion.json"
     ddragon_champ_icon_url = f"https://ddragon.leagueoflegends.com/cdn/{version_latest}/img/champion"
     data = {
         'room_id': room_id,
@@ -208,5 +209,6 @@ def fetch_user_detail(request, room_id, user_id):
     else:
         most = user.most
     data['most'] = most
-    print(data)
-    return JsonResponse(json.dumps(data), status=200, safe=False)
+    
+    json_data = json.dumps(data, ensure_ascii=False, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, status=200)

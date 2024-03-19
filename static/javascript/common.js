@@ -65,6 +65,10 @@ function sleep(sec) {
     return new Promise(resolve => setTimeout(resolve, sec * 1000));
 }
 
+function capFirst(text) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 function toList(obj) {
     return Object.keys(obj).map(key => ({
         name: key,
@@ -72,11 +76,38 @@ function toList(obj) {
     }))
 }
 
-async function setChampIcon(imgNode, champData, champId) {
+async function setChampIcon(imgNode, textNode, champData, champId) {
     for (let i=0; i<champData.length; i++){
         if (champData[i].value.key == champId) {
-            imgNode.src = champIconUrl + `/${champData[i].value.name}.png`;
+            imgNode.src = champIconUrl + `/${champData[i].name}.png`;
+            textNode.innerHTML = champData[i].value.name;
             break;
         }
     }
+}
+
+async function setRankIcon(imgNode, textNode, data) {
+    var rank = '';
+    if (data.length == 0) {
+        if (textNode != null) {
+            textNode.innerHTML = 'Unranked';
+        }
+        imgNode.src = fileUrl + 'tier/unranked.png';
+    } else {
+        for (let i=0; i<data.length; i++) {
+            if (data[i].queueType == 'RANKED_SOLO_5x5') {
+                if (textNode != null) {
+                    textNode.innerHTML = data[i].tier + data[i].rank;
+                }
+                var filename = data[i].tier.toLowerCase() + '.png';
+                imgNode.src = fileUrl + `tier/${filename}/`;
+                break;
+            }
+        }
+    }
+
+}
+
+async function setMainLane(imgNode, textNode, lane) {
+
 }

@@ -3,7 +3,10 @@ var copyBtn = document.getElementById('copy-button');
 var myProfileIcon = document.getElementById('my-profile-icon');
 var myProfileGameName = document.getElementById('my-profile-gamename');
 var myProfileTag = document.getElementById('my-profile-tag');
+var myTierIcon = document.getElementById('my-detail-tier');
+var myTierText = document.getElementById('my-detail-tier-text');
 var myMostIcon = document.getElementById('my-detail-most');
+var myMostText = document.getElementById('my-detail-most-text');
 var champions = '';
 
 function copyLink() {
@@ -20,18 +23,23 @@ copyBtn.addEventListener('click', async function() {
 
 (async () => {
     var detailResponse = await requestGet(userDetailUrl);
-    var detailJson = await detailResponse.json();
-    var detail = JSON.parse(detailJson);
-    var profileIconSrc = profileIconUrl + `/${detail['profileIconId']}.png`;
+    var detail = await detailResponse.json();
+    //var detail = JSON.parse(detailJson);
+    var profileIconSrc = profileIconUrl + `/${detail.profileIconId}.png`;
 
     var champResponse = await requestGet(champJsonUrl);
     var champJson = await champResponse.json();
     champions = toList(champJson.data);
 
+    // profile
     myProfileIcon.src = profileIconSrc;
-    myProfileGameName.innerHTML = detail['gameName'];
-    myProfileTag.innerHTML = '#' + detail['tag'];
+    myProfileGameName.innerHTML = detail.gameName;
+    myProfileTag.innerHTML = '#' + detail.tag;
 
-    await setChampIcon(myMostIcon, champions, detail['most']);
+    // tier
+    await setRankIcon(myTierIcon, myTierText, detail.rank)
+
+    // most
+    await setChampIcon(myMostIcon, myMostText, champions, detail.most);
 
 })();

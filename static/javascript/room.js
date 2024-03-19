@@ -27,9 +27,15 @@ copyBtn.addEventListener('click', async function() {
     //var detail = JSON.parse(detailJson);
     var profileIconSrc = profileIconUrl + `/${detail.profileIconId}.png`;
 
+    // store champion json
     var champResponse = await requestGet(champJsonUrl);
     var champJson = await champResponse.json();
     champions = toList(champJson.data);
+
+    // store images
+    await storeImages();
+    var img = document.getElementById('my-detail-lane');
+    img.src = localImages['lane_bot'];
 
     // profile
     myProfileIcon.src = profileIconSrc;
@@ -43,3 +49,4 @@ copyBtn.addEventListener('click', async function() {
     await setChampIcon(myMostIcon, myMostText, champions, detail.most);
 
 })();
+

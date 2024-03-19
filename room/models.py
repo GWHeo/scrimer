@@ -17,7 +17,7 @@ class ChannelUser(models.Model, models.Manager):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     join_date = models.DateTimeField(auto_now_add=True)
     puuid = models.CharField(max_length=78)
-    summoner_id = models.CharField(max_length=46, default=None, null=True)
+    summoner_id = models.CharField(max_length=63, default=None, null=True)
     game_name = models.CharField(max_length=16)
     tag = models.CharField(max_length=8)
     owner = models.BooleanField()

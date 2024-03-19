@@ -39,8 +39,11 @@ def user_validation(request):
     # do request to riot api
     riot_account_url = f'{settings.RIOT_API_ENDPOINTS["account"]}/{game_name}/{tag}'
     response = request_get(riot_account_url)
-    if response.status_code != 200:
-        return HttpResponse(status=response.status_code)
+    print(response.status_code)
+    if response.status_code == 404:
+        return HttpResponse(status=401)
+    elif response.status_code != 200:
+        return HttpResponse(response.status_code)
     user_data = response.json()
 
     # user save

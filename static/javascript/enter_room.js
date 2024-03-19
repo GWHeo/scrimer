@@ -33,13 +33,14 @@ async function validateUserName() {
         case 400:
             window.alert('닉네임과 태그를 모두 입력해주세요.');
             break;
+        case 401:
+            window.alert('사용자를 찾을 수 없습니다.');
+            break;
         case 404:
             window.alert('생성된 방이 없습니다.');
             break;
         case 500:
             window.alert('서버 오류');
-        default:
-            window.alert("사용자를 찾을 수 없습니다.");
     }
 
     button.innerHTML = '생성';

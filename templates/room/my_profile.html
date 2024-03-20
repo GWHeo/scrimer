@@ -1,0 +1,85 @@
+<div class="row justify-content-center align-items-center p-1 my-4 mx-2 g-2 content-wrapper">
+    <div class="col-lg-5">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-auto my-profile-icon-wrapper m-2">
+                <img class="my-profile-icon rounded-circle" src="" id="my-profile-icon">
+            </div>
+            <div class="col-auto">
+                <div>
+                    <span class="h4 me-1" id="my-profile-gamename"></span>
+                    <span class="h5 text-darker" id="my-profile-tag"></span>
+                </div>
+                <div class="d-inline-flex">
+                    {% if channel_user.owner %}
+                    <div>
+                        {% include 'components/creator_badge.html' %}
+                    </div>
+                    {% endif %}
+                    {% if channel_user.role == 'leader' %}
+                    <div>
+                        {% include 'components/leader_badge.html' %}
+                    </div>
+                    {% elif channel_user.role == 'participant' %}
+                    <div>
+                        {% include 'components/participant_badge.html' %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-1"></div>
+    <div class="col-lg-6">
+        <div class="row justify-content-center align-items-center fs-small text-darker text-center">
+            <div class="col-3">
+                <div class="my-1">
+                    티어
+                </div>
+                <div class="my-detail-wrapper my-1">
+                    <img class="my-detail-icon" src="" id="my-detail-tier">
+                </div>
+                <div class="my-1" id="my-detail-tier-text">
+
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="my-1">
+                    모스트
+                </div>
+                <div class="my-detail-wrapper my-1">
+                    <img class="my-detail-icon" src="" id="my-detail-most">
+                </div>
+                <div class="my-1" id="my-detail-most-text">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="my-1">
+                    희망 라인
+                </div>
+                <div class="my-detail-wrapper my-1">
+                    <img class="my-detail-icon" src="" id="my-detail-lane">
+                </div>
+                <div class="my-1" id="my-detail-lane-text">
+                    <form method="post" action="{% url 'room:change_lane' room_id channel_user.id %}" id="change-my-lane">
+                        {% csrf_token %}
+                        <select id="lane-select" class="text-center" onchange="changeMyLane(false)">
+                            {% for choice in lane_choices %}
+                            <option value="{{ choice.0 }}" {% if channel_user.lane == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            </div>
+            <!--
+            <div class="col-3">
+                <div class="my-1">
+                    최근 승률
+                </div>
+                <div class="my-detail-icon">
+                    <span id="my-detail-winrate"></span>
+                </div>
+            </div>
+            -->
+        </div>
+    </div>
+</div>

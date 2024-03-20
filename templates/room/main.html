@@ -9,6 +9,7 @@
     const user = {{ channel_user.id }};
     const chatWsUrl = '{{ chat_ws_url }}{{ room_id }}/';
     const sendChatUrl = window.location.pathname + 'chat/send/';
+    const changeLaneUrl = window.location.pathname + 'myprofile/change/lane/';
     const userDetailUrl = window.location.pathname + 'detail/';
     const fileUrl = window.location.origin + '/file/';
     const profileIconUrl = '{{ profile_icon_url }}';
@@ -21,90 +22,11 @@
 {% endblock %}
 
 {% block main_content %}
-<div class="my-4">
-    <div class="m-2 d-flex justify-content-center">
-        <div class="input-group mw-75">
-            <input type="text" id="invite-link" class="form-control bar-dark" aria-describedby="copy-button" value="{{ invite_link }}" readonly>
-            <button class="btn btn-theme" id="copy-button"><i class="bi bi-copy"></i></button>
-        </div>
-        <input type="hidden" id="copy-timer" value="false">
-    </div>
-    <div class="text-center fs-small text-darker">
-        참가자들에게 링크를 공유하세요!
-    </div>
-</div>
-<div class="row justify-content-center align-items-center p-1 my-4 mx-2 g-2 content-wrapper">
-    <div class="col-lg-5">
-        <div class="row justify-content-center align-items-center">
-            <div class="col-auto my-profile-icon-wrapper m-2">
-                <img class="my-profile-icon rounded-circle" src="" id="my-profile-icon">
-            </div>
-            <div class="col-auto">
-                <div>
-                    <span class="h4 me-1" id="my-profile-gamename"></span>
-                    <span class="h5 text-darker" id="my-profile-tag"></span>
-                </div>
-                <div class="d-inline-flex">
-                    {% if channel_user.owner %}
-                    <div>
-                        {% include 'components/creator_badge.html' %}
-                    </div>
-                    {% endif %}
-                    {% if channel_user.role == 'leader' %}
-                    <div>
-                        {% include 'components/leader_badge.html' %}
-                    </div>
-                    {% elif channel_user.role == 'participant' %}
-                    <div>
-                        {% include 'components/participant_badge.html' %}
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-1"></div>
-    <div class="col-lg-6">
-        <div class="row justify-content-center align-items-center fs-small text-darker text-center">
-            <div class="col-3">
-                <div class="my-1">
-                    티어
-                </div>
-                <div class="my-detail-wrapper my-1">
-                    <img class="my-detail-icon" src="" id="my-detail-tier">
-                </div>
-                <div class="my-1" id="my-detail-tier-text">
 
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="my-1">
-                    모스트
-                </div>
-                <div class="my-detail-wrapper my-1">
-                    <img class="my-detail-icon" src="" id="my-detail-most">
-                </div>
-                <div class="my-1" id="my-detail-most-text">
-                    모스트
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="my-1">
-                    희망 라인
-                </div>
-                <div class="my-detail-wrapper my-1">
-                    <img class="my-detail-icon" src="" id="my-detail-lane">
-                </div>
-                <div class="my-1" id="my-detail-lane-text">
-                    상관 없음
-                </div>
-            </div>
-            <div class="col-3">
-                win rate
-            </div>
-        </div>
-    </div>
-</div>
+{% include 'room/invite_link.html' %}
+{% include 'room/my_profile.html' %}
+{% include 'room/participant_board.html' %}
+
 {% include 'components/chat.html' %}
 
 {% endblock %}

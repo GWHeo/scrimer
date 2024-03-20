@@ -14,6 +14,14 @@ class ChannelUser(models.Model, models.Manager):
         ('leader', '주장'),
         ('participant', '참가자')
     ]
+    LANE_CHOICES = [
+        ('any', '상관 없음'),
+        ('top', '탑'),
+        ('mid', '미드'),
+        ('bot', '원딜'),
+        ('support', '서포터'),
+        ('jungle', '정글')
+    ]
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     join_date = models.DateTimeField(auto_now_add=True)
     puuid = models.CharField(max_length=78)
@@ -26,8 +34,9 @@ class ChannelUser(models.Model, models.Manager):
     #rank = models.TextField(default=None, null=True)
     rank = models.JSONField(null=True, default=None)
     most = models.IntegerField(null=True, default=None)
-    lane = models.CharField(max_length=7, null=True, default=None)
-    win_rate = models.FloatField(null=True, default=None)
+    lane = models.CharField(max_length=7, choices=LANE_CHOICES, default='any')
+    wins = models.IntegerField(null=True, default=None)
+    looses = models.IntegerField(null=True, default=None)
 
     class Meta:
         db_table = 'channel_users'

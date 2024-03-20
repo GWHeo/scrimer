@@ -34,19 +34,27 @@ copyBtn.addEventListener('click', async function() {
 
     // store images
     await storeImages();
-    var img = document.getElementById('my-detail-lane');
-    img.src = localImages['lane_bot'];
 
     // profile
     myProfileIcon.src = profileIconSrc;
     myProfileGameName.innerHTML = detail.gameName;
     myProfileTag.innerHTML = '#' + detail.tag;
 
-    // tier
-    await setRankIcon(myTierIcon, myTierText, detail.rank)
+    var promises = [
+        // tier
+        setRankIcon(myTierIcon, myTierText, detail.rank),
+        // most
+        setChampIcon(myMostIcon, myMostText, champions, detail.most)
+    ]
 
-    // most
-    await setChampIcon(myMostIcon, myMostText, champions, detail.most);
+    var initMyDetails = await Promise.all(
+        promises.map(async (promise) => {
+            await promise;
+        })
+    )
+
+    // lane
+    changeMyLane(true);
 
 })();
 

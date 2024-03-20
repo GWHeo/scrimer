@@ -7,6 +7,7 @@ from django.db.transaction import atomic
 from django.core.serializers.json import DjangoJSONEncoder
 from .models import Room, ChannelUser
 from .forms import EnterRoom
+from .decorators import method_only, room_api
 from .external import request_get
 from wss.consumer import send_websocket_message
 import requests
@@ -24,9 +25,8 @@ def link_access(request, room_id):
 
 
 @atomic
+@method_only('POST')
 def user_validation(request):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed('POST')
     data = json.loads(request.body.decode('utf-8'))
     game_name = data['gameName']
     tag = data['tag']
@@ -39,7 +39,6 @@ def user_validation(request):
     # do request to riot api
     riot_account_url = f'{settings.RIOT_API_ENDPOINTS["account"]}/{game_name}/{tag}'
     response = request_get(riot_account_url)
-    print(response.status_code)
     if response.status_code == 404:
         return HttpResponse(status=401)
     elif response.status_code != 200:
@@ -85,9 +84,8 @@ def user_validation(request):
             return JsonResponse({'roomId': room.code}, status=200)
        
 
+@method_only('POST')
 def room_validation(request):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed('POST')
     data = json.loads(request.body.decode('utf-8'))
     if data['link'] == '':
         return HttpResponse(status=400)
@@ -105,9 +103,8 @@ def room_validation(request):
     return JsonResponse({'roomId': room.code}, status=200)
 
 
+@method_only('POST')
 def enter_room(request):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed('POST')
     form = EnterRoom(request.POST)
     if form.is_valid():
         room = Room.objects.get(code=form.cleaned_data['room_id'])
@@ -135,14 +132,15 @@ def room_view(request, room_id, user_id):
         'profile_icon_url': ddragon_profile_icon_url,
         'champ_json_url': ddragon_champ_json_url,
         'champ_icon_url': ddragon_champ_icon_url,
-        'game_version': version_latest
+        'game_version': version_latest,
+        'lane_choices': ChannelUser.LANE_CHOICES
     }
     return render(request, 'room/main.html', data)
 
 
+@method_only('POST')
+@room_api
 def send_chat(request, room_id, user_id):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed('POST')
     data = json.loads(request.body.decode('utf-8'))
     message = data['message']
     user = ChannelUser.objects.get(id=user_id)
@@ -161,14 +159,10 @@ def send_chat(request, room_id, user_id):
         return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500)
         
         
+@method_only('GET')
+@room_api
 def fetch_user_detail(request, room_id, user_id):
-    if request.method != 'GET':
-        return HttpResponseNotAllowed('GET')
-    try:
-        user = ChannelUser.objects.get(id=user_id)
-    except ObjectDoesNotExist:
-        return HttpResponse(status=404)
-    
+    user = ChannelUser.objects.get(id=user_id)
     endpoints = settings.RIOT_API_ENDPOINTS
     
     # profile icon
@@ -215,3 +209,14 @@ def fetch_user_detail(request, room_id, user_id):
     
     json_data = json.dumps(data, ensure_ascii=False, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, status=200)
+
+
+@method_only('POST')
+@room_api
+def change_lane(request, room_id, user_id):
+    data = json.loads(request.body.decode('utf-8'))
+    lane_values = [val[0] for val in ChannelUser.LANE_CHOICES]
+    if data['laneSelect'] not in lane_values:
+        return HttpResponse(status=403)
+    ChannelUser.objects.filter(id=user_id).update(lane=data['laneSelect'])
+    return HttpResponse(status=200)

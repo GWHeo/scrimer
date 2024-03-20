@@ -66,6 +66,12 @@
     decoration: none;
 }
 
+/* ** select ** */
+select {
+    background-color: var(--default-bg-color-light);
+    color: var(--default-font-color);
+}
+
 /* buttons */
 .btn.btn-white-outline {
     --bs-btn-font-weight: 600;
@@ -157,7 +163,10 @@
     max-width: 3rem;
     max-height: 3rem;
 }
-
+.participant-profile-icon {
+    max-width: 3rem;
+    max-height: 3rem;
+}
 .bg-system {
     background-color: var(--system-color);
 }
@@ -197,5 +206,9 @@
     .my-profile-icon {
         max-width: 4rem;
         max-height: 4rem;
+    }
+    .participant-profile-icon {
+        max-width: 2rem;
+        max-height: 2rem;
     }
 }

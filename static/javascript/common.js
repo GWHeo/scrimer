@@ -108,6 +108,44 @@ async function setRankIcon(imgNode, textNode, data) {
 
 }
 
-async function setMainLane(imgNode, textNode, lane) {
+function setMainLane(imgNode, textNode, lane) {
+    var imgName = 'lane_' + lane;
+    imgNode.src = localImages[imgName];
+    if (textNode != null) {
+        var koText = '';
+        switch(lane) {
+            case 'bot':
+                koText = '원딜';
+                break;
+            case 'jungle':
+                koText = '정글';
+                break;
+            case 'mid':
+                koText = '미드';
+                break;
+            case 'support':
+                koText = '서포터';
+                break;
+            case 'top':
+                koText = '탑';
+                break;
+            case 'any':
+                koText = '상관 없음';
+                break;
+        }
+        textNode.innerHTML = koText;
+    }
+}
 
+async function changeMyLane(init) {
+    var selectBox = document.getElementById('lane-select');
+    var imgNode = document.getElementById('my-detail-lane');
+
+    if (!init) {
+        await requestPost(changeLaneUrl, {
+            'laneSelect': selectBox.value
+        });
+    }
+
+    setMainLane(imgNode, null, selectBox.value);
 }

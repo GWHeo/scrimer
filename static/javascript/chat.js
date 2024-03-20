@@ -83,21 +83,23 @@ function chatInputBtnControl() {
     }
 }
 
-function reprMessage(data) {
+function parseMessage(data) {
     chatBody.innerHTML += messageHtml;
+    var msgType = data.type;
+    var msgStatus = data.status;
+    var msgData = data.data;
     var userClass = '';
     var userType = '';
 
-    if (data.isSystem) {
+    if (msgType == 'system') {
         userClass = 'chat-user-system';
         userType = '(시스템)';
-    } else {
-        if (data.owner) {
-            console.
+    } else if (msgType == 'chat') {
+        if (msgData.owner) {
             userClass = 'chat-user-creator';
             userType = '(방장)';
         }
-        switch(data.role) {
+        switch(msgData.role) {
             case 'leader':
                 userClass = 'chat-user-leader';
                 userType = '(주장)';
@@ -109,32 +111,49 @@ function reprMessage(data) {
         }
     }
 
-    var messageContainers = document.getElementsByClassName('chat-message-wrapper');
+    var messageContainers = document.getElementsByClassName('chat-div');
     var container = messageContainers[messageContainers.length - 1];
-    if (data.userId == user) {
-        container.classList.add('my-chat');
+    if (msgType != 'system') {
+        container.classList.add('chat-message-wrapper')
+        if (msgData.userId == user) {
+            container.classList.add('my-chat');
+        }
     }
     var children = container.children;
     for (let i=0; i<children.length; i++){
         if (children[i].classList.contains('chat-user')) {
-            if (!data.isSystem) {
+            if (msgType != 'system') {
                 children[i].classList.add(userClass);
-                children[i].innerHTML = `${data.name}${userType}:`
+                children[i].innerHTML = `${msgData.name}${userType}:`
             }
         }
         if (children[i].classList.contains('chat-message')) {
-            if (data.isSystem) {
+            if (msgType == 'system') {
                 children[i].classList.add(userClass);
             }
-            children[i].innerHTML = data.context;
+            children[i].innerHTML = msgData.message;
         }
     }
     chatBody.scrollTo(0, chatBody.scrollHeight);
 }
 
 // websocket
-const socket = new WebSocket(chatWsUrl);
-socket.onmessage = function(event) {
+const chatSocket = new WebSocket(chatWsUrl);
+chatSocket.onmessage = function(event) {
     var data = JSON.parse(event.data);
-    reprMessage(data.message);
+    var message = data.message.message;
+    switch(message.status) {
+        case 'connect':
+            message.data['message'] = `${message.data.name}님이 입장했습니다.`;
+            parseMessage(message);
+            break;
+        case 'disconnect':
+            message.data['message'] = `${message.data.name}님이 퇴장했습니다.`;
+            parseMessage(message);
+            break;
+        case 'onchange':
+            if (message.type == 'chat') {
+                parseMessage(message);
+            }
+    }
 }

@@ -7,7 +7,7 @@
 <script>
     const roomId = '{{ room_id }}';
     const user = {{ channel_user.id }};
-    const chatWsUrl = '{{ chat_ws_url }}{{ room_id }}/';
+    const chatWsUrl = '{{ chat_ws_url }}{{ room_id }}/{{ channel_user.id }}/';
     const sendChatUrl = window.location.pathname + 'chat/send/';
     const changeLaneUrl = window.location.pathname + 'myprofile/change/lane/';
     const userDetailUrl = window.location.pathname + 'detail/';
@@ -16,6 +16,8 @@
     const champJsonUrl = '{{ champ_json_url }}';
     const champIconUrl = '{{ champ_icon_url }}';
     const gameVersion = '{{ game_version }}';
+
+    const participantCardEl = `{% include 'components/participant_card.html' %}`
 </script>
 <script type="text/javascript" src="{% static 'javascript/store_imgs.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/myProfile.js' %}"></script>

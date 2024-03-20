@@ -9,7 +9,7 @@ from .models import Room, ChannelUser
 from .forms import EnterRoom
 from .decorators import method_only, room_api
 from .external import request_get
-from wss.consumer import send_websocket_message
+from wss.consumer import send_websocket_message, set_ws_send_data
 import requests
 import json
 import uuid
@@ -144,16 +144,15 @@ def send_chat(request, room_id, user_id):
     data = json.loads(request.body.decode('utf-8'))
     message = data['message']
     user = ChannelUser.objects.get(id=user_id)
+    ws_data = set_ws_send_data('chat', 'onchange', {
+        'userId': user.pk,
+        'owner': user.owner,
+        'role': user.role,
+        'name': f"{user.game_name}#{user.tag}",
+        'message': message
+    })
     try:
-        send_websocket_message(
-            room_id=room_id,
-            is_system=False,
-            user_id=user.pk,
-            owner=user.owner,
-            role=user.role,
-            name=f"{user.game_name}#{user.tag}",
-            message=message
-        )
+        send_websocket_message(room_id, ws_data)
         return HttpResponse(status=200)
     except Exception as e:
         return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500)

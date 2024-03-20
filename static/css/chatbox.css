@@ -52,9 +52,12 @@
     overflow-y: auto;
 }
 
+.chat-div {
+    width: fit-content;
+}
+
 .chat-message-wrapper {
     max-width: 80%;
-    width: fit-content;
     background-color: #5F9490;
     border-color: #5F9490;
     border-radius: .5rem;

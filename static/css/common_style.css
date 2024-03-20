@@ -180,7 +180,7 @@ select {
     background-color: var(--participant-color);
 }
 
-.level-badge {
+.role-badge {
     border-radius: 10%;
     width: fit-content;
     padding: .1rem .2rem .1rem .2rem;

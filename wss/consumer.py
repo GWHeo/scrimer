@@ -1,8 +1,9 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from asgiref.sync import async_to_sync, sync_to_async
-from room.models import ChannelUser
+from room.models import ChannelUser, Room
 import redis
 import json
 from pprint import pprint
@@ -38,30 +39,43 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
-        user = await sync_to_async(ChannelUser.objects.get)(id=self.user_id)
-        await self.channel_layer.group_send(
-            self.room_name,
-            {
-                'type': 'ws.send',
-                'message': set_ws_send_data('system', 'connect', {
-                    'userId': self.user_id,
-                    'name': f"{user.game_name}#{user.tag}"
-                })
-            }
-        )
+        try:
+            user = await sync_to_async(ChannelUser.objects.get)(id=self.user_id)
+            await self.channel_layer.group_send(
+                self.room_name,
+                {
+                    'type': 'ws.send',
+                    'message': set_ws_send_data('system', 'connect', {
+                        'userId': self.user_id,
+                        'gameName': user.game_name,
+                        'tag': user.tag
+                    })
+                }
+            )
+        except ObjectDoesNotExist:
+            pass
         
     async def disconnect(self, code):
-        user = await sync_to_async(ChannelUser.objects.get)(id=self.user_id)
+        try:
+            user = await ChannelUser.objects.aget(id=self.user_id)
+        except ObjectDoesNotExist:
+            return
+        await sync_to_async(print)(user)
         await self.channel_layer.group_send(
             self.room_name,
             {
                 'type': 'ws.send',
                 'message': set_ws_send_data('system', 'disconnect', {
                     'userId': self.user_id,
-                    'name': f"{user.game_name}#{user.tag}"
+                    'owner': user.owner,
+                    'gameName': user.game_name,
+                    'tag': user.tag
                 })
             }
         )
+        if user.owner:
+            await Room.objects.filter(code=self.room_name).adelete()
+        await user.adelete()
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
         
     async def ws_send(self, event):
@@ -73,39 +87,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 def send_websocket_message(room_id, data):
     channel_layer = get_channel_layer()
-    '''
-    context = {
-        'type': 'chat.send',
-        'message': {
-            'isSystem': is_system,
-            'userId': user_id,
-            'owner': owner,
-            'role': role,
-            'name': name,
-            'context': message,
-        }
-    }
-    '''
     async_to_sync(channel_layer.group_send)(
         room_id,
         {
             'type': 'ws.send',
             'message': data
         }
-    )
-    
-
-def send_system_message(room_id, message):
-    channel_layer = get_channel_layer()
-    context = {
-        'type': 'system.send',
-        'message': {
-            'status': 'onchange',
-            'context': message
-        }
-    }
-    async_to_sync(channel_layer.group_send)(
-        room_id + '@system',
-        context
     )
     

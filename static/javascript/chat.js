@@ -137,6 +137,63 @@ function parseMessage(data) {
     chatBody.scrollTo(0, chatBody.scrollHeight);
 }
 
+function setParticipantCard(data) {
+    var html = `
+        <div class="col participant-card shadow m-2 p-1">
+            <div class="row m-2 align-items-center">
+                <div class="col-auto">
+                    <img class="participant-profile-icon rounded-circle" src="${profileIconUrl}/${data.profileIconId}.png">
+                </div>
+                <div class="col-auto">
+                    <div>
+                        <span>${data.gameName}</span><span class="text-darker fs-small">#${data.tag}</span>
+                    </div>
+                    <div class="d-inline-flex" id="card-user-badge-${data.userId}">
+                    </div>
+                </div>
+            </div>
+            <div class="row  m-2 justify-content-center align-items-center">
+                <div class="col">
+                    tier
+                </div>
+                <div class="col">
+                    most
+                </div>
+                <div class="col">
+                    lane
+                </div>
+            </div>
+        </div>
+    `;
+    return html;
+}
+
+const board = document.getElementById('participant-board');
+function newUser(data) {
+    var cardDiv = document.createElement("div");
+    cardDiv.classList.add('col');
+    cardDiv.id = `card-user-${data.userId}`;
+    cardDiv.innerHTML = setParticipantCard(data);
+    board.appendChild(cardDiv);
+
+    var badge = document.getElementById(`card-user-badge-${data.userId}`);
+    badge.innerHTML = '';
+    if (data.owner) {
+        badge.innerHTML += '<div>' + creatorBadgeEl + '</div>';
+    }
+    if (data.role == 'leader') {
+        badge.innerHTML += '<div>' + leaderBadgeEl + '</div>';
+    }
+    if (data.role == 'participant') {
+        badge.innerHTML += '<div>' + participantBadgeEl + '</div>';
+    }
+}
+
+function removeUser(data) {
+    var cardDiv = document.getElementById(`card-user-${data.userId}`);
+    cardDiv.remove();
+}
+
 // websocket
 const chatSocket = new WebSocket(chatWsUrl);
 chatSocket.onmessage = function(event) {
@@ -144,16 +201,21 @@ chatSocket.onmessage = function(event) {
     var message = data.message.message;
     switch(message.status) {
         case 'connect':
-            message.data['message'] = `${message.data.name}님이 입장했습니다.`;
+            message.data['message'] = `${message.data.gameName}#${message.data.tag}님이 입장했습니다.`;
             parseMessage(message);
             break;
         case 'disconnect':
-            message.data['message'] = `${message.data.name}님이 퇴장했습니다.`;
+            message.data['message'] = `${message.data.gameName}#${message.data.tag}님이 퇴장했습니다.`;
             parseMessage(message);
+            removeUser(message.data);
             break;
         case 'onchange':
             if (message.type == 'chat') {
                 parseMessage(message);
             }
+            break;
+        case 'newUser':
+            newUser(message.data);
+            break;
     }
 }

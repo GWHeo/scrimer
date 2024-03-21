@@ -9,6 +9,8 @@
     const user = {{ channel_user.id }};
     const chatWsUrl = '{{ chat_ws_url }}{{ room_id }}/{{ channel_user.id }}/';
     const sendChatUrl = window.location.pathname + 'chat/send/';
+    const sendNewUserUrl = window.location.pathname + 'system/send/new-user/';
+    const fetchOldUsersUrl = window.location.pathname + 'system/fetch/old-users/';
     const changeLaneUrl = window.location.pathname + 'myprofile/change/lane/';
     const userDetailUrl = window.location.pathname + 'detail/';
     const fileUrl = window.location.origin + '/file/';
@@ -18,6 +20,9 @@
     const gameVersion = '{{ game_version }}';
 
     const participantCardEl = `{% include 'components/participant_card.html' %}`
+    const creatorBadgeEl = `{% include 'components/creator_badge.html' %}`
+    const leaderBadgeEl = `{% include 'components/leader_badge.html' %}`
+    const participantBadgeEl = `{% include 'components/participant_badge.html' %}`
 </script>
 <script type="text/javascript" src="{% static 'javascript/store_imgs.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/myProfile.js' %}"></script>

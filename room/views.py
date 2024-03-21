@@ -114,7 +114,10 @@ def enter_room(request):
 
 
 def room_view(request, room_id, user_id):
-    user = ChannelUser.objects.get(id=user_id)
+    try:
+        user = ChannelUser.objects.get(id=user_id)
+    except ObjectDoesNotExist:
+        return redirect('common:index')
     path = request.build_absolute_uri().split('/')[:-2]
     invite_link = ''
     for p in path:
@@ -158,6 +161,51 @@ def send_chat(request, room_id, user_id):
         return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500)
         
         
+@method_only('POST')
+@room_api
+def send_new_user(request, room_id, user_id):
+    try:
+        user = ChannelUser.objects.get(id=user_id)
+    except ObjectDoesNotExist:
+        return HttpResponse(status=404)
+    ws_data = set_ws_send_data('system', 'newUser', {
+        'userId': user.pk,
+        'owner': user.owner,
+        'role': user.role,
+        'profileIconId': user.profile,
+        'gameName': user.game_name,
+        'tag': user.tag,
+        'rank': user.rank,
+        'lane': user.lane
+    })
+    try:
+        send_websocket_message(room_id, ws_data)
+    except Exception as e:
+        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500)
+    return HttpResponse(status=200)
+
+
+@method_only('GET')
+@room_api
+def fetch_old_users(request, room_id, user_id):
+    room = Room.objects.get(code=room_id)
+    old_users = ChannelUser.objects.filter(room=room).exclude(id=user_id)
+    user_list = []
+    for user in old_users:
+        user_list.append({
+            'userId': user.pk,
+            'owner': user.owner,
+            'role': user.role,
+            'profileIconId': user.profile,
+            'gameName': user.game_name,
+            'tag': user.tag,
+            'rank': user.rank,
+            'lane': user.lane
+        })
+    data = json.dumps(user_list, ensure_ascii=False, cls=DjangoJSONEncoder)
+    return HttpResponse(data, status=200)
+
+
 @method_only('GET')
 @room_api
 def fetch_user_detail(request, room_id, user_id):

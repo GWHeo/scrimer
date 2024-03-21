@@ -21,8 +21,28 @@ copyBtn.addEventListener('click', async function() {
     copyBtn.innerHTML = `<i class="bi bi-copy"></i>`;
 });
 
+async function sendNewUser() {
+    var response = await requestPost(sendNewUserUrl)
+    switch(response.status) {
+        case 200:
+            break;
+    }
+}
+
+async function setOldUsers() {
+    var response = await requestGet(fetchOldUsersUrl);
+    var dataList = await response.json();
+    dataList.forEach((data) => {
+        newUser(data);
+    })
+}
+
 (async () => {
     var detailResponse = await requestGet(userDetailUrl);
+    if (detailResponse.status == 404) {
+        alert('사용자를 찾을 수 없습니다. 다시 참여해 주세요.');
+        window.location.href = '/';
+    }
     var detail = await detailResponse.json();
     //var detail = JSON.parse(detailJson);
     var profileIconSrc = profileIconUrl + `/${detail.profileIconId}.png`;
@@ -55,6 +75,10 @@ copyBtn.addEventListener('click', async function() {
 
     // lane
     changeMyLane(true);
+
+    // set participant card
+    await setOldUsers();
+    await sendNewUser();
 
 })();
 

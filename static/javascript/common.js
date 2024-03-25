@@ -80,7 +80,9 @@ async function setChampIcon(imgNode, textNode, champData, champId) {
     for (let i=0; i<champData.length; i++){
         if (champData[i].value.key == champId) {
             imgNode.src = champIconUrl + `/${champData[i].name}.png`;
-            textNode.innerHTML = champData[i].value.name;
+            if (textNode != null){
+                textNode.innerHTML = champData[i].value.name;
+            }
             break;
         }
     }

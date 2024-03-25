@@ -6,14 +6,13 @@ from asgiref.sync import async_to_sync, sync_to_async
 from room.models import ChannelUser, Room
 import redis
 import json
-from pprint import pprint
 
 
-def set_ws_send_data(type, status, data):
+def set_ws_send_data(message_type, status, data):
     return {
         'type': 'ws.send',
         'message': {
-            'type': type,
+            'type': message_type,
             'status': status,
             'data': data
         }
@@ -60,7 +59,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             user = await ChannelUser.objects.aget(id=self.user_id)
         except ObjectDoesNotExist:
             return
-        await sync_to_async(print)(user)
         await self.channel_layer.group_send(
             self.room_name,
             {

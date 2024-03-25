@@ -154,18 +154,33 @@ function setParticipantCard(data) {
             </div>
             <div class="row  m-2 justify-content-center align-items-center">
                 <div class="col">
-                    tier
+                    <div>
+                        <img class="participant-detail-icon" id="card-user-tier-${data.userId}" src="">
+                    </div>
                 </div>
                 <div class="col">
-                    most
+                    <div>
+                        <img class="participant-detail-icon" id="card-user-most-${data.userId}" src="">
+                    </div>
                 </div>
                 <div class="col">
-                    lane
+                    <div>
+                        <img class="participant-detail-icon" id="card-user-lane-${data.userId}" src="">
+                    </div>
                 </div>
             </div>
         </div>
     `;
     return html;
+}
+
+function changeCardDetail(data) {
+    var tierImg = document.getElementById(`card-user-tier-${data.userId}`);
+    setRankIcon(tierImg, null, data.rank);
+    var mostImg = document.getElementById(`card-user-most-${data.userId}`);
+    setChampIcon(mostImg, null, champions, data.most);
+    var laneImg = document.getElementById(`card-user-lane-${data.userId}`);
+    setMainLane(laneImg, null, data.lane);
 }
 
 const board = document.getElementById('participant-board');
@@ -187,6 +202,7 @@ function newUser(data) {
     if (data.role == 'participant') {
         badge.innerHTML += '<div>' + participantBadgeEl + '</div>';
     }
+    changeCardDetail(data);
 }
 
 function removeUser(data) {
@@ -212,6 +228,9 @@ chatSocket.onmessage = function(event) {
         case 'onchange':
             if (message.type == 'chat') {
                 parseMessage(message);
+            }
+            if (message.type == 'system') {
+                changeCardDetail(message.data)
             }
             break;
         case 'newUser':

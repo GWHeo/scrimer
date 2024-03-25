@@ -4,6 +4,7 @@ from django.db import models
 class Room(models.Model, models.Manager):
     create_date = models.DateTimeField(auto_now_add=True)
     code = models.UUIDField(unique=True)
+    max_participants = models.IntegerField(default=10)
     
     class Meta:
         db_table = 'rooms'

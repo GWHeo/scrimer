@@ -163,14 +163,18 @@ select {
     max-width: 3rem;
     max-height: 3rem;
 }
-.participant-profile-icon {
-    max-width: 3rem;
-    max-height: 3rem;
-}
 .participant-card {
     border: 1px solid rgba(var(--default-font-color-rgb), 0.5);
     border-radius: 1rem;
     background-color: var(--default-bg-color);
+}
+.participant-profile-icon {
+    max-width: 3rem;
+    max-height: 3rem;
+}
+.participant-detail-icon {
+    max-width:1.5rem;
+    max-height: 1.5rem;
 }
 .bg-system {
     background-color: var(--system-color);

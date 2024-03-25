@@ -9,6 +9,7 @@ from .models import Room, ChannelUser
 from .forms import EnterRoom
 from .decorators import method_only, room_api
 from .external import request_get
+from .shortcuts import send_change_ws_message
 from wss.consumer import send_websocket_message, set_ws_send_data
 import requests
 import json
@@ -158,7 +159,7 @@ def send_chat(request, room_id, user_id):
         send_websocket_message(room_id, ws_data)
         return HttpResponse(status=200)
     except Exception as e:
-        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500)
+        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
         
         
 @method_only('POST')
@@ -168,20 +169,10 @@ def send_new_user(request, room_id, user_id):
         user = ChannelUser.objects.get(id=user_id)
     except ObjectDoesNotExist:
         return HttpResponse(status=404)
-    ws_data = set_ws_send_data('system', 'newUser', {
-        'userId': user.pk,
-        'owner': user.owner,
-        'role': user.role,
-        'profileIconId': user.profile,
-        'gameName': user.game_name,
-        'tag': user.tag,
-        'rank': user.rank,
-        'lane': user.lane
-    })
     try:
-        send_websocket_message(room_id, ws_data)
+        send_change_ws_message(room_id, user, sender='system', message_type='newUser')
     except Exception as e:
-        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500)
+        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
     return HttpResponse(status=200)
 
 
@@ -200,6 +191,7 @@ def fetch_old_users(request, room_id, user_id):
             'gameName': user.game_name,
             'tag': user.tag,
             'rank': user.rank,
+            'most': user.most,
             'lane': user.lane
         })
     data = json.dumps(user_list, ensure_ascii=False, cls=DjangoJSONEncoder)
@@ -265,5 +257,10 @@ def change_lane(request, room_id, user_id):
     lane_values = [val[0] for val in ChannelUser.LANE_CHOICES]
     if data['laneSelect'] not in lane_values:
         return HttpResponse(status=403)
-    ChannelUser.objects.filter(id=user_id).update(lane=data['laneSelect'])
+    user = ChannelUser.objects.filter(id=user_id)
+    user.update(lane=data['laneSelect'])
+    try:
+        send_change_ws_message(room_id, user.first())
+    except Exception as e:
+        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
     return HttpResponse(status=200)

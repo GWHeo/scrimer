@@ -142,6 +142,7 @@ def room_view(request, room_id, user_id):
     return render(request, 'room/main.html', data)
 
 
+'''
 @method_only('POST')
 @room_api
 def send_chat(request, room_id, user_id):
@@ -160,8 +161,8 @@ def send_chat(request, room_id, user_id):
         return HttpResponse(status=200)
     except Exception as e:
         return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
-        
-        
+
+
 @method_only('POST')
 @room_api
 def send_new_user(request, room_id, user_id):
@@ -174,6 +175,7 @@ def send_new_user(request, room_id, user_id):
     except Exception as e:
         return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
     return HttpResponse(status=200)
+'''
 
 
 @method_only('GET')
@@ -266,6 +268,7 @@ def change_lane(request, room_id, user_id):
     return HttpResponse(status=200)
 
 
+'''
 @method_only('POST')
 @room_api
 def change_role(request, room_id, user_id):
@@ -279,3 +282,4 @@ def change_role(request, room_id, user_id):
     except Exception as e:
         return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
     return HttpResponse(status=200)
+'''

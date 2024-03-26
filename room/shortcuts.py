@@ -15,3 +15,4 @@ def send_change_ws_message(room_id, user, sender='system', message_type='onchang
 	})
 	send_websocket_message(room_id, ws_data)
 	
+	

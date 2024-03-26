@@ -46,6 +46,14 @@ async function requestGet(url) {
     return await response
 }
 
+async function wsSend(type, message) {
+    var context = JSON.stringify({
+        'type': type,
+        'message': message
+    });
+    chatSocket.send(message);
+}
+
 function changeRole(userRole) {
     var roleSpan = document.querySelectorAll('.user-role');
     role = userRole;
@@ -144,7 +152,11 @@ async function changeMyLane(init) {
     var imgNode = document.getElementById('my-detail-lane');
 
     if (!init) {
+        /*
         await requestPost(changeLaneUrl, {
+            'laneSelect': selectBox.value
+        });*/
+        await wsSend('changeLane', {
             'laneSelect': selectBox.value
         });
     }

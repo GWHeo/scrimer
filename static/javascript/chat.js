@@ -63,14 +63,14 @@ chatInput.addEventListener('keyup', function(e) {
 
 // chat message
 async function sendMessage() {
-    text = chatInput.value;
-    response = await requestPost(sendChatUrl, {
+    var text = chatInput.value;
+    /*
+    var context = JSON.stringify({
+        'type': 'chat',
         'message': text
-    })
-    switch(response.status) {
-        case 200:
-            break;
-    }
+    });*/
+    await wsSend('chat', text)
+    chatSocket.send(context);
     chatInput.value = '';
     sendBtn.disabled = true;
 }
@@ -185,6 +185,7 @@ async function changeRole(userId) {
     if (checkbox.checked) {
         role = 'leader';
     }
+    /*
     var response = await requestPost(changeRoleUrl, {
         'userId': userId,
         'role': role
@@ -192,7 +193,21 @@ async function changeRole(userId) {
     switch(response.status) {
         case 200:
             break;
-    }
+    }*/
+    /*
+    var context = JSON.stringify({
+        'type': 'changeRole',
+        'message': {
+            'userId': userId,
+            'role': role
+        }
+    })
+    chatSocket.send(context)
+    */
+    await wsSend('changeRole', {
+        'userId': userId,
+        'role': role
+    });
 
     var checkboxes = document.getElementsByName('card-tool-set-leader');
     var counter = 0;
@@ -284,7 +299,7 @@ function removeUser(data) {
 const chatSocket = new WebSocket(chatWsUrl);
 chatSocket.onmessage = function(event) {
     var data = JSON.parse(event.data);
-    var message = data.message.message;
+    var message = data.message;
     switch(message.status) {
         case 'connect':
             message.data['message'] = `${message.data.gameName}#${message.data.tag}님이 입장했습니다.`;

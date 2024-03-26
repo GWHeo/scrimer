@@ -40,17 +40,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
         try:
             user = await sync_to_async(ChannelUser.objects.get)(id=self.user_id)
-            await self.channel_layer.group_send(
-                self.room_name,
-                {
-                    'type': 'ws.send',
-                    'message': set_ws_send_data('system', 'connect', {
-                        'userId': self.user_id,
-                        'gameName': user.game_name,
-                        'tag': user.tag
-                    })
-                }
-            )
+            ws_data = self.set_ws_data('system', 'connect', {
+                'userId': self.user_id,
+                'gameName': user.game_name,
+                'tag': user.tag
+            })
+            await self.send_to_group(ws_data)
         except ObjectDoesNotExist:
             pass
         
@@ -59,25 +54,40 @@ class ChatConsumer(AsyncWebsocketConsumer):
             user = await ChannelUser.objects.aget(id=self.user_id)
         except ObjectDoesNotExist:
             return
-        await self.channel_layer.group_send(
-            self.room_name,
-            {
-                'type': 'ws.send',
-                'message': set_ws_send_data('system', 'disconnect', {
-                    'userId': self.user_id,
-                    'owner': user.owner,
-                    'gameName': user.game_name,
-                    'tag': user.tag
-                })
-            }
-        )
+        ws_data = self.set_ws_data('system', 'disconnect', {
+            'userId': self.user_id,
+            'owner': user.owner,
+            'gameName': user.game_name,
+            'tag': user.tag
+        })
+        await self.send_to_group(ws_data)
         if user.owner:
             await Room.objects.filter(code=self.room_name).adelete()
         await user.adelete()
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
         
     async def receive(self, text_data=None, bytes_data=None):
-        print(text_data)
+        data = json.loads(text_data)
+        user = await ChannelUser.objects.aget(id=self.user_id)
+        if data['type'] == 'chat':
+            ws_data = set_ws_send_data('chat', 'onchange', {
+                'userId': user.pk,
+                'owner': user.owner,
+                'role': user.role,
+                'name': f"{user.game_name}#{user.tag}",
+                'message': data['message']
+            })
+        elif data['type'] == 'newUser':
+            ws_data = self.set_change_ws_message(user, message_type='newUser')
+        elif data['type'] == 'changeRole':
+            role_value = data['message']['role']
+            change_user = await ChannelUser.objects.aget(id=data['message']['userId'])
+            change_user.role = role_value
+            await change_user.asave()
+            ws_data = self.set_change_ws_message(change_user, message_type='changeRole')
+        else:
+            ws_data = None
+        await self.send_to_group(ws_data)
         
     async def ws_send(self, event):
         message = event['message']
@@ -85,6 +95,33 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'message': message
         }, default=str))
         
+    async def send_to_group(self, data):
+        await self.channel_layer.group_send(self.room_name, data)
+
+    @staticmethod
+    def set_ws_data(message_type, status, data):
+        return {
+            'type': 'ws.send',
+            'message': {
+                'type': message_type,
+                'status': status,
+                'data': data
+            }
+        }
+
+    def set_change_ws_message(self, user, sender='system', message_type='onchange'):
+        return self.set_ws_data(sender, message_type, {
+            'userId': user.pk,
+            'owner': user.owner,
+            'role': user.role,
+            'profileIconId': user.profile,
+            'gameName': user.game_name,
+            'tag': user.tag,
+            'rank': user.rank,
+            'most': user.most,
+            'lane': user.lane
+        })
+
 
 def send_websocket_message(room_id, data):
     channel_layer = get_channel_layer()

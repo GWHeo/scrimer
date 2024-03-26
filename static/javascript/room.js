@@ -22,11 +22,7 @@ copyBtn.addEventListener('click', async function() {
 });
 
 async function sendNewUser() {
-    var response = await requestPost(sendNewUserUrl)
-    switch(response.status) {
-        case 200:
-            break;
-    }
+    await wsSend('newUser', null)
 }
 
 async function setOldUsers() {

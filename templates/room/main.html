@@ -11,11 +11,8 @@
     var myRole = '{{ channel_user.role }}';
 
     const chatWsUrl = '{{ chat_ws_url }}{{ room_id }}/{{ channel_user.id }}/';
-    const sendChatUrl = window.location.pathname + 'chat/send/';
-    const sendNewUserUrl = window.location.pathname + 'system/send/new-user/';
     const fetchOldUsersUrl = window.location.pathname + 'system/fetch/old-users/';
     const changeLaneUrl = window.location.pathname + 'myprofile/change/lane/';
-    const changeRoleUrl = window.location.pathname + 'manager/change/role/';
     const userDetailUrl = window.location.pathname + 'detail/';
     const fileUrl = window.location.origin + '/file/';
     const profileIconUrl = '{{ profile_icon_url }}';

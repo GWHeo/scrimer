@@ -15,15 +15,13 @@
                         {% include 'components/creator_badge.html' %}
                     </div>
                     {% endif %}
-                    {% if channel_user.role == 'leader' %}
-                    <div>
+                    <div class="user-role-{{ channel_user.pk }}">
+                        {% if channel_user.role == 'leader' %}
                         {% include 'components/leader_badge.html' %}
-                    </div>
-                    {% elif channel_user.role == 'participant' %}
-                    <div>
+                        {% elif channel_user.role == 'participant' %}
                         {% include 'components/participant_badge.html' %}
+                        {% endif %}
                     </div>
-                    {% endif %}
                 </div>
             </div>
         </div>

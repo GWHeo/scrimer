@@ -139,39 +139,105 @@ function parseMessage(data) {
 
 function setParticipantCard(data) {
     var html = `
-        <div class="col participant-card shadow m-2 p-1">
-            <div class="row m-2 align-items-center">
-                <div class="col-auto">
-                    <img class="participant-profile-icon rounded-circle" src="${profileIconUrl}/${data.profileIconId}.png">
+        <div class="row m-2 align-items-center" id="profile-card-header-${data.userId}">
+            <div class="col-auto">
+                <img class="participant-profile-icon rounded-circle" src="${profileIconUrl}/${data.profileIconId}.png">
+            </div>
+            <div class="col-auto">
+                <div>
+                    <span>${data.gameName}</span><span class="text-darker fs-small">#${data.tag}</span>
                 </div>
-                <div class="col-auto">
-                    <div>
-                        <span>${data.gameName}</span><span class="text-darker fs-small">#${data.tag}</span>
-                    </div>
-                    <div class="d-inline-flex" id="card-user-badge-${data.userId}">
-                    </div>
+                <div class="d-inline-flex" id="card-user-badge-${data.userId}">
                 </div>
             </div>
-            <div class="row  m-2 justify-content-center align-items-center">
-                <div class="col">
-                    <div>
-                        <img class="participant-detail-icon" id="card-user-tier-${data.userId}" src="">
-                    </div>
-                </div>
-                <div class="col">
-                    <div>
-                        <img class="participant-detail-icon" id="card-user-most-${data.userId}" src="">
-                    </div>
-                </div>
-                <div class="col">
-                    <div>
-                        <img class="participant-detail-icon" id="card-user-lane-${data.userId}" src="">
-                    </div>
-                </div>
+        </div>
+        <div class="row m-2 justify-content-center align-items-center">
+            <div class="col">
+                <img class="participant-detail-icon" id="card-user-tier-${data.userId}" src="">
+            </div>
+            <div class="col">
+                <img class="participant-detail-icon" id="card-user-most-${data.userId}" src="">
+            </div>
+            <div class="col">
+                <img class="participant-detail-icon" id="card-user-lane-${data.userId}" src="">
             </div>
         </div>
     `;
     return html;
+}
+
+function setCreatorTool(data) {
+    var html = `
+        <div class="col-auto form-check">
+            <input class="from-check-input" type="checkbox" value="" name="card-tool-set-leader" id="card-tool-set-leader-${data.userId}" onclick="changeRole(${data.userId})">
+            <label class="form-check-label" for="card-tool-set-leader-${data.userId}">
+                주장
+            </label>
+        </div>
+    `;
+    return html;
+}
+
+async function changeRole(userId) {
+    var checkbox = document.getElementById(`card-tool-set-leader-${userId}`);
+    var role = 'participant';
+
+    if (checkbox.checked) {
+        role = 'leader';
+    }
+    var response = await requestPost(changeRoleUrl, {
+        'userId': userId,
+        'role': role
+    });
+    switch(response.status) {
+        case 200:
+            break;
+    }
+
+    var checkboxes = document.getElementsByName('card-tool-set-leader');
+    var counter = 0;
+    var isFull = false;
+    for (let i=0; i<checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            counter += 1;
+        }
+        if (counter >= 2) {
+            isFull = true;
+        }
+    }
+    if (isFull) {
+        for (let i=0; i<checkboxes.length; i++) {
+            if (!checkboxes[i].checked) {
+                checkboxes[i].disabled = true;
+            }
+        }
+    } else {
+        for (let i=0; i<checkboxes.length; i++) {
+            if (!checkboxes[i].checked) {
+                checkboxes[i].disabled = false;
+            }
+        }
+    }
+}
+
+function changeCardBorder(data) {
+    var card = document.getElementById(`card-user-${data.userId}`);
+    if (data.role == 'leader') {
+        card.classList.add('participant-card-leader');
+    } else {
+        card.classList.remove('participant-card-leader');
+    }
+}
+
+function changeRoleBadge(data) {
+    var roleBadgeDiv = document.getElementsByClassName(`user-role-${data.userId}`);
+    var badgeEl = participantBadgeEl;
+    if (data.role == 'leader') {
+        badgeEl = leaderBadgeEl;
+    }
+    for (let i=0; i<roleBadgeDiv.length; i++) {
+        roleBadgeDiv[i].innerHTML = badgeEl;
+    }
 }
 
 function changeCardDetail(data) {
@@ -186,7 +252,7 @@ function changeCardDetail(data) {
 const board = document.getElementById('participant-board');
 function newUser(data) {
     var cardDiv = document.createElement("div");
-    cardDiv.classList.add('col');
+    cardDiv.classList.add('participant-card', 'shadow', 'm-2', 'p-1', 'fs-small');
     cardDiv.id = `card-user-${data.userId}`;
     cardDiv.innerHTML = setParticipantCard(data);
     board.appendChild(cardDiv);
@@ -197,10 +263,14 @@ function newUser(data) {
         badge.innerHTML += '<div>' + creatorBadgeEl + '</div>';
     }
     if (data.role == 'leader') {
-        badge.innerHTML += '<div>' + leaderBadgeEl + '</div>';
+        badge.innerHTML += `<div class="user-role-${data.userId}">` + leaderBadgeEl + '</div>';
     }
     if (data.role == 'participant') {
-        badge.innerHTML += '<div>' + participantBadgeEl + '</div>';
+        badge.innerHTML += `<div class="user-role-${data.userId}">` + participantBadgeEl + '</div>';
+    }
+    if (isCreator) {
+        var cardHeader = document.getElementById(`profile-card-header-${data.userId}`);
+        cardHeader.innerHTML += setCreatorTool(data);
     }
     changeCardDetail(data);
 }
@@ -224,6 +294,11 @@ chatSocket.onmessage = function(event) {
             message.data['message'] = `${message.data.gameName}#${message.data.tag}님이 퇴장했습니다.`;
             parseMessage(message);
             removeUser(message.data);
+            if (message.data['owner']) {
+                chatSocket.close();
+                alert('방장이 방을 나가 채널이 종료되었습니다.');
+                window.location.href = '/';
+            }
             break;
         case 'onchange':
             if (message.type == 'chat') {
@@ -235,6 +310,25 @@ chatSocket.onmessage = function(event) {
             break;
         case 'newUser':
             newUser(message.data);
+            break;
+        case 'changeRole':
+            switch(message.data.role) {
+                case 'leader':
+                    message.data['message'] = `${message.data.gameName}#${message.data.tag}님이 주장으로 선정되었습니다.`;
+                    if (message.data.userId == user) {
+                        myRole = 'leader';
+                    }
+                    break;
+                case 'participant':
+                    message.data['message'] = `${message.data.gameName}#${message.data.tag}님이 주장에서 제외되었습니다.`;
+                    if (message.data.userId == user) {
+                        myRole = 'participant';
+                    }
+                    break;
+            }
+            changeCardBorder(message.data);
+            changeRoleBadge(message.data);
+            parseMessage(message);
             break;
     }
 }

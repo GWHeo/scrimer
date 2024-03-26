@@ -264,3 +264,18 @@ def change_lane(request, room_id, user_id):
     except Exception as e:
         return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
     return HttpResponse(status=200)
+
+
+@method_only('POST')
+@room_api
+def change_role(request, room_id, user_id):
+    data = json.loads(request.body.decode('utf-8'))
+    role_value = data['role']
+    user = ChannelUser.objects.get(id=data['userId'])
+    user.role = role_value
+    user.save()
+    try:
+        send_change_ws_message(room_id, user, message_type='changeRole')
+    except Exception as e:
+        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
+    return HttpResponse(status=200)

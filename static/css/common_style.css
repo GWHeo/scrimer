@@ -164,9 +164,13 @@ select {
     max-height: 3rem;
 }
 .participant-card {
+    width: 20%;
     border: 1px solid rgba(var(--default-font-color-rgb), 0.5);
     border-radius: 1rem;
     background-color: var(--default-bg-color);
+}
+.participant-card.participant-card-leader {
+    border: 1px solid var(--leader-color);
 }
 .participant-profile-icon {
     max-width: 3rem;
@@ -215,6 +219,9 @@ select {
     .my-profile-icon {
         max-width: 4rem;
         max-height: 4rem;
+    }
+    .participant-card {
+        width: 100%;
     }
     .participant-profile-icon {
         max-width: 2rem;

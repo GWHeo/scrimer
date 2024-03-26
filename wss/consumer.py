@@ -76,6 +76,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await user.adelete()
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
         
+    async def receive(self, text_data=None, bytes_data=None):
+        print(text_data)
+        
     async def ws_send(self, event):
         message = event['message']
         await self.send(text_data=json.dumps({

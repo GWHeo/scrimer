@@ -64,11 +64,6 @@ chatInput.addEventListener('keyup', function(e) {
 // chat message
 async function sendMessage() {
     var text = chatInput.value;
-    /*
-    var context = JSON.stringify({
-        'type': 'chat',
-        'message': text
-    });*/
     await wsSend('chat', text)
     chatSocket.send(context);
     chatInput.value = '';
@@ -266,6 +261,9 @@ function changeCardDetail(data) {
 
 const board = document.getElementById('participant-board');
 function newUser(data) {
+    if (document.getElementById(`card-user-${data.userId}`) != null) {
+        return
+    }
     var cardDiv = document.createElement("div");
     cardDiv.classList.add('participant-card', 'shadow', 'm-2', 'p-1', 'fs-small');
     cardDiv.id = `card-user-${data.userId}`;
@@ -296,8 +294,19 @@ function removeUser(data) {
 }
 
 // websocket
-const chatSocket = new WebSocket(chatWsUrl);
-chatSocket.onmessage = function(event) {
+var chatSocket;
+var reconnectionAttempts = 0;
+const maxReconnectionAttempts = 1800;
+const reconnectionTimeInterval = 2000;
+
+function startWebSocket() {
+    chatSocket = new WebSocket(chatWsUrl);
+    chatSocket.onmessage = handleWebSocketMessage;
+    chatSocket.onclose = handleWebSocketClosure;
+    reconnectionAttempts = 0;
+}
+
+function handleWebSocketMessage(event) {
     var data = JSON.parse(event.data);
     var message = data.message;
     switch(message.status) {
@@ -310,8 +319,10 @@ chatSocket.onmessage = function(event) {
             parseMessage(message);
             removeUser(message.data);
             if (message.data['owner']) {
-                chatSocket.close();
-                alert('방장이 방을 나가 채널이 종료되었습니다.');
+                chatSocket.close(1000);
+                if (!isCreator){
+                    alert('방장이 방을 나가 채널이 종료되었습니다.');
+                }
                 window.location.href = '/';
             }
             break;
@@ -347,3 +358,19 @@ chatSocket.onmessage = function(event) {
             break;
     }
 }
+
+function handleWebSocketClosure(event) {
+    var code = event.code;
+    // Abnormal closure
+    if (!event.wasClean) {
+        setTimeout(startWebSocket(), reconnectionTimeInterval);
+        reconnectionAttempts += 1;
+        if (reconnectionAttempts > maxReconnectionAttempts) {
+            return
+        }
+    } else {
+        console.log('normal closed')
+    }
+}
+
+startWebSocket();

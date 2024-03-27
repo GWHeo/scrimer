@@ -142,42 +142,6 @@ def room_view(request, room_id, user_id):
     return render(request, 'room/main.html', data)
 
 
-'''
-@method_only('POST')
-@room_api
-def send_chat(request, room_id, user_id):
-    data = json.loads(request.body.decode('utf-8'))
-    message = data['message']
-    user = ChannelUser.objects.get(id=user_id)
-    ws_data = set_ws_send_data('chat', 'onchange', {
-        'userId': user.pk,
-        'owner': user.owner,
-        'role': user.role,
-        'name': f"{user.game_name}#{user.tag}",
-        'message': message
-    })
-    try:
-        send_websocket_message(room_id, ws_data)
-        return HttpResponse(status=200)
-    except Exception as e:
-        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
-
-
-@method_only('POST')
-@room_api
-def send_new_user(request, room_id, user_id):
-    try:
-        user = ChannelUser.objects.get(id=user_id)
-    except ObjectDoesNotExist:
-        return HttpResponse(status=404)
-    try:
-        send_change_ws_message(room_id, user, sender='system', message_type='newUser')
-    except Exception as e:
-        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
-    return HttpResponse(status=200)
-'''
-
-
 @method_only('GET')
 @room_api
 def fetch_old_users(request, room_id, user_id):
@@ -250,36 +214,3 @@ def fetch_user_detail(request, room_id, user_id):
     
     json_data = json.dumps(data, ensure_ascii=False, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, status=200)
-
-
-@method_only('POST')
-@room_api
-def change_lane(request, room_id, user_id):
-    data = json.loads(request.body.decode('utf-8'))
-    lane_values = [val[0] for val in ChannelUser.LANE_CHOICES]
-    if data['laneSelect'] not in lane_values:
-        return HttpResponse(status=403)
-    user = ChannelUser.objects.filter(id=user_id)
-    user.update(lane=data['laneSelect'])
-    try:
-        send_change_ws_message(room_id, user.first())
-    except Exception as e:
-        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
-    return HttpResponse(status=200)
-
-
-'''
-@method_only('POST')
-@room_api
-def change_role(request, room_id, user_id):
-    data = json.loads(request.body.decode('utf-8'))
-    role_value = data['role']
-    user = ChannelUser.objects.get(id=data['userId'])
-    user.role = role_value
-    user.save()
-    try:
-        send_change_ws_message(room_id, user, message_type='changeRole')
-    except Exception as e:
-        return JsonResponse(json.dumps({'status': 'failed', 'message': str(e)}), status=500, safe=False)
-    return HttpResponse(status=200)
-'''

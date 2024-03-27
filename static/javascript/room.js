@@ -33,6 +33,13 @@ async function setOldUsers() {
     })
 }
 
+async function leaveChannel() {
+    if (confirm('채널에서 퇴장하시겠습니까? 방장인 경우 방이 삭제됩니다.')) {
+        chatSocket.close(1000);
+        window.location.href = '/';
+    }
+}
+
 (async () => {
     var detailResponse = await requestGet(userDetailUrl);
     if (detailResponse.status == 404) {
@@ -77,5 +84,3 @@ async function setOldUsers() {
     await sendNewUser();
 
 })();
-
-

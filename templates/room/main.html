@@ -12,7 +12,6 @@
 
     const chatWsUrl = '{{ chat_ws_url }}{{ room_id }}/{{ channel_user.id }}/';
     const fetchOldUsersUrl = window.location.pathname + 'system/fetch/old-users/';
-    const changeLaneUrl = window.location.pathname + 'myprofile/change/lane/';
     const userDetailUrl = window.location.pathname + 'detail/';
     const fileUrl = window.location.origin + '/file/';
     const profileIconUrl = '{{ profile_icon_url }}';
@@ -32,6 +31,10 @@
 {% include 'room/invite_link.html' %}
 {% include 'room/my_profile.html' %}
 {% include 'room/participant_board.html' %}
+
+<div class="m-2 text-center">
+    <button class="btn btn-danger" onclick="leaveChannel()">나가기</button>
+</div>
 
 {% include 'components/chat.html' %}
 

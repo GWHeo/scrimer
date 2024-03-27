@@ -32,7 +32,6 @@ class ChannelUser(models.Model, models.Manager):
     owner = models.BooleanField()
     role = models.CharField(max_length=12, choices=ROLE_CHOICES, default='participant')
     profile = models.IntegerField(null=True, default=None)
-    #rank = models.TextField(default=None, null=True)
     rank = models.JSONField(null=True, default=None)
     most = models.IntegerField(null=True, default=None)
     lane = models.CharField(max_length=7, choices=LANE_CHOICES, default='any')

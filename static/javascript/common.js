@@ -51,7 +51,7 @@ async function wsSend(type, message) {
         'type': type,
         'message': message
     });
-    chatSocket.send(message);
+    chatSocket.send(context);
 }
 
 function changeRole(userRole) {
@@ -152,10 +152,6 @@ async function changeMyLane(init) {
     var imgNode = document.getElementById('my-detail-lane');
 
     if (!init) {
-        /*
-        await requestPost(changeLaneUrl, {
-            'laneSelect': selectBox.value
-        });*/
         await wsSend('changeLane', {
             'laneSelect': selectBox.value
         });

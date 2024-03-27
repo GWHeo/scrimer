@@ -1,4 +1,4 @@
-from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from channels.layers import get_channel_layer
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -48,8 +48,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.send_to_group(ws_data)
         except ObjectDoesNotExist:
             pass
-        
+            
     async def disconnect(self, code):
+        # Normal Closure(1000) or Going away(1001)
+        if code in [1000, 1001]:
+            user = await ChannelUser.objects.aget(id=self.user_id)
+            ws_data = self.set_ws_data('system', 'disconnect', {
+                'userId': self.user_id,
+                'owner': user.owner,
+                'gameName': user.game_name,
+                'tag': user.tag
+            })
+            if user.owner:
+                await Room.objects.filter(code=self.room_name).adelete()
+            await user.adelete()
+            await self.send_to_group(ws_data)
+            await self.channel_layer.group_discard(self.room_name, self.channel_name)
+        else:
+            print(code)
+        '''
         try:
             user = await ChannelUser.objects.aget(id=self.user_id)
         except ObjectDoesNotExist:
@@ -65,6 +82,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await Room.objects.filter(code=self.room_name).adelete()
         await user.adelete()
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
+        '''
         
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
@@ -85,6 +103,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             change_user.role = role_value
             await change_user.asave()
             ws_data = self.set_change_ws_message(change_user, message_type='changeRole')
+        elif data['type'] == 'changeLane':
+            user.lane = data['message']['laneSelect']
+            await user.asave()
+            ws_data = self.set_change_ws_message(user, message_type='onchange')
         else:
             ws_data = None
         await self.send_to_group(ws_data)

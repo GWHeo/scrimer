@@ -84,7 +84,7 @@ function toList(obj) {
     }))
 }
 
-async function setChampIcon(imgNode, textNode, champData, champId) {
+function setChampIcon(imgNode, textNode, champData, champId) {
     for (let i=0; i<champData.length; i++){
         if (champData[i].value.key == champId) {
             imgNode.src = champIconUrl + `/${champData[i].name}.png`;
@@ -96,7 +96,7 @@ async function setChampIcon(imgNode, textNode, champData, champId) {
     }
 }
 
-async function setRankIcon(imgNode, textNode, data) {
+function setRankIcon(imgNode, textNode, data) {
     var rank = '';
     if (data.length == 0) {
         if (textNode != null) {
@@ -157,5 +157,5 @@ async function changeMyLane(init) {
         });
     }
 
-    setMainLane(imgNode, null, selectBox.value);
+    await setMainLane(imgNode, null, selectBox.value);
 }

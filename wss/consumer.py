@@ -52,7 +52,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, code):
         # Normal Closure(1000) or Going away(1001)
         if code in [1000, 1001]:
-            user = await ChannelUser.objects.aget(id=self.user_id)
+            try:
+                user = await ChannelUser.objects.aget(id=self.user_id)
+            except ObjectDoesNotExist:
+                return
             ws_data = self.set_ws_data('system', 'disconnect', {
                 'userId': self.user_id,
                 'owner': user.owner,
@@ -66,27 +69,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_discard(self.room_name, self.channel_name)
         else:
             print(code)
-        '''
+        
+    async def receive(self, text_data=None, bytes_data=None):
+        data = json.loads(text_data)
         try:
             user = await ChannelUser.objects.aget(id=self.user_id)
         except ObjectDoesNotExist:
             return
-        ws_data = self.set_ws_data('system', 'disconnect', {
-            'userId': self.user_id,
-            'owner': user.owner,
-            'gameName': user.game_name,
-            'tag': user.tag
-        })
-        await self.send_to_group(ws_data)
-        if user.owner:
-            await Room.objects.filter(code=self.room_name).adelete()
-        await user.adelete()
-        await self.channel_layer.group_discard(self.room_name, self.channel_name)
-        '''
-        
-    async def receive(self, text_data=None, bytes_data=None):
-        data = json.loads(text_data)
-        user = await ChannelUser.objects.aget(id=self.user_id)
         if data['type'] == 'chat':
             ws_data = set_ws_send_data('chat', 'onchange', {
                 'userId': user.pk,

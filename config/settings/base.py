@@ -92,7 +92,7 @@ CHANNEL_LAYERS = {
 
 SITE_ID = 1
 
-SESSION_COOKIE_AGE = 60 * 5     # seconds
+SESSION_COOKIE_AGE = 60 * 60 * 24     # seconds
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

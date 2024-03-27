@@ -64,8 +64,7 @@ chatInput.addEventListener('keyup', function(e) {
 // chat message
 async function sendMessage() {
     var text = chatInput.value;
-    await wsSend('chat', text)
-    chatSocket.send(context);
+    await wsSend('chat', text);
     chatInput.value = '';
     sendBtn.disabled = true;
 }
@@ -162,12 +161,19 @@ function setParticipantCard(data) {
 }
 
 function setCreatorTool(data) {
+    var oldTools = document.getElementsByClassName('participant-card-leader');
+    var toolDisable = '';
+    if (oldTools.length == 2) {
+        toolDisable = 'disabled';
+    }
     var html = `
-        <div class="col-auto form-check">
-            <input class="from-check-input" type="checkbox" value="" name="card-tool-set-leader" id="card-tool-set-leader-${data.userId}" onclick="changeRole(${data.userId})">
-            <label class="form-check-label" for="card-tool-set-leader-${data.userId}">
-                주장
-            </label>
+        <div class="col-auto">
+            <div class="form-check">
+                <input class="from-check-input" type="checkbox" value="" name="card-tool-set-leader" id="card-tool-set-leader-${data.userId}" onclick="changeRole(${data.userId})" ${toolDisable}>
+                <label class="form-check-label" for="card-tool-set-leader-${data.userId}">
+                    주장
+                </label>
+            </div>
         </div>
     `;
     return html;
@@ -180,25 +186,6 @@ async function changeRole(userId) {
     if (checkbox.checked) {
         role = 'leader';
     }
-    /*
-    var response = await requestPost(changeRoleUrl, {
-        'userId': userId,
-        'role': role
-    });
-    switch(response.status) {
-        case 200:
-            break;
-    }*/
-    /*
-    var context = JSON.stringify({
-        'type': 'changeRole',
-        'message': {
-            'userId': userId,
-            'role': role
-        }
-    })
-    chatSocket.send(context)
-    */
     await wsSend('changeRole', {
         'userId': userId,
         'role': role
@@ -260,7 +247,7 @@ function changeCardDetail(data) {
 }
 
 const board = document.getElementById('participant-board');
-function newUser(data) {
+async function newUser(data) {
     if (document.getElementById(`card-user-${data.userId}`) != null) {
         return
     }
@@ -276,6 +263,7 @@ function newUser(data) {
         badge.innerHTML += '<div>' + creatorBadgeEl + '</div>';
     }
     if (data.role == 'leader') {
+        cardDiv.classList.add('participant-card-leader');
         badge.innerHTML += `<div class="user-role-${data.userId}">` + leaderBadgeEl + '</div>';
     }
     if (data.role == 'participant') {
@@ -303,6 +291,7 @@ function startWebSocket() {
     chatSocket = new WebSocket(chatWsUrl);
     chatSocket.onmessage = handleWebSocketMessage;
     chatSocket.onclose = handleWebSocketClosure;
+    chatSocket.onerror = handleWebSocketError;
     reconnectionAttempts = 0;
 }
 
@@ -371,6 +360,11 @@ function handleWebSocketClosure(event) {
     } else {
         console.log('normal closed')
     }
+}
+
+function handleWebSocketError(event) {
+    console.log(event);
+    console.log('error');
 }
 
 startWebSocket();

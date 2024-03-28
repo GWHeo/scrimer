@@ -39,11 +39,6 @@ function chatBodySizing() {
 chatMarginSetting(992);
 chatBodySizing();
 
-window.onresize = function(e) {
-    chatMarginSetting(992);
-    chatBodySizing();
-}
-
 chatBubble.addEventListener('click', () => {
     chatBox.style.visibility = 'visible';
     chatBubble.style.visibility = 'hidden';
@@ -325,6 +320,9 @@ function handleWebSocketMessage(event) {
             break;
         case 'newUser':
             newUser(message.data);
+            if (!isTeamBoardHeightSet) {
+                setTeamBoardHeight();
+            }
             break;
         case 'changeRole':
             switch(message.data.role) {

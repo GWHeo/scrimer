@@ -70,6 +70,8 @@ def user_validation(request):
                 raise ObjectDoesNotExist
         except (ObjectDoesNotExist, ValidationError):
             return HttpResponse(status=404)
+        if len(ChannelUser.objects.filter(room=room)) >= room.max_participants:
+            return HttpResponse(status=403)
         user = ChannelUser.objects.filter(game_name=game_name, tag=tag, room=room)
         if user.exists():
             return JsonResponse({'roomId': room.code}, status=302)

@@ -16,6 +16,11 @@
     --leader-color: #D16F00;
     --participant-color: #878787;
     --system-color: #feee48;
+
+    --team-color-blue: #008BE2;
+    --team-color-blue-rgb: 0, 139, 226;
+    --team-color-red: #EA3030;
+    --team-color-red-rgb: 234, 48, 48;
 }
 
 .site-default {
@@ -179,6 +184,18 @@ select {
 .participant-detail-icon {
     max-width:1.5rem;
     max-height: 1.5rem;
+}
+.team-board {
+    border: 1px solid;
+    border-radius: 1rem;
+}
+.team-board-blue {
+    border-color: var(--team-color-blue);
+    background-color: rgba(var(--team-color-blue-rgb), 0.2);
+}
+.team-board-red {
+    border-color: var(--team-color-red);
+    background-color: rgba(var(--team-color-red-rgb), 0.2);
 }
 .bg-system {
     background-color: var(--system-color);

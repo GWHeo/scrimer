@@ -5,12 +5,15 @@
 {% block head_scripts %}
 <link rel="stylesheet"  type="text/css" href="{% static 'css/chatbox.css' %}">
 <script>
-    const roomId = '{{ room_id }}';
+    const roomId = {{ room.id }};
     const user = {{ channel_user.id }};
     const isCreator = {{ channel_user.owner|lower }};
     var myRole = '{{ channel_user.role }}';
+    {% if channel_user.owner %}
+    var divideMode = '';
+    {% endif %}
 
-    const chatWsUrl = '{{ chat_ws_url }}{{ room_id }}/{{ channel_user.id }}/';
+    const chatWsUrl = '{{ chat_ws_url }}{{ room.code }}/{{ channel_user.id }}/';
     const fetchOldUsersUrl = window.location.pathname + 'system/fetch/old-users/';
     const userDetailUrl = window.location.pathname + 'detail/';
     const fileUrl = window.location.origin + '/file/';
@@ -30,6 +33,9 @@
 
 {% include 'room/invite_link.html' %}
 {% include 'room/my_profile.html' %}
+{% if channel_user.owner %}
+{% include 'room/creator_board.html' %}
+{% endif %}
 {% include 'room/participant_board.html' %}
 {% include 'room/team_board.html' %}
 
@@ -43,6 +49,7 @@
 
 {% block body_scripts %}
 <script type="text/javascript" src="{% static 'javascript/room.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascript/divide_method.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/team.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/chat.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/resize.js' %}"></script>

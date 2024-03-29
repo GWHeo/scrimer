@@ -1,0 +1,61 @@
+<div class="accordion content-wrapper mx-2" id="creator-box">
+    <div class="accordion-item">
+        <div class="accordion-header text-center m-2 p-2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#creator-box-content" aria-expanded="false" aria-controls="creator-box-contnet">
+                <span class="h4">팀 뽑기 설정</span>
+            </button>
+        </div>
+        <div class="accordion-collapse collapse" id="creator-box-content" data-bs-parent="creator-box">
+            <div class="accordion-body">
+                <div class="row g-2 my-2 align-items-center">
+                    <label for="max-participants" class="col-lg-3 col-form-label">최대 참가 인원</label>
+                    <div class="col-auto">
+                        <input type="number" class="form-control form-control-sm bar-dark" min="2" max="10" value="{{ room.max_participants }}" id="max-participants">
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-sm btn-theme">적용</button>
+                    </div>
+                </div>
+                <div class="row g-2 align-items-center">
+                    <div class="col-lg-3 col-form-label">팀 가르기 방식</div>
+                    <div class="col-auto">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-auto">
+                                <input type="radio" class="btn-check" name="divide-method-options" id="method-option-draft" value="draft" onclick="setDivideMethodToolBox(this.value)" autocomplete="off">
+                                <label class="btn btn-theme-outline" for="method-option-draft">드래프트</label>
+                            </div>
+                            <div class="col-auto">
+                                <input type="radio" class="btn-check" name="divide-method-options" id="method-option-random" value="random" onclick="setDivideMethodToolBox(this.value)" autocomplete="off">
+                                <label class="btn btn-theme-outline" for="method-option-random">올랜덤</label>
+                            </div>
+                            <div class="col-auto">
+                                <input type="radio" class="btn-check" name="divide-method-options" id="method-option-auto" value="auto" onclick="setDivideMethodToolBox(this.value)" autocomplete="off" disabled>
+                                <label class="btn btn-theme-outline" for="method-option-auto">자동</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-2 align-items-center">
+                    <div class="col-lg-3">
+                    </div>
+                    <div class="col">
+                        <hr>
+                        <div class="my-2" id="divide-method-toolbox">
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3 pt-4">
+                    <button class="btn btn-sm btn-danger">팀 리셋</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function getDraftToolBoxEl() {
+        return `{% include 'components/divide_method_draft.html' %}`;
+    }
+    function getRandomToolBoxEl() {
+        return `{% include 'components/divide_method_random.html' %}`;
+    }
+</script>

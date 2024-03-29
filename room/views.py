@@ -119,6 +119,7 @@ def enter_room(request):
 def room_view(request, room_id, user_id):
     try:
         user = ChannelUser.objects.get(id=user_id)
+        room = Room.objects.get(code=room_id)
     except ObjectDoesNotExist:
         return redirect('common:index')
     path = request.build_absolute_uri().split('/')[:-2]
@@ -132,7 +133,7 @@ def room_view(request, room_id, user_id):
     ddragon_champ_json_url = f"https://ddragon.leagueoflegends.com/cdn/{version_latest}/data/ko_KR/champion.json"
     ddragon_champ_icon_url = f"https://ddragon.leagueoflegends.com/cdn/{version_latest}/img/champion"
     data = {
-        'room_id': room_id,
+        'room': room,
         'channel_user': user,
         'invite_link': invite_link,
         'profile_icon_url': ddragon_profile_icon_url,

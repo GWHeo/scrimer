@@ -155,14 +155,18 @@ function setParticipantCard(data) {
     return html;
 }
 
-function setCreatorTool(data) {
+function setLeaderCheckbox(data) {
     var oldTools = document.getElementsByClassName('participant-card-leader');
     var toolDisable = '';
     if (oldTools.length == 2) {
         toolDisable = 'disabled';
     }
+    var display = 'd-none';
+    if (divideMode == 'draft') {
+        display = '';
+    }
     var html = `
-        <div class="col-auto">
+        <div class="col-auto leader-check-box ${display}">
             <div class="form-check">
                 <input class="from-check-input" type="checkbox" value="" name="card-tool-set-leader" id="card-tool-set-leader-${data.userId}" onclick="changeRole(${data.userId})" ${toolDisable}>
                 <label class="form-check-label" for="card-tool-set-leader-${data.userId}">
@@ -265,8 +269,7 @@ async function newUser(data) {
         badge.innerHTML += `<div class="user-role-${data.userId}">` + participantBadgeEl + '</div>';
     }
     if (isCreator) {
-        var cardHeader = document.getElementById(`profile-card-header-${data.userId}`);
-        cardHeader.innerHTML += setCreatorTool(data);
+        cardDiv.innerHTML += setLeaderCheckbox(data);
     }
     changeCardDetail(data);
 }

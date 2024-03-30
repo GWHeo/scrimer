@@ -61,13 +61,19 @@ async function sendMessage() {
     var text = chatInput.value;
     await wsSend('chat', text);
     chatInput.value = '';
+    sendBtn.classList.remove('btn-theme');
+    sendBtn.classList.add('btn-theme-outline');
     sendBtn.disabled = true;
 }
 
 function chatInputBtnControl() {
     if (chatInput.value == '' || chatInput.value == null) {
+        sendBtn.classList.remove('btn-theme');
+        sendBtn.classList.add('btn-theme-outline');
         sendBtn.disabled = true;
     } else {
+        sendBtn.classList.remove('btn-theme-outline');
+        sendBtn.classList.add('btn-theme');
         sendBtn.disabled = false;
     }
 }
@@ -180,6 +186,11 @@ function setLeaderCheckbox(data) {
 
 async function changeRole(userId) {
     var checkbox = document.getElementById(`card-tool-set-leader-${userId}`);
+    var creatorToolBoxStep1 = document.getElementById('divide-method-toolbox-select-leader');
+    var creatorToolBoxStep2 = document.getElementById('divide-method-toolbox-select-first');
+    var creatorToolBoxStep2Btn = document.getElementById('divide-method-toolbox-select-first-btn');
+    var creatorToolBoxCount = document.getElementById('selected-leader-count');
+    var creatorToolBoxCheck = document.getElementById('select-leader-check');
     var role = 'participant';
 
     if (checkbox.checked) {
@@ -189,31 +200,7 @@ async function changeRole(userId) {
         'userId': userId,
         'role': role
     });
-
-    var checkboxes = document.getElementsByName('card-tool-set-leader');
-    var counter = 0;
-    var isFull = false;
-    for (let i=0; i<checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-            counter += 1;
-        }
-        if (counter >= 2) {
-            isFull = true;
-        }
-    }
-    if (isFull) {
-        for (let i=0; i<checkboxes.length; i++) {
-            if (!checkboxes[i].checked) {
-                checkboxes[i].disabled = true;
-            }
-        }
-    } else {
-        for (let i=0; i<checkboxes.length; i++) {
-            if (!checkboxes[i].checked) {
-                checkboxes[i].disabled = false;
-            }
-        }
-    }
+    setDraftConsole();
 }
 
 function changeCardBorder(data) {
@@ -345,6 +332,9 @@ function handleWebSocketMessage(event) {
             changeCardBorder(message.data);
             changeRoleBadge(message.data);
             parseMessage(message);
+            break;
+        case 'changeMaxParticipants':
+            applyMaxParticipants(message.data.value);
             break;
     }
 }

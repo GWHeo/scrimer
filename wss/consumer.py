@@ -1,4 +1,4 @@
-from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -77,7 +77,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         except ObjectDoesNotExist:
             return
         if data['type'] == 'chat':
-            ws_data = set_ws_send_data('chat', 'onchange', {
+            ws_data = self.set_ws_data('chat', 'onchange', {
                 'userId': user.pk,
                 'owner': user.owner,
                 'role': user.role,
@@ -96,6 +96,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
             user.lane = data['message']['laneSelect']
             await user.asave()
             ws_data = self.set_change_ws_message(user, message_type='onchange')
+        elif data['type'] == 'changeMaxParticipants':
+            import time
+            room = await Room.objects.aget(code=self.room_name)
+            room.max_participants = data['message']['value']
+            time.sleep(2)
+            await room.asave()
+            ws_data = self.set_ws_data('system', 'changeMaxParticipants', {
+                'value': room.max_participants
+            })
         else:
             ws_data = None
         await self.send_to_group(ws_data)

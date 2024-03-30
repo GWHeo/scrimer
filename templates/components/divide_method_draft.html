@@ -1,14 +1,16 @@
 <div class="my-1">
     <span id="divide-method-toolbox-select-leader">1. 주장 2명 선택
         (<span id="selected-leader-count">0</span>/2)
-        <i class="bi bi-check d-none" style="color: var(--theme-color);" id="select-leader-check"></i>
+        <i class="bi bi-check text-success d-none" id="select-leader-check"></i>
     </span>
 </div>
 <div class="my-1 d-flex align-items-center">
     <div class="me-2">
-        <span id="divide-method-toolbox-select-first">2. 선 정하기 (가위바위보)</span>
+        <span class="text-darker" id="divide-method-toolbox-select-first">2. 선 정하기 (가위바위보)</span>
     </div>
     <div>
-        <button class="btn btn-sm btn-theme-outline" id="divide-method-toolbox-select-first-btn" disabled>시작</button>
+        <button class="btn btn-sm btn-theme-outline" id="divide-method-toolbox-select-first-btn" onclick="startDraftPick()" disabled>시작</button>
+        <i class="bi bi-check text-success d-none" id="select-first-check"></i>
+        <button class="btn btn-sm btn-outline-danger d-none" id="stop-draft-btn" onclick="stopDraftPick()">중지</button>
     </div>
 </div>

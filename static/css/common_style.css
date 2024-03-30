@@ -104,6 +104,9 @@ select {
     --bs-btn-active-color: var(--bs-btn-color);
     --bs-btn-active-bg: var(--theme-color-dark);
     --bs-btn-active-border-color: var(--theme-color-dark);
+    --bs-btn-disabled-color: var(--bs-btn-color);
+    --bs-btn-disabled-bg: var(--theme-color-dark);
+    --bs-btn-disabled-border-color: var(--theme-color-dark);
 }
 
 .btn.btn-theme-outline {
@@ -118,6 +121,9 @@ select {
     --bs-btn-active-color: var(--bs-btn-color);
     --bs-btn-active-bg: var(--theme-color);
     --bs-btn-active-border-color: var(--theme-color);
+    --bs-btn-disabled-color: var(--bs-btn-color);
+    --bs-btn-disabled-bg: var(--default-bg-color);
+    --bs-btn-disabled-border-color: var(--theme-color);
 }
 .content-wrapper .btn.btn-theme-outline {
     --bs-btn-font-weight: none;
@@ -194,10 +200,24 @@ select {
     border-color: rgba(var(--default-font-color-rgb), 0.5);
     color: rgba(var(--default-font-color-rgb), 0.8);
 }
-.form-control.bar-dark:focus {
+.form-control.bar-dark::placeholder {
+    color: rgba(var(--default-font-color-rgb), 0.5);
+}
+.form-control.bar-dark:focus:read-only {
     background-color: var(--default-bg-color-light);
     border-color: rgba(var(--default-font-color-rgb), 0.5);
     color: rgba(var(--default-font-color-rgb), 0.8);
+}
+.form-control.bar-dark:focus:not(read-only) {
+    background-color: var(--default-bg-color);
+    border-color: rgba(var(--default-font-color-rgb), 0.5);
+    color: rgba(var(--default-font-color-rgb), 0.8);
+    background-color: var(--default-bg-color);
+}
+.input-group-text.bar-dark {
+    background-color: var(--default-bg-color-light);
+    border-color: rgba(var(--default-font-color-rgb), 0.5);
+    color: var(--default-font-color);
 }
 .mw-75 {
     max-width: 40rem;

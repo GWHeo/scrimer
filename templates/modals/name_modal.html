@@ -13,9 +13,9 @@
                 <form method="post" id="enter-room" action="{% url 'room:enter_room' %}">
                     {% csrf_token %}
                     <div class="input-group p-3">
-                        <input type="text" class="form-control" id="gamename" name="gamename" placeholder="이름" aria-label="gamename" required>
-                        <span class="input-group-text">#</span>
-                        <input type="text" class="form-control" id="tag" name="tag" placeholder="태그" aria-label="tag" required>
+                        <input type="text" class="form-control bar-dark" id="gamename" name="gamename" placeholder="이름" aria-label="gamename" required>
+                        <span class="input-group-text bar-dark">#</span>
+                        <input type="text" class="form-control bar-dark" id="tag" name="tag" placeholder="태그" aria-label="tag" required>
                     </div>
                     <input type="hidden" id="room-id" name="room_id" {% if link_access %}value="{{ room_id }}"{% endif %}>
                 </form>

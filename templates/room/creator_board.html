@@ -10,10 +10,20 @@
                 <div class="row g-2 my-2 align-items-center">
                     <label for="max-participants" class="col-lg-3 col-form-label">최대 참가 인원</label>
                     <div class="col-auto">
-                        <input type="number" class="form-control form-control-sm bar-dark" min="2" max="10" value="{{ room.max_participants }}" id="max-participants">
+                        <input type="number" class="form-control form-control-sm bar-dark" min="2" max="10" value="{{ room.max_participants }}" id="max-participants" readonly>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-sm btn-theme">적용</button>
+                        <div class="d-inline-flex align-items-center mx-2">
+                            <div class="px-1">
+                                <button class="btn btn-sm btn-primary" id="edit-max-participants" onclick="editMaxParticipants()">수정</button>
+                            </div>
+                            <div class="px-1">
+                                <button class="btn btn-sm btn-theme" id="submit-max-participants" onclick="submitMaxParticipants()" disabled>적용</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto fs-small text-darker">
+                        (최소 2명, 최대 10명)
                     </div>
                 </div>
                 <div class="row g-2 align-items-center">

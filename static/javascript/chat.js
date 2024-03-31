@@ -348,6 +348,7 @@ function handleWebSocketMessage(event) {
                     }
                     message.data['message'] = '팀 가르기(드래프트)가 중지되었습니다.';
                     parseMessage(message);
+                    break;
                 case 1:
                     roomStatus = 'progress';
                     if (myRole == 'leader') {

@@ -4,6 +4,7 @@
 
 {% block head_scripts %}
 <link rel="stylesheet"  type="text/css" href="{% static 'css/chatbox.css' %}">
+<link rel="stylesheet"  type="text/css" href="{% static 'css/rsp.css' %}">
 <script>
     const roomId = {{ room.id }};
     const user = {{ channel_user.id }};
@@ -37,6 +38,7 @@
 {% if channel_user.owner %}
 {% include 'room/creator_board.html' %}
 {% endif %}
+{% include 'modals/leader_rsp.html' %}
 {% include 'room/status_board.html' %}
 {% include 'room/participant_board.html' %}
 {% include 'room/team_board.html' %}
@@ -52,6 +54,7 @@
 {% block body_scripts %}
 <script type="text/javascript" src="{% static 'javascript/room.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/creator_toolbox.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascript/rsp.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/team.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/chat.js' %}"></script>
 <script type="text/javascript" src="{% static 'javascript/resize.js' %}"></script>

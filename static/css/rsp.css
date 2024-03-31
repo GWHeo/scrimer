@@ -1,0 +1,16 @@
+.rsp-card {
+    border: 1px solid rgba(var(--default-font-color-rgb), 0.5);
+    border-radius: 1rem;
+    cursor: pointer;
+}
+.rsp-card:hover {
+    border-color: var(--theme-color-light);
+}
+.rsp-card.rsp-card-selected {
+    border-color: var(--theme-color);
+}
+
+.fs-rsp {
+    text-align: center;
+    font-size: 5rem;
+}

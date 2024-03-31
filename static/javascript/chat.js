@@ -336,6 +336,31 @@ function handleWebSocketMessage(event) {
         case 'changeMaxParticipants':
             applyMaxParticipants(message.data.value);
             break;
+        case 'draftPick':
+            setDraftStatus(message.data.step);
+            switch(message.data.step) {
+                case 0:
+                    roomStatus = 'ready';
+                    if (myRole == 'leader') {
+                        // jquery
+                        alert('드래프트 픽이 중지되었습니다.');
+                        $('#leader-rsp-modal').modal('hide');
+                    }
+                    message.data['message'] = '팀 가르기(드래프트)가 중지되었습니다.';
+                    parseMessage(message);
+                case 1:
+                    roomStatus = 'progress';
+                    if (myRole == 'leader') {
+                        setLeaderRspModal(message.data.step);
+                        // jquery
+                        $('#leader-rsp-modal').modal('show');
+
+                    }
+                    message.data['message'] = '팀 가르기(드래프트)가 시작되었습니다.';
+                    parseMessage(message);
+                    break;
+            }
+            break;
     }
 }
 

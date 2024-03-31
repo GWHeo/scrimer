@@ -117,7 +117,26 @@ function setDivideMethodToolBox(method) {
     divideMode = method;
 }
 
-async function startDraftPick() {
+function draftStepText(step) {
+    var text = '';
+    switch(step) {
+        case 0:
+            text = '팀 뽑기 대기중 ...'
+            break;
+        case 1:
+            text = '(드래프트) 주장끼리 선 정하는 중 ...'
+            break;
+        case 2:
+            text = '(드래프트) 주장끼리 팀원 뽑는 중 ...'
+            break;
+        case 3:
+            text = '(드래프트) 팀 선정 완료!'
+            break;
+    }
+    return text
+}
+
+function setDraftStatus(step) {
     var creatorToolBoxStep2 = document.getElementById('divide-method-toolbox-select-first');
     var creatorToolBoxStep2Btn = document.getElementById('divide-method-toolbox-select-first-btn');
     var creatorToolBoxStep2Check = document.getElementById('select-first-check');
@@ -125,36 +144,44 @@ async function startDraftPick() {
     var statusCircle = document.getElementById('status-circle');
     var statusConsole = document.getElementById('status-console');
 
-    //await wsSend('startDraftPick', null);
+    switch(step) {
+        case 0:
+            if (isCreator) {
+                creatorToolBoxStep2.classList.remove('text-darker');
+                creatorToolBoxStep2Btn.classList.remove('d-none');
+                creatorToolBoxStep2Check.classList.add('d-none');
+                stopDraftBtn.classList.add('d-none');
+            }
 
-    creatorToolBoxStep2.classList.add('text-darker');
-    creatorToolBoxStep2Btn.classList.add('d-none');
-    creatorToolBoxStep2Check.classList.remove('d-none');
-    stopDraftBtn.classList.remove('d-none');
+            statusCircle.classList.remove('text-warning');
+            statusCircle.classList.add('text-danger');
+            statusConsole.innerHTML = draftStepText(0)
+            break;
+        case 1:
+            if (isCreator) {
+                creatorToolBoxStep2.classList.add('text-darker');
+                creatorToolBoxStep2Btn.classList.add('d-none');
+                creatorToolBoxStep2Check.classList.remove('d-none');
+                stopDraftBtn.classList.remove('d-none');
+            }
 
-    statusCircle.classList.remove('text-danger');
-    statusCircle.classList.add('text-warning');
-    statusConsole.innerHTML = '주장끼리 선 정하는 중 ...'
+            statusCircle.classList.remove('text-danger');
+            statusCircle.classList.add('text-warning');
+            statusConsole.innerHTML = draftStepText(1)
+            break;
+    }
+}
+
+async function startDraftPick() {
+    await wsSend('draftPick', {
+        'step': 1
+    });
 }
 
 async function stopDraftPick() {
     if (confirm('팀 뽑기가 진행중입니다. 중지하시겠습니까? 팀 현황이 초기화됩니다.')) {
-        var creatorToolBoxStep2 = document.getElementById('divide-method-toolbox-select-first');
-        var creatorToolBoxStep2Btn = document.getElementById('divide-method-toolbox-select-first-btn');
-        var creatorToolBoxStep2Check = document.getElementById('select-first-check');
-        var stopDraftBtn = document.getElementById('stop-draft-btn');
-        var statusCircle = document.getElementById('status-circle');
-        var statusConsole = document.getElementById('status-console');
-
-        //await wsSend('startDraftPick', null);
-
-        creatorToolBoxStep2.classList.remove('text-darker');
-        creatorToolBoxStep2Btn.classList.remove('d-none');
-        creatorToolBoxStep2Check.classList.add('d-none');
-        stopDraftBtn.classList.add('d-none');
-
-        statusCircle.classList.remove('text-warning');
-        statusCircle.classList.add('text-danger');
-        statusConsole.innerHTML = '팀 뽑기 대기중 ...'
+        await wsSend('draftPick', {
+            'step': 0
+        });
     }
 }

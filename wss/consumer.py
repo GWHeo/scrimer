@@ -97,13 +97,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await user.asave()
             ws_data = self.set_change_ws_message(user, message_type='onchange')
         elif data['type'] == 'changeMaxParticipants':
-            import time
             room = await Room.objects.aget(code=self.room_name)
             room.max_participants = data['message']['value']
-            time.sleep(2)
             await room.asave()
             ws_data = self.set_ws_data('system', 'changeMaxParticipants', {
                 'value': room.max_participants
+            })
+        elif data['type'] == 'draftPick':
+            room = await Room.objects.aget(code=self.room_name)
+            if data['message']['step'] == 0:
+                room.status = 'ready'
+            elif data['message']['step'] == 1:
+                room.status = 'progress'
+            await room.asave()
+            ws_data = self.set_ws_data('system', 'draftPick', {
+                'step': data['message']['step']
             })
         else:
             ws_data = None

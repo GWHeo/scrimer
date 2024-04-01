@@ -25,6 +25,10 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function asleep(sec) {
+    return new Promise(resolve => setTimeout(resolve, sec * 1000))
+}
+
 async function requestPost(url, data) {
     var csrftoken = getCookie('csrftoken');
     var response = await fetch(url, {

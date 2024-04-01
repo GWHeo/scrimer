@@ -280,7 +280,7 @@ function startWebSocket() {
     reconnectionAttempts = 0;
 }
 
-function handleWebSocketMessage(event) {
+async function handleWebSocketMessage(event) {
     var data = JSON.parse(event.data);
     var message = data.message;
     switch(message.status) {
@@ -309,7 +309,7 @@ function handleWebSocketMessage(event) {
             }
             break;
         case 'newUser':
-            newUser(message.data);
+            await newUser(message.data);
             if (!isTeamBoardHeightSet) {
                 setTeamBoardHeight();
             }
@@ -352,10 +352,9 @@ function handleWebSocketMessage(event) {
                 case 1:
                     roomStatus = 'progress';
                     if (myRole == 'leader') {
-                        setLeaderRspModal(message.data.step);
+                        await setLeaderRspModal(message.data.step);
                         // jquery
                         $('#leader-rsp-modal').modal('show');
-
                     }
                     message.data['message'] = '팀 가르기(드래프트)가 시작되었습니다.';
                     parseMessage(message);

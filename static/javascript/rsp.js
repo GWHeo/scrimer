@@ -1,4 +1,4 @@
-function setLeaderRspModal(step) {
+async function setLeaderRspModal(step) {
     var modalLabel = document.getElementById('leader-rsp-modal-label');
     var modalBody = document.getElementById('leader-rsp-modal-body');
     modalLabel.innerHTML = '가위바위보 선택';
@@ -22,6 +22,15 @@ function setLeaderRspModal(step) {
         </div>
         <input type="hidden" id="rsp-selected-value">
     `;
+
+    var timerConsole = document.getElementById('rsp-timer');
+    var setTimer = 5000;
+    var timer = rspTimer(setTimer);
+    setTimeout(function () {
+        clearInterval(timer)
+        var selected = document.getElementById('rsp-selected-value');
+        //console.log(selected.value)
+    }, setTimer);
 }
 
 function selectRsp(id) {
@@ -44,5 +53,16 @@ function selectRsp(id) {
     if (id.includes('paper')) {
         hiddenInput.value = 'paper';
     }
-    console.log(hiddenInput.value);
+}
+
+function rspTimer(time) {
+    var timerConsole = document.getElementById('rsp-timer');
+    var interval = 1000; // milliseconds
+    var secondsLeft = time;
+    timerConsole.innerHTML = `${Math.floor(secondsLeft/1000)}`;
+    var timer = setInterval(function() {
+        secondsLeft -= interval;
+        timerConsole.innerHTML = `${Math.floor(secondsLeft/1000)}`;
+    }, interval);
+    return timer;
 }

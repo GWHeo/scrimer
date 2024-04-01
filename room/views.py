@@ -103,6 +103,8 @@ def room_validation(request):
         room = Room.objects.get(code=room_id)
     except ObjectDoesNotExist:
         return HttpResponse(status=404)
+    if room.status != 'ready':
+        return HttpResponse(status=204)
     return JsonResponse({'roomId': room.code}, status=200)
 
 

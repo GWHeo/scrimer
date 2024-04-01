@@ -20,6 +20,9 @@ async function validateUserName() {
             roomIdInput.value = data['roomId'];
             form.submit();
             break;
+        case 204:
+            window.alert('팀 가르기가 진행중이어서 방에 참여할 수 없습니다.');
+            break;
         case 302:
             var data = await userInfo.json();
             if (role == 'creator'){

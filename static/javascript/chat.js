@@ -141,6 +141,7 @@ function setParticipantCard(data) {
             <div class="col-auto">
                 <div>
                     <span>${data.gameName}</span><span class="text-darker fs-small">#${data.tag}</span>
+                    <input type="hidden" id="game-name-${data.userId}" value="${data.gameName}#${data.tag}">
                 </div>
                 <div class="d-inline-flex" id="card-user-badge-${data.userId}">
                 </div>
@@ -266,6 +267,73 @@ function removeUser(data) {
     cardDiv.remove();
 }
 
+function setRspWinner(user) {
+    user.team = 'blue';
+    user.teamName = '블루팀';
+}
+function setRspLooser(user) {
+    user.team = 'red';
+    user.teamName = '레드팀';
+}
+
+function receiveRspResult(data) {
+    if (data.userId == user) {
+        rspMe.id = data.userId;
+        rspMe.value = data.value;
+    } else {
+        rspCompetitor.id = data.userId;
+        rspCompetitor.value = data.value;
+    }
+    if (rspMe.value != null && rspCompetitor.value != null) {
+        rspMe.name = document.getElementById(`game-name-${rspMe.id}`).value;
+        rspCompetitor.name = document.getElementById(`game-name-${rspCompetitor.id}`).value;
+        if (rspMe.value == 'rock') {
+            switch(rspCompetitor.value) {
+                case 'rock':
+                    break;
+                case 'scissor':
+                    setRspWinner(rspMe);
+                    setRspLooser(rspCompetitor);
+                    break;
+                case 'paper':
+                    setRspWinner(rspCompetitor);
+                    setRspLooser(rspMe);
+                    break;
+            }
+        }
+        if (rspMe.value = 'scissor') {
+            switch(rspCompetitor.value) {
+                case 'rock':
+                    setRspWinner(rspCompetitor);
+                    setRspLooser(rspMe);
+                    break;
+                case 'scissor':
+                    break;
+                case 'paper':
+                    setRspWinner(rspMe);
+                    setRspLooser(rspCompetitor);
+                    break;
+            }
+        }
+        if (rspMe.value = 'paper') {
+            switch(rspCompetitor.value) {
+                case 'rock':
+                    setRspWinner(rspMe);
+                    setRspLooser(rspCompetitor);
+                    break;
+                case 'scissor':
+                    setRspWinner(rspCompetitor);
+                    setRspLooser(rspMe);
+                    break;
+                case 'paper':
+                    break;
+            }
+        }
+
+        setRspResultModal(rspMe, rspCompetitor);
+    }
+}
+
 // websocket
 var chatSocket;
 var reconnectionAttempts = 0;
@@ -361,6 +429,8 @@ async function handleWebSocketMessage(event) {
                     break;
             }
             break;
+        case 'rspResult':
+            receiveRspResult(message.data);
     }
 }
 

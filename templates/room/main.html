@@ -27,6 +27,21 @@
     const creatorBadgeEl = `{% include 'components/creator_badge.html' %}`
     const leaderBadgeEl = `{% include 'components/leader_badge.html' %}`
     const participantBadgeEl = `{% include 'components/participant_badge.html' %}`
+
+    var rspMe = {
+        'id': null,
+        'value': null,
+        'name': null,
+        'team': null,
+        'teamName': null
+    };
+    var rspCompetitor = {
+        'id': null,
+        'value': null,
+        'name': null,
+        'team': null,
+        'teamName': null
+    };
 </script>
 <script type="text/javascript" src="{% static 'javascript/store_imgs.js' %}"></script>
 {% endblock %}

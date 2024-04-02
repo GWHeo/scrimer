@@ -113,6 +113,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             ws_data = self.set_ws_data('system', 'draftPick', {
                 'step': data['message']['step']
             })
+        elif data['type'] == 'rspResult':
+            ws_data = self.set_ws_data('system', 'rspResult', {
+                'userId': data['message']['userId'],
+                'value': data['message']['value']
+            })
         else:
             ws_data = None
         await self.send_to_group(ws_data)

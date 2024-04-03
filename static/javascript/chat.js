@@ -309,7 +309,7 @@ async function receiveRspResult(data) {
                     setRspLooser(rspMe);
                     break;
             }
-        }else if (rspMe.value = 'scissor') {
+        } else if (rspMe.value = 'scissor') {
             switch(rspCompetitor.value) {
                 case 'rock':
                     setRspWinner(rspCompetitor);

@@ -6,13 +6,14 @@ STATIC_ROOT = BASE_DIR / 'static/'
 STATICFILES_DIRS = []
 
 ALLOWED_HOSTS = [
-    '129.154.200.84'
+    '129.154.200.84',
+    'www.scrimer.site'
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://129.154.200.84/'
+    'https://www.scrimer.site'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://129.154.200.84/'
+    'https://www.scrimer.site'
 ]

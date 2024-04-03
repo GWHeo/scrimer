@@ -66,6 +66,8 @@ def user_validation(request):
     elif user_role == 'participant':
         try:
             room = Room.objects.filter(code=data['roomId']).first()
+            if room.status != 'ready':
+                return HttpResponse(status=204)
             if not room.exists():
                 raise ObjectDoesNotExist
         except (ObjectDoesNotExist, ValidationError):
@@ -103,8 +105,6 @@ def room_validation(request):
         room = Room.objects.get(code=room_id)
     except ObjectDoesNotExist:
         return HttpResponse(status=404)
-    if room.status != 'ready':
-        return HttpResponse(status=204)
     return JsonResponse({'roomId': room.code}, status=200)
 
 
@@ -113,6 +113,8 @@ def enter_room(request):
     form = EnterRoom(request.POST)
     if form.is_valid():
         room = Room.objects.get(code=form.cleaned_data['room_id'])
+        if room.status != 'ready':
+            return HttpResponse(status=204)
         user = ChannelUser.objects.get(room=room, game_name=form.cleaned_data['gamename'], tag=form.cleaned_data['tag'])
         return redirect('room:room_view', room_id=room.code, user_id=user.pk)
     return HttpResponse(status=400)

@@ -107,12 +107,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
             room = await Room.objects.aget(code=self.room_name)
             if data['message']['step'] == 0:
                 room.status = 'ready'
+                await room.asave()
             elif data['message']['step'] == 1:
                 room.status = 'progress'
-            await room.asave()
-            ws_data = self.set_ws_data('system', 'draftPick', {
-                'step': data['message']['step']
-            })
+                await room.asave()
+            elif data['message']['step'] == 2:
+                pass
+            ws_data = self.set_ws_data('system', 'draftPick', data['message'])
         elif data['type'] == 'rspResult':
             ws_data = self.set_ws_data('system', 'rspResult', {
                 'userId': data['message']['userId'],

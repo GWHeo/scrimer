@@ -28,20 +28,18 @@
     const leaderBadgeEl = `{% include 'components/leader_badge.html' %}`
     const participantBadgeEl = `{% include 'components/participant_badge.html' %}`
 
-    var rspMe = {
-        'id': null,
-        'value': null,
-        'name': null,
-        'team': null,
-        'teamName': null
-    };
-    var rspCompetitor = {
-        'id': null,
-        'value': null,
-        'name': null,
-        'team': null,
-        'teamName': null
-    };
+    function resetRspUser(){
+        return {
+            'id': null,
+            'value': null,
+            'name': null,
+            'team': null,
+            'teamName': null
+        };
+    }
+    var rspMe = resetRspUser();
+    var rspCompetitor = resetRspUser();
+
 </script>
 <script type="text/javascript" src="{% static 'javascript/store_imgs.js' %}"></script>
 {% endblock %}

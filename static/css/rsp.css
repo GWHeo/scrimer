@@ -28,3 +28,7 @@
     background-color: var(--team-color-red);
     border-radius: 1rem;
 }
+.rsp-team-draw {
+    background-color: var(--participant-color);
+    border-radius: 1rem;
+}

@@ -275,8 +275,14 @@ function setRspLooser(user) {
     user.team = 'red';
     user.teamName = '레드팀';
 }
+function setRspDraw(user1, user2) {
+    user1.team = 'draw';
+    user1.teamName = '무승부';
+    user2.team = 'draw';
+    user2.teamName = '무승부';
+}
 
-function receiveRspResult(data) {
+async function receiveRspResult(data) {
     if (data.userId == user) {
         rspMe.id = data.userId;
         rspMe.value = data.value;
@@ -285,11 +291,14 @@ function receiveRspResult(data) {
         rspCompetitor.value = data.value;
     }
     if (rspMe.value != null && rspCompetitor.value != null) {
+        var isDraw = false;
         rspMe.name = document.getElementById(`game-name-${rspMe.id}`).value;
         rspCompetitor.name = document.getElementById(`game-name-${rspCompetitor.id}`).value;
         if (rspMe.value == 'rock') {
             switch(rspCompetitor.value) {
                 case 'rock':
+                    setRspDraw(rspMe, rspCompetitor);
+                    isDraw = true;
                     break;
                 case 'scissor':
                     setRspWinner(rspMe);
@@ -300,22 +309,22 @@ function receiveRspResult(data) {
                     setRspLooser(rspMe);
                     break;
             }
-        }
-        if (rspMe.value = 'scissor') {
+        }else if (rspMe.value = 'scissor') {
             switch(rspCompetitor.value) {
                 case 'rock':
                     setRspWinner(rspCompetitor);
                     setRspLooser(rspMe);
                     break;
                 case 'scissor':
+                    setRspDraw(rspMe, rspCompetitor);
+                    isDraw = true;
                     break;
                 case 'paper':
                     setRspWinner(rspMe);
                     setRspLooser(rspCompetitor);
                     break;
             }
-        }
-        if (rspMe.value = 'paper') {
+        } else if (rspMe.value = 'paper') {
             switch(rspCompetitor.value) {
                 case 'rock':
                     setRspWinner(rspMe);
@@ -326,11 +335,12 @@ function receiveRspResult(data) {
                     setRspLooser(rspMe);
                     break;
                 case 'paper':
+                    setRspDraw(rspMe, rspCompetitor);
+                    isDraw = true;
                     break;
             }
         }
-
-        setRspResultModal(rspMe, rspCompetitor);
+        await setRspResultModal(rspMe, rspCompetitor, isDraw);
     }
 }
 
@@ -407,6 +417,8 @@ async function handleWebSocketMessage(event) {
         case 'draftPick':
             setDraftStatus(message.data.step);
             switch(message.data.step) {
+                case -1:
+                    break;
                 case 0:
                     roomStatus = 'ready';
                     if (myRole == 'leader') {
@@ -416,6 +428,8 @@ async function handleWebSocketMessage(event) {
                     }
                     message.data['message'] = '팀 가르기(드래프트)가 중지되었습니다.';
                     parseMessage(message);
+                    rspMe = resetRspUser();
+                    rspCompetitor = resetRspUser();
                     break;
                 case 1:
                     roomStatus = 'progress';
@@ -427,10 +441,12 @@ async function handleWebSocketMessage(event) {
                     message.data['message'] = '팀 가르기(드래프트)가 시작되었습니다.';
                     parseMessage(message);
                     break;
+                case 2:
+                    console.log(message.data)
             }
             break;
         case 'rspResult':
-            receiveRspResult(message.data);
+            await receiveRspResult(message.data);
     }
 }
 

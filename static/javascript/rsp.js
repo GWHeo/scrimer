@@ -24,13 +24,19 @@ async function setLeaderRspModal(step) {
     `;
 
     var timerConsole = document.getElementById('rsp-timer');
-    var setTimer = 5000;
-    var timer = rspTimer(setTimer);
+    var timerInfo = document.getElementById('rsp-timer-info');
+    timerInfo.innerHTML = '초 남음';
+    var setTime = 5000;
+    var timer = rspTimer(setTime);
     setTimeout(async function () {
         clearInterval(timer);
         var selected = document.getElementById('rsp-selected-value');
-        await rspResult(selected.value);
-    }, setTimer);
+        if (roomStatus != 'ready') {
+            await rspResult(selected.value);
+            timerConsole.innerHTML = '-';
+            timerInfo.innerHTML = '';
+        }
+    }, setTime);
 }
 
 function selectRsp(id) {
@@ -93,7 +99,7 @@ function getRspEmoji(val) {
     return emoji;
 }
 
-function setRspResultModal(me, competitor) {
+async function setRspResultModal(me, competitor, isDraw) {
     /*
     me/competitor = {
         value, name, team, teamName
@@ -103,9 +109,6 @@ function setRspResultModal(me, competitor) {
     var modalBody = document.getElementById('leader-rsp-modal-body');
     var dismissBtn = document.getElementById('dismiss-rsp');
     modalLabel.innerHTML = '가위바위보 결과';
-    dismissBtn.innerHTML = '닫기';
-    dismissBtn.removeAttribute('onclick');
-    dismissBtn.setAttribute('data-bs-dismiss', 'modal');
 
     var myPick = getRspEmoji(me.value);
     var competitorPick = getRspEmoji(competitor.value);
@@ -139,4 +142,29 @@ function setRspResultModal(me, competitor) {
             </div>
         </div>
     `;
+
+    if (!isDraw){
+        dismissBtn.innerHTML = '닫기';
+        dismissBtn.removeAttribute('onclick');
+        dismissBtn.setAttribute('data-bs-dismiss', 'modal');
+        await wsSend('draftPick', {
+            'step': 2
+            ////
+        })
+    } else {
+        me = resetRspUser();
+        competitor = resetRspUser();
+        var timerConsole = document.getElementById('rsp-timer');
+        var timerInfo = document.getElementById('rsp-timer-info');
+        timerInfo.innerHTML = '초 후 재시작';
+        var setTime = 3000;
+        var timer = rspTimer(setTime);
+        setTimeout(async function () {
+            clearInterval(timer);
+            var selected = document.getElementById('rsp-selected-value');
+            await wsSend('draftPick', {
+                'step': 1
+            });
+        }, setTime);
+    }
 }

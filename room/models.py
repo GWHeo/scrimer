@@ -24,6 +24,7 @@ class ChannelUser(models.Model, models.Manager):
         ('support', '서포터'),
         ('jungle', '정글')
     ]
+    ip = models.GenericIPAddressField(default=None, null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     join_date = models.DateTimeField(auto_now_add=True)
     puuid = models.CharField(max_length=78)

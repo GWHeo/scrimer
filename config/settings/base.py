@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'common',
     'room',
     'wss',
+    'errors',
 ]
 
 MIDDLEWARE = [

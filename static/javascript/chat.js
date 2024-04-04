@@ -61,6 +61,7 @@ async function sendMessage() {
     var text = chatInput.value;
     await wsSend('chat', text);
     chatInput.value = '';
+    chatInput.focus();
     sendBtn.classList.remove('btn-theme');
     sendBtn.classList.add('btn-theme-outline');
     sendBtn.disabled = true;

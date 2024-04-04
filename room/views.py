@@ -25,9 +25,19 @@ def link_access(request, room_id):
     return render(request, 'index.html', {'link_access': True, 'room_id': room.code})
 
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
 @atomic
 @method_only('POST')
 def user_validation(request):
+    ip = get_client_ip(request)
     data = json.loads(request.body.decode('utf-8'))
     game_name = data['gameName']
     tag = data['tag']
@@ -48,12 +58,14 @@ def user_validation(request):
 
     # user save
     if user_role == 'creator':
-        channel_user = ChannelUser.objects.filter(game_name=game_name, tag=tag, owner=True)
-        if channel_user.exists():
-            for user in channel_user:
-                return JsonResponse({'roomId': user.room.code}, status=302)
+        user = ChannelUser.objects.filter(game_name=user_data['gameName'], tag=user_data['tagLine'], owner=True)
+        if user.exists():
+            if user.first().ip != ip:
+                return JsonResponse({'message': 'differentIp'}, status=403)
+            return JsonResponse({'roomId': user.room.code}, status=302)
         room = Room.objects.create(code=uuid.uuid4())
         ChannelUser.objects.create(
+            ip=ip,
             room=room,
             puuid=user_data['puuid'],
             game_name=user_data['gameName'],
@@ -73,12 +85,15 @@ def user_validation(request):
         except (ObjectDoesNotExist, ValidationError):
             return HttpResponse(status=404)
         if len(ChannelUser.objects.filter(room=room)) >= room.max_participants:
-            return HttpResponse(status=403)
+            return JsonResponse({'message': 'maximumExceeded'}, status=403)
         user = ChannelUser.objects.filter(game_name=game_name, tag=tag, room=room)
         if user.exists():
+            if user.first().ip != ip:
+                return JsonResponse({'message': 'differentIp'}, status=403)
             return JsonResponse({'roomId': room.code}, status=302)
         else:
             ChannelUser.objects.create(
+                ip=ip,
                 room=room,
                 puuid=user_data['puuid'],
                 game_name=user_data['gameName'],
@@ -126,6 +141,9 @@ def room_view(request, room_id, user_id):
         room = Room.objects.get(code=room_id)
     except ObjectDoesNotExist:
         return redirect('common:index')
+    ip = get_client_ip(request)
+    if user.ip != ip:
+        return redirect('errors:ip_error')
     path = request.build_absolute_uri().split('/')[:-2]
     invite_link = ''
     for p in path:

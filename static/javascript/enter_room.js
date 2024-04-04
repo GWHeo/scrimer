@@ -41,7 +41,13 @@ async function validateUserName() {
             window.alert('사용자를 찾을 수 없습니다.');
             break;
         case 403:
-            window.alert('방에 참여할 수 있는 인원이 초과되었습니다.');
+            var data = await userInfo.json();
+            if (data.message == 'maximumExceeded') {
+                window.alert('방에 참여할 수 있는 인원이 초과되었습니다.');
+            }
+            if (data.message == 'differentIp') {
+                window.alert('다른 디바이스에서 접속중입니다.')
+            }
             break;
         case 404:
             window.alert('생성된 방이 없습니다.');

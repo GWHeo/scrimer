@@ -130,7 +130,7 @@ def enter_room(request):
         room = Room.objects.get(code=form.cleaned_data['room_id'])
         if room.status != 'ready':
             return HttpResponse(status=204)
-        user = ChannelUser.objects.get(room=room, game_name=form.cleaned_data['gamename'], tag=form.cleaned_data['tag'])
+        user = ChannelUser.objects.get(room=room, game_name=form.cleaned_data['gamename'], tag=form.cleaned_data['tag'].upper())
         return redirect('room:room_view', room_id=room.code, user_id=user.pk)
     return HttpResponse(status=400)
 

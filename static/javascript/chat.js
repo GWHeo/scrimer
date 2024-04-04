@@ -291,7 +291,6 @@ async function receiveRspResult(data) {
         rspCompetitor.id = data.userId;
         rspCompetitor.value = data.value;
     }
-    console.log(rspMe.value, rspCompetitor.value)
     if (rspMe.value != null && rspCompetitor.value != null) {
         var isDraw = false;
         rspMe.name = document.getElementById(`game-name-${rspMe.id}`).value;

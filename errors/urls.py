@@ -4,5 +4,5 @@ from . import views
 app_name = 'room'
 
 urlpatterns = [
-    path('error/ip/', views.ip_error_view, name='ip_error'),
+    path('ip/', views.ip_error_view, name='ip_error'),
 ]

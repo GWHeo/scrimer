@@ -42,3 +42,4 @@ class ChannelUser(models.Model, models.Manager):
 
     class Meta:
         db_table = 'channel_users'
+        

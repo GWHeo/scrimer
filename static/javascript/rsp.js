@@ -99,28 +99,23 @@ function getRspEmoji(val) {
     return emoji;
 }
 
-async function setRspResultModal(me, competitor, isDraw) {
-    /*
-    me/competitor = {
-        value, name, team, teamName
-    }
-    */
+function setRspResultModal() {
     var modalLabel = document.getElementById('leader-rsp-modal-label');
     var modalBody = document.getElementById('leader-rsp-modal-body');
     var dismissBtn = document.getElementById('dismiss-rsp');
     modalLabel.innerHTML = '가위바위보 결과';
 
-    var myPick = getRspEmoji(me.value);
-    var competitorPick = getRspEmoji(competitor.value);
+    var myPick = getRspEmoji(rspMe.value);
+    var competitorPick = getRspEmoji(rspCompetitor.value);
     modalBody.innerHTML = `
         <div class="row justify-content-center align-items-center">
             <div class="col">
                 <div class="row justify-content-center align-items-center m-2 g-2 fw-bold">
                     <div class="col-auto">
-                        ${me.name}
+                        ${rspMe.name}
                     </div>
-                    <div class="col-auto rsp-team-${me.team}">
-                        ${me.teamName}
+                    <div class="col-auto rsp-team-${rspMe.team}">
+                        ${rspMe.teamName}
                     </div>
                 </div>
                 <div class="rsp-card-border">
@@ -130,10 +125,10 @@ async function setRspResultModal(me, competitor, isDraw) {
             <div class="col">
                 <div class="row justify-content-center align-items-center m-2 g-2 fw-bold">
                     <div class="col-auto">
-                        ${competitor.name}
+                        ${rspCompetitor.name}
                     </div>
-                    <div class="col-auto rsp-team-${competitor.team}">
-                        ${competitor.teamName}
+                    <div class="col-auto rsp-team-${rspCompetitor.team}">
+                        ${rspCompetitor.teamName}
                     </div>
                 </div>
                 <div class="rsp-card-border">
@@ -142,21 +137,24 @@ async function setRspResultModal(me, competitor, isDraw) {
             </div>
         </div>
     `;
+}
 
+async function receiveRspComplete(isDraw) {
+    var dismissBtn = document.getElementById('dismiss-rsp');
     if (!isDraw){
         dismissBtn.innerHTML = '닫기';
         dismissBtn.removeAttribute('onclick');
         dismissBtn.setAttribute('data-bs-dismiss', 'modal');
         await wsSend('draftPick', {
             'step': 2,
-            'userId': me.id,
-            'userName': me.name,
-            'team': me.team,
-            'teamName': me.teamName
+            'userId': rspMe.id,
+            'userName': rspMe.name,
+            'team': rspMe.team,
+            'teamName': rspMe.teamName
         })
     } else {
-        me = resetRspUser();
-        competitor = resetRspUser();
+        rspMe = resetRspUser();
+        rspCompetitor = resetRspUser();
         var timerConsole = document.getElementById('rsp-timer');
         var timerInfo = document.getElementById('rsp-timer-info');
         timerInfo.innerHTML = '초 후 재시작';

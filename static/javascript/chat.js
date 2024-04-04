@@ -283,7 +283,7 @@ function setRspDraw(user1, user2) {
     user2.teamName = '무승부';
 }
 
-async function receiveRspResult(data) {
+async function setRspUserData(data) {
     if (data.userId == user) {
         rspMe.id = data.userId;
         rspMe.value = data.value;
@@ -291,58 +291,59 @@ async function receiveRspResult(data) {
         rspCompetitor.id = data.userId;
         rspCompetitor.value = data.value;
     }
-    if (rspMe.value != null && rspCompetitor.value != null) {
-        var isDraw = false;
-        rspMe.name = document.getElementById(`game-name-${rspMe.id}`).value;
-        rspCompetitor.name = document.getElementById(`game-name-${rspCompetitor.id}`).value;
-        if (rspMe.value == 'rock') {
-            switch(rspCompetitor.value) {
-                case 'rock':
-                    setRspDraw(rspMe, rspCompetitor);
-                    isDraw = true;
-                    break;
-                case 'scissor':
-                    setRspWinner(rspMe);
-                    setRspLooser(rspCompetitor);
-                    break;
-                case 'paper':
-                    setRspWinner(rspCompetitor);
-                    setRspLooser(rspMe);
-                    break;
-            }
-        } else if (rspMe.value = 'scissor') {
-            switch(rspCompetitor.value) {
-                case 'rock':
-                    setRspWinner(rspCompetitor);
-                    setRspLooser(rspMe);
-                    break;
-                case 'scissor':
-                    setRspDraw(rspMe, rspCompetitor);
-                    isDraw = true;
-                    break;
-                case 'paper':
-                    setRspWinner(rspMe);
-                    setRspLooser(rspCompetitor);
-                    break;
-            }
-        } else if (rspMe.value = 'paper') {
-            switch(rspCompetitor.value) {
-                case 'rock':
-                    setRspWinner(rspMe);
-                    setRspLooser(rspCompetitor);
-                    break;
-                case 'scissor':
-                    setRspWinner(rspCompetitor);
-                    setRspLooser(rspMe);
-                    break;
-                case 'paper':
-                    setRspDraw(rspMe, rspCompetitor);
-                    isDraw = true;
-                    break;
-            }
+}
+
+function receiveRspResult(data) {
+    var isDraw = false;
+    rspMe.name = document.getElementById(`game-name-${rspMe.id}`).value;
+    rspCompetitor.name = document.getElementById(`game-name-${rspCompetitor.id}`).value;
+    if (rspMe.value == 'rock') {
+        switch(rspCompetitor.value) {
+            case 'rock':
+                setRspDraw(rspMe, rspCompetitor);
+                isDraw = true;
+                break;
+            case 'scissor':
+                setRspWinner(rspMe);
+                setRspLooser(rspCompetitor);
+                break;
+            case 'paper':
+                setRspWinner(rspCompetitor);
+                setRspLooser(rspMe);
+                break;
         }
-        await setRspResultModal(rspMe, rspCompetitor, isDraw);
+    } else if (rspMe.value = 'scissor') {
+        switch(rspCompetitor.value) {
+            case 'rock':
+                setRspWinner(rspCompetitor);
+                setRspLooser(rspMe);
+                break;
+            case 'scissor':
+                setRspDraw(rspMe, rspCompetitor);
+                isDraw = true;
+                break;
+            case 'paper':
+                setRspWinner(rspMe);
+                setRspLooser(rspCompetitor);
+                break;
+        }
+    } else if (rspMe.value = 'paper') {
+        switch(rspCompetitor.value) {
+            case 'rock':
+                setRspWinner(rspMe);
+                setRspLooser(rspCompetitor);
+                break;
+            case 'scissor':
+                setRspWinner(rspCompetitor);
+                setRspLooser(rspMe);
+                break;
+            case 'paper':
+                setRspDraw(rspMe, rspCompetitor);
+                isDraw = true;
+                break;
+        }
     }
+    return isDraw;
 }
 
 // websocket
@@ -435,7 +436,9 @@ async function handleWebSocketMessage(event) {
                 case 1:
                     roomStatus = 'progress';
                     if (myRole == 'leader') {
-                        await setLeaderRspModal(message.data.step);
+                        if (document.getElementById('rsp-selected-value') == null) {
+                            await setLeaderRspModal(message.data.step);
+                         }
                         // jquery
                         $('#leader-rsp-modal').modal('show');
                     }
@@ -449,7 +452,20 @@ async function handleWebSocketMessage(event) {
             }
             break;
         case 'rspResult':
-            await receiveRspResult(message.data);
+            await setRspUserData(message.data);
+            await asleep(0.5);
+            if (rspMe.value != null && rspCompetitor.value != null) {
+                var isDraw = receiveRspResult(message.data);
+                setRspResultModal();
+                console.log('sending...')
+                await wsSend('rspComplete', {
+                    'userId': user,
+                    'isDraw': isDraw
+                })
+            }
+        case 'rspComplete':
+            console.log('receive complete', rspMe, rspCompetitor)
+            await receiveRspComplete(message.data.isDraw)
     }
 }
 

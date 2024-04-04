@@ -6,6 +6,7 @@ from asgiref.sync import async_to_sync, sync_to_async
 from room.models import ChannelUser, Room
 import redis
 import json
+import asyncio
 
 
 def set_ws_send_data(message_type, status, data):
@@ -24,15 +25,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         super().__init__(*args, **kwargs)
         self.room_name = None
         self.user_id = None
+        self.rsp_cache_key = None
         self.cache = redis.Redis(
             host=settings.CHANNEL_LAYERS['default']['CONFIG']['hosts'][0][0],
             port=settings.CHANNEL_LAYERS['default']['CONFIG']['hosts'][0][1]
         )
-
+        
     async def connect(self):
         self.channel_layer.group_expiry = settings.SESSION_COOKIE_AGE
         self.room_name = self.scope['url_route']['kwargs']['room_id']
         self.user_id = self.scope['url_route']['kwargs']['user_id']
+        self.rsp_cache_key = f'{self.room_name}_rsp'
         await self.channel_layer.group_add(
             self.room_name,
             self.channel_name
@@ -69,7 +72,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_discard(self.room_name, self.channel_name)
         else:
             print(code)
-        
+            
     async def receive(self, text_data=None, bytes_data=None):
         data = json.loads(text_data)
         try:
@@ -109,12 +112,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 room.status = 'ready'
                 await room.asave()
             elif data['message']['step'] == 1:
+                if self.cache.get(self.rsp_cache_key) is None:
+                    redis_exec = self.cache.set(self.rsp_cache_key, 0)
+                else:
+                    redis_exec = self.cache.delete(self.rsp_cache_key)
+                print('s1:', redis_exec)
                 room.status = 'progress'
                 await room.asave()
             elif data['message']['step'] == 2:
                 pass
             ws_data = self.set_ws_data('system', 'draftPick', data['message'])
         elif data['type'] == 'rspResult':
+            print('received rspResult')
             value = data['message']['value']
             if value == '':
                 import random
@@ -124,6 +133,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'userId': data['message']['userId'],
                 'value': value
             })
+        elif data['type'] == 'rspComplete':
+            count = int(self.cache.get(self.rsp_cache_key)) + 1
+            print('count:', count)
+            if count == 2:
+                ws_data = self.set_ws_data('system', 'rspComplete', data['message'])
+                redis_exec = self.cache.delete(self.rsp_cache_key)
+            else:
+                redis_exec = self.cache.set(self.rsp_cache_key, count)
+                print(self.cache.get(self.rsp_cache_key))
+                ws_data = None
         else:
             ws_data = None
         await self.send_to_group(ws_data)

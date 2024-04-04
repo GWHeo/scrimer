@@ -148,8 +148,11 @@ async function setRspResultModal(me, competitor, isDraw) {
         dismissBtn.removeAttribute('onclick');
         dismissBtn.setAttribute('data-bs-dismiss', 'modal');
         await wsSend('draftPick', {
-            'step': 2
-            ////
+            'step': 2,
+            'userId': me.id,
+            'userName': me.name,
+            'team': me.team,
+            'teamName': me.teamName
         })
     } else {
         me = resetRspUser();

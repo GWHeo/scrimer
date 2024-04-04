@@ -10,3 +10,11 @@ function setTeamBoardHeight() {
     }
     isTeamBoardHeightSet = true;
 }
+
+function moveUserCardToTeamBoard(userId, team) {
+    var participantBoard = document.getElementById('participant-board');
+    var teamBoard = document.getElementsByClassName(`team-board-${team}`)[0]
+    var userCard = document.getElementById(`card-user-${userId}`);
+    participantBoard.removeChild(userCard);
+    teamBoard.appendChild(userCard);
+}

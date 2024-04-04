@@ -291,6 +291,7 @@ async function receiveRspResult(data) {
         rspCompetitor.id = data.userId;
         rspCompetitor.value = data.value;
     }
+    console.log(rspMe.value, rspCompetitor.value)
     if (rspMe.value != null && rspCompetitor.value != null) {
         var isDraw = false;
         rspMe.name = document.getElementById(`game-name-${rspMe.id}`).value;
@@ -443,7 +444,9 @@ async function handleWebSocketMessage(event) {
                     parseMessage(message);
                     break;
                 case 2:
-                    console.log(message.data)
+                    message.data['message'] = `${message.data.userName}님이 ${message.data.teamName} 주장으로 결정되었습니다.`;
+                    parseMessage(message);
+                    moveUserCardToTeamBoard(message.data.userId, message.data.team);
             }
             break;
         case 'rspResult':

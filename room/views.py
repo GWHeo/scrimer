@@ -45,7 +45,7 @@ def user_validation(request):
     if game_name == '' or tag == '':
         return HttpResponse(status=400)
     if user_role not in ['creator', 'participant']:
-        return HttpResponse(status=403)
+        return JsonResponse({'message': 'invalidRole'}, status=403)
     
     # do request to riot api
     riot_account_url = f'{settings.RIOT_API_ENDPOINTS["account"]}/{game_name}/{tag}'
@@ -62,7 +62,7 @@ def user_validation(request):
         if user.exists():
             if user.first().ip != ip:
                 return JsonResponse({'message': 'differentIp'}, status=403)
-            return JsonResponse({'roomId': user.room.code}, status=302)
+            return JsonResponse({'roomId': user.first().room.code}, status=302)
         room = Room.objects.create(code=uuid.uuid4())
         ChannelUser.objects.create(
             ip=ip,

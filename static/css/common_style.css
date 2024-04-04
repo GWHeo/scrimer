@@ -279,6 +279,9 @@ input:autofill:active {
     border-color: var(--team-color-red);
     background-color: rgba(var(--team-color-red-rgb), 0.2);
 }
+.team-board>.participant-card {
+    width: auto;
+}
 .bg-system {
     background-color: var(--system-color);
 }

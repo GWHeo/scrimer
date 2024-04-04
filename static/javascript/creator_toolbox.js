@@ -159,9 +159,7 @@ function setDraftStatus(step) {
             break;
         case 1:
             if (isCreator) {
-                creatorToolBoxStep2.classList.add('text-darker');
                 creatorToolBoxStep2Btn.classList.add('d-none');
-                creatorToolBoxStep2Check.classList.remove('d-none');
                 stopDraftBtn.classList.remove('d-none');
             }
 
@@ -169,7 +167,15 @@ function setDraftStatus(step) {
             statusCircle.classList.add('text-warning');
             statusConsole.innerHTML = draftStepText(1)
             break;
+        case 2:
+            if (isCreator) {
+                creatorToolBoxStep2.classList.add('text-darker');
+                creatorToolBoxStep2Check.classList.remove('d-none');
+                stopDraftBtn.classList.add('d-none');
+                hideLeaderCheckBox();
+            }
     }
+    statusConsole.innerHTML = draftStepText(step);
 }
 
 async function startDraftPick() {

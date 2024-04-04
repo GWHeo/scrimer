@@ -115,9 +115,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 pass
             ws_data = self.set_ws_data('system', 'draftPick', data['message'])
         elif data['type'] == 'rspResult':
+            value = data['message']['value']
+            if value == '':
+                import random
+                choices = ['rock', 'scissor', 'paper']
+                value = choices[random.randrange(0, 3)]
             ws_data = self.set_ws_data('system', 'rspResult', {
                 'userId': data['message']['userId'],
-                'value': data['message']['value']
+                'value': value
             })
         else:
             ws_data = None

@@ -59,6 +59,7 @@ function selectRsp(id) {
     if (id.includes('paper')) {
         hiddenInput.value = 'paper';
     }
+    console.log(hiddenInput.value)
 }
 
 function rspTimer(time) {
@@ -139,6 +140,68 @@ function setRspResultModal() {
     `;
 }
 
+function receiveRspResult(data) {
+    for (var key in data) {
+        if (data[key].id == user) {
+            rspMe.id = data[key].id;
+            rspMe.value = data[key].value;
+        } else {
+            rspCompetitor.id = data[key].id;
+            rspCompetitor.value = data[key].value;
+        }
+    }
+    var isDraw = false;
+    rspMe.name = document.getElementById(`game-name-${rspMe.id}`).value;
+    rspCompetitor.name = document.getElementById(`game-name-${rspCompetitor.id}`).value;
+    if (rspMe.value == 'rock') {
+        switch(rspCompetitor.value) {
+            case 'rock':
+                setRspDraw(rspMe, rspCompetitor);
+                isDraw = true;
+                break;
+            case 'scissor':
+                setRspWinner(rspMe);
+                setRspLooser(rspCompetitor);
+                break;
+            case 'paper':
+                setRspWinner(rspCompetitor);
+                setRspLooser(rspMe);
+                break;
+        }
+    } else if (rspMe.value == 'scissor') {
+        switch(rspCompetitor.value) {
+            case 'rock':
+                setRspWinner(rspCompetitor);
+                setRspLooser(rspMe);
+                break;
+            case 'scissor':
+                setRspDraw(rspMe, rspCompetitor);
+                isDraw = true;
+                break;
+            case 'paper':
+                setRspWinner(rspMe);
+                setRspLooser(rspCompetitor);
+                break;
+        }
+    } else if (rspMe.value == 'paper') {
+        switch(rspCompetitor.value) {
+            case 'rock':
+                setRspWinner(rspMe);
+                setRspLooser(rspCompetitor);
+                break;
+            case 'scissor':
+                setRspWinner(rspCompetitor);
+                setRspLooser(rspMe);
+                break;
+            case 'paper':
+                setRspDraw(rspMe, rspCompetitor);
+                isDraw = true;
+                break;
+        }
+    }
+    return isDraw;
+}
+
 async function receiveRspComplete(isDraw) {
     var dismissBtn = document.getElementById('dismiss-rsp');
     if (!isDraw){
@@ -153,8 +216,6 @@ async function receiveRspComplete(isDraw) {
             'teamName': rspMe.teamName
         })
     } else {
-        rspMe = resetRspUser();
-        rspCompetitor = resetRspUser();
         var timerConsole = document.getElementById('rsp-timer');
         var timerInfo = document.getElementById('rsp-timer-info');
         timerInfo.innerHTML = '초 후 재시작';
@@ -162,7 +223,6 @@ async function receiveRspComplete(isDraw) {
         var timer = rspTimer(setTime);
         setTimeout(async function () {
             clearInterval(timer);
-            var selected = document.getElementById('rsp-selected-value');
             await wsSend('draftPick', {
                 'step': 1
             });

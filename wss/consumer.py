@@ -112,39 +112,45 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 room.status = 'ready'
                 await room.asave()
             elif data['message']['step'] == 1:
-                if self.cache.get(self.rsp_cache_key) is None:
-                    redis_exec = self.cache.set(self.rsp_cache_key, 0)
-                else:
-                    redis_exec = self.cache.delete(self.rsp_cache_key)
-                print('s1:', redis_exec)
                 room.status = 'progress'
                 await room.asave()
             elif data['message']['step'] == 2:
                 pass
             ws_data = self.set_ws_data('system', 'draftPick', data['message'])
         elif data['type'] == 'rspResult':
-            print('received rspResult')
             value = data['message']['value']
-            if value == '':
+            if value == '' or value is None:
                 import random
                 choices = ['rock', 'scissor', 'paper']
                 value = choices[random.randrange(0, 3)]
-            ws_data = self.set_ws_data('system', 'rspResult', {
-                'userId': data['message']['userId'],
-                'value': value
-            })
-        elif data['type'] == 'rspComplete':
-            count = int(self.cache.get(self.rsp_cache_key)) + 1
-            print('count:', count)
-            if count == 2:
-                ws_data = self.set_ws_data('system', 'rspComplete', data['message'])
-                redis_exec = self.cache.delete(self.rsp_cache_key)
+            user_rsp_key = self.rsp_cache_key + f":{data['message']['userId']}"
+            redis_exec = self.cache.set(user_rsp_key, value)
+            rsp_keys = self.cache.keys(pattern=self.rsp_cache_key + '*')
+            if len(rsp_keys) == 1:
+                return
             else:
-                redis_exec = self.cache.set(self.rsp_cache_key, count)
-                print(self.cache.get(self.rsp_cache_key))
-                ws_data = None
+                json_data = {
+                    'user1': {
+                        'id': None,
+                        'value': None
+                    },
+                    'user2': {
+                        'id': None,
+                        'value': None
+                    }
+                }
+                for i, key in enumerate(rsp_keys):
+                    key = key.decode('utf-8')
+                    json_data[f'user{i+1}']['id'] = int(key.split(':')[-1])
+                    json_data[f'user{i+1}']['value'] = self.cache.get(key).decode('utf-8')
+                    redis_exec = self.cache.delete(key)
+                from pprint import pprint
+                pprint(json_data)
+                ws_data = self.set_ws_data('system', f'rspResult', json_data)
+        elif data['type'] == 'rspComplete':
+            ws_data = self.set_ws_data('system', 'rspComplete', data['message'])
         else:
-            ws_data = None
+            return
         await self.send_to_group(ws_data)
         
     async def ws_send(self, event):

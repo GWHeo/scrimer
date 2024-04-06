@@ -150,6 +150,7 @@ function receiveRspResult(data) {
             rspCompetitor.value = data[key].value;
         }
     }
+    console.log(rspMe, rspCompetitor)
     var isDraw = false;
     rspMe.name = document.getElementById(`game-name-${rspMe.id}`).value;
     rspCompetitor.name = document.getElementById(`game-name-${rspCompetitor.id}`).value;

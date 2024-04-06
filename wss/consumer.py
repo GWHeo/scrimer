@@ -7,6 +7,9 @@ from room.models import ChannelUser, Room
 import redis
 import json
 import asyncio
+import logging
+
+logger = logging.Logger('debug')
 
 
 def set_ws_send_data(message_type, status, data):
@@ -145,7 +148,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     json_data[f'user{i+1}']['value'] = self.cache.get(key).decode('utf-8')
                     redis_exec = self.cache.delete(key)
                 from pprint import pprint
-                pprint(json_data)
+                logger.info(str(json_data))
                 ws_data = self.set_ws_data('system', f'rspResult', json_data)
         elif data['type'] == 'rspComplete':
             ws_data = self.set_ws_data('system', 'rspComplete', data['message'])

@@ -389,6 +389,7 @@ async function handleWebSocketMessage(event) {
             }
             break;
         case 'rspResult':
+            console.log(message.data)
             var isDraw = receiveRspResult(message.data);
             setRspResultModal();
             await wsSend('rspComplete', {

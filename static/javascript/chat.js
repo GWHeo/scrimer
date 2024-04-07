@@ -386,10 +386,10 @@ async function handleWebSocketMessage(event) {
                     message.data['message'] = `${message.data.userName}님이 ${message.data.teamName} 주장으로 결정되었습니다.`;
                     parseMessage(message);
                     moveUserCardToTeamBoard(message.data.userId, message.data.team);
+                    setTeamSelectBtn(2);
             }
             break;
         case 'rspResult':
-            console.log(message.data)
             var isDraw = receiveRspResult(message.data);
             setRspResultModal();
             await wsSend('rspComplete', {

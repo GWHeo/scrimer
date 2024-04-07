@@ -18,3 +18,117 @@ function moveUserCardToTeamBoard(userId, team) {
     participantBoard.removeChild(userCard);
     teamBoard.appendChild(userCard);
 }
+
+function setTeamSelectBtn(step) {
+    var selectMaximum = 0;
+    var selectedUsers = 0;
+    switch(step) {
+        case 2:
+            if (rspMe.team == 'blue') {
+                selectMaximum = 1;
+            } else {
+                return
+            }
+            break;
+        case 3:
+            if (rspMe.team == 'red') {
+                selectMaximum = 2;
+            } else {
+                return
+            }
+        case 4:
+            if (rspMe.team == 'blue') {
+                selectMaximum = 2;
+            } else {
+                return
+            }
+        case 5:
+            if (rspMe.team == 'red') {
+                selectMaximum = 2;
+            } else {
+                return
+            }
+        case 6:
+            if (rspMe.team == 'blue') {
+                selectMaximum = 1;
+            } else {
+                return
+            }
+    }
+    var participantBoard = document.getElementById('participant-board');
+    var varStorage = document.createElement('div');
+    varStorage.id = 'draft-variable-storage';
+    varStorage.innerHTML = `
+        <input type="hidden" id="draft-select-maximum" value="${selectMaximum}">
+        <input type="hidden" id="draft-selected-users" value="${selectedUsers}">
+    `;
+    participantBoard.appendChild(varStorage);
+    var userCards = participantBoard.children;
+    for (let i=0; i<userCards.length; i++) {
+        var cardUserId = userCards[i].id.split('-').pop();
+        var el = document.createElement('div');
+        el.classList.add('form-check', 'm-2', 'draft-select-input-div');
+        el.innerHTML = `
+            <input class="form-check-input draft-select-input" type="checkbox" value="${cardUserId}" id="draft-select-${cardUserId}" onchange="selectTeamUser(${cardUserId}, step)">
+            <label class="form-check-label" for="draft-select-${cardUserId}">선택</label>
+        `;
+        userCards[i].appendChild(el);
+    }
+}
+
+function selectTeamUser(cardUserId, step) {
+    var selectMaximum = document.getElementById('draft-select-maximum');
+    var selectedUsers = document.getElementById('draft-select-users');
+    var checkbox = document.getElementById(`draft-select-${cardUserId}`);
+    var participantBoard = document.getElementById('participant-board');
+    var userCards = participantBoard.children;
+    if (checkbox.checked) {
+        selectedUsers.value += 1;
+        if (selectedUsers.value == selectMaximum.value) {
+            for (let i=0; i<userCards.length; i++) {
+                var userCardCheckbox = document.getElementById(`draft-select-${userCards[i].id.split('-').pop()}`);
+                if (!userCardCheckbox.checked) {
+                    userCardCheckbox.disabled = true;
+                }
+            }
+            var confirmBtn = document.createElement('div');
+            confirmBtn.classList.add('d-flex', 'm-2', 'justify-content-center', 'align-items-center');
+            confirmBtn.setAttribute('id', 'draft-pick-confirm-button')
+            confirmBtn.innerHTML = `
+                <button class="btn btn-warning" onclick="sendTeamSelect(${step})">뽑기</button>
+            `;
+            participantBoard.appendChild(confirmBtn);
+        }
+    } else {
+        selectedUsers.value -= 1;
+        for (let i=0; i<userCards.length; i++) {
+            var userCardCheckbox = document.getElementById(`draft-select-${userCards[i].id.split('-').pop()}`);
+            if (userCardCheckbox.disabled == true) {
+                userCardCheckbox.disabled = false;
+            }
+        }
+    }
+}
+
+async function sendTeamSelect(step) {
+    var checkboxes = document.getElementsByClassName('draft-select-input');
+    selected = [];
+    for (let i=0; i<checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            selected.push(checkboxes[i].value)
+        }
+    }
+    await wsSend('draftPick', {
+        'step': step + 1,
+        'userId': rspMe.id,
+        'team': rsp.team,
+        'cardUserId': selected
+    })
+    // initialize
+    var selectDivs = document.getElementsByClassName('draft-select-input-div');
+    for (let i=0; i<selectDivs.length; i++) {
+        selectDivs.remove();
+    }
+    var varStorage = document.getElementById('draft-variable-storage');
+    varStorage.remove();
+}

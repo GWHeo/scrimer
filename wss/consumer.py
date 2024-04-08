@@ -115,6 +115,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 await room.asave()
             elif data['message']['step'] == 2:
                 pass
+            elif data['message']['step'] == 3:
+                print(data['message']['cardUserIds'])
+                print(data['message']['cardUserNames'])
+                pass
+            elif data['message']['step'] == 4:
+                print('step 4')
             ws_data = self.set_ws_data('system', 'draftPick', data['message'])
         elif data['type'] == 'rspResult':
             value = data['message']['value']

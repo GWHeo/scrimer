@@ -66,27 +66,29 @@ function setTeamSelectBtn(step) {
     var userCards = participantBoard.children;
     for (let i=0; i<userCards.length; i++) {
         var cardUserId = userCards[i].id.split('-').pop();
-        var el = document.createElement('div');
-        el.classList.add('form-check', 'm-2', 'draft-select-input-div');
-        el.innerHTML = `
-            <input class="form-check-input draft-select-input" type="checkbox" value="${cardUserId}" id="draft-select-${cardUserId}" onchange="selectTeamUser(${cardUserId}, step)">
-            <label class="form-check-label" for="draft-select-${cardUserId}">선택</label>
-        `;
-        userCards[i].appendChild(el);
+        if (userCards[i].id == `card-user-${cardUserId}` && !userCards[i].classList.contains('participant-card-leader')){
+            var el = document.createElement('div');
+            el.classList.add('form-check', 'm-2', 'draft-select-input-div');
+            el.innerHTML = `
+                <input class="form-check-input draft-select-input" type="checkbox" value="${cardUserId}" id="draft-select-${cardUserId}" onchange="selectTeamUser(${cardUserId}, ${step})">
+                <label class="form-check-label" for="draft-select-${cardUserId}">선택</label>
+            `;
+            userCards[i].appendChild(el);
+        }
     }
 }
 
 function selectTeamUser(cardUserId, step) {
     var selectMaximum = document.getElementById('draft-select-maximum');
-    var selectedUsers = document.getElementById('draft-select-users');
+    var selectedUsers = document.getElementById('draft-selected-users');
     var checkbox = document.getElementById(`draft-select-${cardUserId}`);
     var participantBoard = document.getElementById('participant-board');
     var userCards = participantBoard.children;
     if (checkbox.checked) {
-        selectedUsers.value += 1;
+        selectedUsers.value = Number(selectedUsers.value) + 1;
         if (selectedUsers.value == selectMaximum.value) {
             for (let i=0; i<userCards.length; i++) {
-                var userCardCheckbox = document.getElementById(`draft-select-${userCards[i].id.split('-').pop()}`);
+                var userCardCheckbox = document.getElementById(`draft-select-${cardUserId}`);
                 if (!userCardCheckbox.checked) {
                     userCardCheckbox.disabled = true;
                 }
@@ -97,12 +99,12 @@ function selectTeamUser(cardUserId, step) {
             confirmBtn.innerHTML = `
                 <button class="btn btn-warning" onclick="sendTeamSelect(${step})">뽑기</button>
             `;
-            participantBoard.appendChild(confirmBtn);
+            participantBoard.parentElement.appendChild(confirmBtn);
         }
     } else {
-        selectedUsers.value -= 1;
+        selectedUsers.value = umber(selectedUsers.value) - 1;;
         for (let i=0; i<userCards.length; i++) {
-            var userCardCheckbox = document.getElementById(`draft-select-${userCards[i].id.split('-').pop()}`);
+            var userCardCheckbox = document.getElementById(`draft-select-${cardUserId}`);
             if (userCardCheckbox.disabled == true) {
                 userCardCheckbox.disabled = false;
             }
@@ -112,23 +114,31 @@ function selectTeamUser(cardUserId, step) {
 
 async function sendTeamSelect(step) {
     var checkboxes = document.getElementsByClassName('draft-select-input');
-    selected = [];
+    var selected = [];
+    var userNames = [];
     for (let i=0; i<checkboxes.length; i++) {
         if (checkboxes[i].checked) {
             selected.push(checkboxes[i].value)
+            var cardUserName = document.getElementById(`game-name-${checkboxes[i].value}`).value;
+            userNames.push(cardUserName);
         }
     }
     await wsSend('draftPick', {
-        'step': step + 1,
+        'step': Number(Number(step) + 1),
         'userId': rspMe.id,
-        'team': rsp.team,
-        'cardUserId': selected
+        'team': rspMe.team,
+        'teamName': rspMe.teamName,
+        'cardUserIds': selected,
+        'cardUserNames': userNames
     })
+    console.log(Number(Number(step) + 1))
     // initialize
     var selectDivs = document.getElementsByClassName('draft-select-input-div');
     for (let i=0; i<selectDivs.length; i++) {
-        selectDivs.remove();
+        selectDivs[i].remove();
     }
     var varStorage = document.getElementById('draft-variable-storage');
     varStorage.remove();
+    var pickBtn = document.getElementById('draft-pick-confirm-button');
+    pickBtn.remove();
 }

@@ -386,10 +386,24 @@ async function handleWebSocketMessage(event) {
                     message.data['message'] = `${message.data.userName}님이 ${message.data.teamName} 주장으로 결정되었습니다.`;
                     parseMessage(message);
                     moveUserCardToTeamBoard(message.data.userId, message.data.team);
-                    setTeamSelectBtn(2);
+                    if (message.data.userId == user) {
+                        setTeamSelectBtn(2);
+                    }
+                    break;
+                case 3:
+                    for (let i=0; i<message.data.cardUserIds.length; i++) {
+                        message.data['message'] = `${message.data.cardUserNames[i]}님이 ${message.data.teamName}으로 뽑혔습니다.`;
+                        parseMessage(message);
+                        moveUserCardToTeamBoard(message.data.cardUserIds[i], message.data.team);
+                        setTeamSelectBtn(3);
+                    }
+                    break;
             }
             break;
         case 'rspResult':
+            if (myRole != 'leader') {
+                break;
+            }
             var isDraw = receiveRspResult(message.data);
             setRspResultModal();
             await wsSend('rspComplete', {
@@ -400,10 +414,12 @@ async function handleWebSocketMessage(event) {
                 rspMe = resetRspUser();
                 rspCompetitor = resetRspUser();
             }
+            break;
         case 'rspComplete':
             if (message.data.userId == user) {
                 await receiveRspComplete(message.data.isDraw);
             }
+            break;
     }
 }
 

@@ -55,6 +55,10 @@ def user_validation(request):
     elif response.status_code != 200:
         return HttpResponse(response.status_code)
     user_data = response.json()
+    
+    # upper or lower case-sensitive
+    if user_data['gameName'] != data['gameName']:
+        return HttpResponse(status=401)
 
     # user save
     if user_role == 'creator':

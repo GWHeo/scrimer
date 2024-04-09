@@ -391,12 +391,19 @@ async function handleWebSocketMessage(event) {
                     }
                     break;
                 case 3:
+                case 4:
+                case 5:
+                case 6:
                     for (let i=0; i<message.data.cardUserIds.length; i++) {
                         message.data['message'] = `${message.data.cardUserNames[i]}님이 ${message.data.teamName}으로 뽑혔습니다.`;
                         parseMessage(message);
                         moveUserCardToTeamBoard(message.data.cardUserIds[i], message.data.team);
-                        setTeamSelectBtn(3);
                     }
+                    setTeamSelectBtn(message.data.step);
+                    break;
+                case 7:
+                    message.data['message'] = '팀 뽑기가 완료됐습니다.';
+                    parseMessage(message);
                     break;
             }
             break;
@@ -420,6 +427,9 @@ async function handleWebSocketMessage(event) {
                 await receiveRspComplete(message.data.isDraw);
             }
             break;
+        case 'reset':
+            setDraftStatus(0);
+            resetTeam();
     }
 }
 

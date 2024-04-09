@@ -27,33 +27,39 @@ function setTeamSelectBtn(step) {
             if (rspMe.team == 'blue') {
                 selectMaximum = 1;
             } else {
-                return
+                return;
             }
             break;
         case 3:
             if (rspMe.team == 'red') {
                 selectMaximum = 2;
             } else {
-                return
+                return;
             }
+            break;
         case 4:
             if (rspMe.team == 'blue') {
                 selectMaximum = 2;
             } else {
-                return
+                return;
             }
+            break;
         case 5:
             if (rspMe.team == 'red') {
                 selectMaximum = 2;
             } else {
-                return
+                return;
             }
+            break;
         case 6:
             if (rspMe.team == 'blue') {
                 selectMaximum = 1;
             } else {
-                return
+                return;
             }
+            break;
+        default:
+            return;
     }
     var participantBoard = document.getElementById('participant-board');
     var varStorage = document.createElement('div');
@@ -66,7 +72,10 @@ function setTeamSelectBtn(step) {
     var userCards = participantBoard.children;
     for (let i=0; i<userCards.length; i++) {
         var cardUserId = userCards[i].id.split('-').pop();
-        if (userCards[i].id == `card-user-${cardUserId}` && !userCards[i].classList.contains('participant-card-leader')){
+        if (userCards[i].id == `card-user-${cardUserId}`){
+            if (!userCards[i].classList.contains('participant-card')) {
+                continue;
+            }
             var el = document.createElement('div');
             el.classList.add('form-check', 'm-2', 'draft-select-input-div');
             el.innerHTML = `
@@ -88,7 +97,14 @@ function selectTeamUser(cardUserId, step) {
         selectedUsers.value = Number(selectedUsers.value) + 1;
         if (selectedUsers.value == selectMaximum.value) {
             for (let i=0; i<userCards.length; i++) {
-                var userCardCheckbox = document.getElementById(`draft-select-${cardUserId}`);
+                if (!userCards[i].classList.contains('participant-card')) {
+                    continue;
+                }
+                var currentCardUserId = userCards[i].id.split('-').pop();
+                if (cardUserId == currentCardUserId) {
+                    continue;
+                }
+                var userCardCheckbox = document.getElementById(`draft-select-${currentCardUserId}`);
                 if (!userCardCheckbox.checked) {
                     userCardCheckbox.disabled = true;
                 }
@@ -102,12 +118,23 @@ function selectTeamUser(cardUserId, step) {
             participantBoard.parentElement.appendChild(confirmBtn);
         }
     } else {
-        selectedUsers.value = umber(selectedUsers.value) - 1;;
+        selectedUsers.value = Number(selectedUsers.value) - 1;;
         for (let i=0; i<userCards.length; i++) {
-            var userCardCheckbox = document.getElementById(`draft-select-${cardUserId}`);
+            if (!userCards[i].classList.contains('participant-card')) {
+                continue;
+            }
+            var currentCardUserId = userCards[i].id.split('-').pop();
+            if (cardUserId == currentCardUserId) {
+                continue;
+            }
+            var userCardCheckbox = document.getElementById(`draft-select-${currentCardUserId}`);
             if (userCardCheckbox.disabled == true) {
                 userCardCheckbox.disabled = false;
             }
+        }
+        var confirmBtn = document.getElementById('draft-pick-confirm-button');
+        if (confirmBtn != null) {
+            confirmBtn.remove();
         }
     }
 }
@@ -123,15 +150,7 @@ async function sendTeamSelect(step) {
             userNames.push(cardUserName);
         }
     }
-    await wsSend('draftPick', {
-        'step': Number(Number(step) + 1),
-        'userId': rspMe.id,
-        'team': rspMe.team,
-        'teamName': rspMe.teamName,
-        'cardUserIds': selected,
-        'cardUserNames': userNames
-    })
-    console.log(Number(Number(step) + 1))
+
     // initialize
     var selectDivs = document.getElementsByClassName('draft-select-input-div');
     for (let i=0; i<selectDivs.length; i++) {
@@ -141,4 +160,34 @@ async function sendTeamSelect(step) {
     varStorage.remove();
     var pickBtn = document.getElementById('draft-pick-confirm-button');
     pickBtn.remove();
+
+    await wsSend('draftPick', {
+        'step': Number(Number(step) + 1),
+        'userId': rspMe.id,
+        'team': rspMe.team,
+        'teamName': rspMe.teamName,
+        'cardUserIds': selected,
+        'cardUserNames': userNames
+    })
+}
+
+function resetTeam() {
+    var userCards = document.getElementsByClassName('participant-card');
+    var participantBoard = document.getElementById('participant-board');
+    participantBoard.innerHTML = '';
+    for (let i=0; i<userCards.length; i++) {
+        userCards[i].parent.removeChild(userCards[i]);
+        participantBoard.appendChild(userCards[i]);
+        var wasLeader = false;
+        if (userCard[i].classList.contains('participant-card-leader')) {
+            userCard[i].classList.remove('participant-card-leader');
+            wasLeader = true;
+        }
+        var data = {
+            "userId": userCards[i].id.split('-').pop(),
+            "role": wasLeader ? 'leader' : 'participant'
+        };
+        changeRoleBadge(data);
+        changeCardBorder(data);
+    }
 }

@@ -127,9 +127,13 @@ function draftStepText(step) {
             text = '(드래프트) 주장끼리 선 정하는 중 ...'
             break;
         case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
             text = '(드래프트) 주장끼리 팀원 뽑는 중 ...'
             break;
-        case 3:
+        case 7:
             text = '(드래프트) 팀 선정 완료!'
             break;
     }
@@ -190,4 +194,8 @@ async function stopDraftPick() {
             'step': 0
         });
     }
+}
+
+async function sendResetTeam() {
+    await wsSend('reset', {})
 }

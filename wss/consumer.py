@@ -106,19 +106,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'value': room.max_participants
             })
         elif data['type'] == 'draftPick':
-            room = await Room.objects.aget(code=self.room_name)
             if data['message']['step'] == 0:
+                room = await Room.objects.aget(code=self.room_name)
                 room.status = 'ready'
                 await room.asave()
             elif data['message']['step'] == 1:
+                room = await Room.objects.aget(code=self.room_name)
                 room.status = 'progress'
                 await room.asave()
-            elif data['message']['step'] == 2:
+            elif data['message']['step'] in [2, 3, 4, 5, 6, 7]:
+                print(f"received {data['message']['step']}")
                 pass
-            elif data['message']['step'] == 3:
-                pass
-            elif data['message']['step'] == 4:
-                print('step 4')
             ws_data = self.set_ws_data('system', 'draftPick', data['message'])
         elif data['type'] == 'rspResult':
             value = data['message']['value']
@@ -150,6 +148,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 ws_data = self.set_ws_data('system', f'rspResult', json_data)
         elif data['type'] == 'rspComplete':
             ws_data = self.set_ws_data('system', 'rspComplete', data['message'])
+        elif data['type'] == 'reset':
+            room = await Room.objects.aget(code=self.room_name)
+            room.status = 'ready'
+            await room.asave()
+            ws_data = self.set_ws_data('system', 'reset', {})
         else:
             return
         await self.send_to_group(ws_data)

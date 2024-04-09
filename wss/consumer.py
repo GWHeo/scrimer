@@ -115,7 +115,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 room.status = 'progress'
                 await room.asave()
             elif data['message']['step'] in [2, 3, 4, 5, 6, 7]:
-                print(f"received {data['message']['step']}")
                 pass
             ws_data = self.set_ws_data('system', 'draftPick', data['message'])
         elif data['type'] == 'rspResult':

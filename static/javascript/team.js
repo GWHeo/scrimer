@@ -196,22 +196,29 @@ function resetTeam() {
     }
 
     for (let i=0; i<sortedCards.length; i++) {
-        var wasLeader = false;
         if (sortedCards[i].classList.contains('participant-card-leader')) {
             sortedCards[i].classList.remove('participant-card-leader');
-            wasLeader = true;
         }
         var data = {
             "userId": sortedCards[i].id.split('-').pop(),
-            "role": wasLeader ? 'leader' : 'participant'
+            "role": 'participant'
         };
+        sortedCards[i].parentNode.removeChild(sortedCards[i]);
+        participantBoard.appendChild(sortedCards[i]);
+        myRole = 'participant';
         changeRoleBadge(data);
         changeCardBorder(data);
-        participantBoard.appendChild(sortedCards[i]);
-        sortedCards[i].parentNode.removeChild(sortedCards[i]);
-        var draftStorage = document.getElementById('draft-variable-storage');
-        if (draftStorage != null) {
-            draftStorage.remove();
+        if (isCreator && divideMode == 'draft') {
+            var draftStorage = document.getElementById('draft-variable-storage');
+            if (draftStorage != null) {
+                draftStorage.remove();
+            }
+            showLeaderCheckBox();
+            var checkboxes = document.getElementsByName('card-tool-set-leader');
+            for (let i=0; i<checkboxes.length; i++) {
+                checkboxes[i].checked = false;
+            }
+            setDraftConsole();
         }
     }
 }

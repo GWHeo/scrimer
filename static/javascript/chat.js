@@ -139,7 +139,7 @@ function setParticipantCard(data) {
             <div class="col-auto">
                 <img class="participant-profile-icon rounded-circle" src="${profileIconUrl}/${data.profileIconId}.png">
             </div>
-            <div class="col-auto">
+            <div class="col-auto p-0">
                 <div>
                     <span>${data.gameName}</span><span class="text-darker fs-small">#${data.tag}</span>
                     <input type="hidden" id="game-name-${data.userId}" value="${data.gameName}#${data.tag}">
@@ -390,21 +390,17 @@ async function handleWebSocketMessage(event) {
                         setTeamSelectBtn(2);
                     }
                     break;
-                case 3:
-                case 4:
-                case 5:
-                case 6:
+                default:
                     for (let i=0; i<message.data.cardUserIds.length; i++) {
                         message.data['message'] = `${message.data.cardUserNames[i]}님이 ${message.data.teamName}으로 뽑혔습니다.`;
                         parseMessage(message);
                         moveUserCardToTeamBoard(message.data.cardUserIds[i], message.data.team);
                     }
                     setTeamSelectBtn(message.data.step);
-                    break;
-                case 7:
-                    message.data['message'] = '팀 뽑기가 완료됐습니다.';
-                    parseMessage(message);
-                    break;
+                    if (message.data.step == 7) {
+                        message.data['message'] = '팀 뽑기가 완료됐습니다.';
+                        parseMessage(message);
+                    }
             }
             break;
         case 'rspResult':
@@ -430,6 +426,8 @@ async function handleWebSocketMessage(event) {
         case 'reset':
             setDraftStatus(0);
             resetTeam();
+            message.data['message'] = '팀이 초기화 되었습니다.';
+            parseMessage(data);
     }
 }
 

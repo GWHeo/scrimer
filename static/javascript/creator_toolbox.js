@@ -156,8 +156,12 @@ function setDraftStatus(step) {
                 creatorToolBoxStep2Check.classList.add('d-none');
                 stopDraftBtn.classList.add('d-none');
             }
-
-            statusCircle.classList.remove('text-warning');
+            if (statusCircle.classList.contains('text-success')) {
+                statusCircle.classList.remove('text-success')
+            }
+            if (statusCircle.classList.contains('text-warning')) {
+                statusCircle.classList.remove('text-warning')
+            }
             statusCircle.classList.add('text-danger');
             statusConsole.innerHTML = draftStepText(0)
             break;
@@ -178,6 +182,11 @@ function setDraftStatus(step) {
                 stopDraftBtn.classList.add('d-none');
                 hideLeaderCheckBox();
             }
+            break;
+        case 7:
+            statusCircle.classList.remove('text-warning');
+            statusCircle.classList.add('text-success');
+            statusConsole.innerHTML = draftStepText(7)
     }
     statusConsole.innerHTML = draftStepText(step);
 }

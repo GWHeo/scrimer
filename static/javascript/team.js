@@ -76,6 +76,9 @@ function setTeamSelectBtn(step) {
             if (!userCards[i].classList.contains('participant-card')) {
                 continue;
             }
+            if (userCards[i].classList.contains('participant-card-leader')) {
+                continue;
+            }
             var el = document.createElement('div');
             el.classList.add('form-check', 'm-2', 'draft-select-input-div');
             el.innerHTML = `
@@ -152,7 +155,7 @@ async function sendTeamSelect(step) {
     }
 
     // initialize
-    var selectDivs = document.getElementsByClassName('draft-select-input-div');
+    var selectDivs = document.querySelectorAll('.draft-select-input-div');
     for (let i=0; i<selectDivs.length; i++) {
         selectDivs[i].remove();
     }
@@ -172,22 +175,43 @@ async function sendTeamSelect(step) {
 }
 
 function resetTeam() {
-    var userCards = document.getElementsByClassName('participant-card');
+    var userCards = document.querySelectorAll('.participant-card');
     var participantBoard = document.getElementById('participant-board');
-    participantBoard.innerHTML = '';
+
+    // sort card number
+    var tmpList = [];
+    var sortedCards = [];
     for (let i=0; i<userCards.length; i++) {
-        userCards[i].parent.removeChild(userCards[i]);
-        participantBoard.appendChild(userCards[i]);
+        var id = userCards[i].id.split('-').pop();
+        tmpList.push(id);
+    }
+    tmpList.sort();
+    for (let i=0; i<tmpList.length; i++) {
+        for (let j=0; j<userCards.length; j++) {
+            var id = userCards[j].id.split('-').pop();
+            if (tmpList[i] == id) {
+                sortedCards.push(userCards[j])
+            }
+        }
+    }
+
+    for (let i=0; i<sortedCards.length; i++) {
         var wasLeader = false;
-        if (userCard[i].classList.contains('participant-card-leader')) {
-            userCard[i].classList.remove('participant-card-leader');
+        if (sortedCards[i].classList.contains('participant-card-leader')) {
+            sortedCards[i].classList.remove('participant-card-leader');
             wasLeader = true;
         }
         var data = {
-            "userId": userCards[i].id.split('-').pop(),
+            "userId": sortedCards[i].id.split('-').pop(),
             "role": wasLeader ? 'leader' : 'participant'
         };
         changeRoleBadge(data);
         changeCardBorder(data);
+        participantBoard.appendChild(sortedCards[i]);
+        sortedCards[i].parentNode.removeChild(sortedCards[i]);
+        var draftStorage = document.getElementById('draft-variable-storage');
+        if (draftStorage != null) {
+            draftStorage.remove();
+        }
     }
 }

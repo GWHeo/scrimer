@@ -133,8 +133,9 @@ def enter_room(request):
         user = None
         for u in users:
             if u.game_name.lower().replace(' ', '') == form.cleaned_data['gamename'].lower().replace(' ', ''):
-                user = u
-                break
+                if u.tag.lower() == form.cleaned_data['tag'].lower():
+                    user = u
+                    break
         if user is None:
             return HttpResponse(status=404)
         return redirect('room:room_view', room_id=room.code, user_id=user.pk)

@@ -44,7 +44,7 @@
         </button>
         {% include 'modals/link_modal.html' %}
         <div class="text-center fs-small">
-            <a href="#" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+            <a href="{% url 'common:guide_participate' %}" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                 <i class="bi bi-book me-2"></i>참여 가이드
             </a>
         </div>
@@ -60,7 +60,7 @@
         </button>
         {% include 'modals/name_modal.html' %}
         <div class="text-center fs-small">
-            <a href="#" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+            <a href="{% url 'common:guide_create' %}" class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                 <i class="bi bi-book me-2"></i>생성 가이드
             </a>
         </div>

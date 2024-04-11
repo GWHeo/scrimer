@@ -38,6 +38,7 @@ function setDivideMethodToolBox(method) {
         case 'draft':
             element = getDraftToolBoxEl();
             showLeaderCheckBox();
+            window.alert('참가자들 중 2명을 주장으로 선택하세요')
             break;
         case 'random':
             element = getRandomToolBoxEl();

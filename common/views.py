@@ -10,3 +10,11 @@ def index(request):
 def file_download(request, category, filename):
     file = open(f'static/images/{category}/{filename}', 'rb')
     return FileResponse(file)
+
+
+def create_guide(request):
+    return render(request, 'guide/create.html')
+
+
+def participate_guide(request):
+    return render(request, 'guide/participate.html')

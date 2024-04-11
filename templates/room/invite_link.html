@@ -2,7 +2,7 @@
     <div class="m-2 d-flex justify-content-center">
         <div class="input-group mw-75">
             <input type="text" id="invite-link" class="form-control bar-dark" aria-describedby="copy-button" value="{{ invite_link }}" readonly>
-            <button class="btn btn-theme" id="copy-button"><i class="bi bi-copy"></i></button>
+            <button class="btn btn-theme" id="copy-button" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="복사하기" data-bs-trigger="hover"><i class="bi bi-copy"></i></button>
         </div>
         <input type="hidden" id="copy-timer" value="false">
     </div>

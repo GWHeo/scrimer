@@ -196,8 +196,11 @@ input:autofill:active {
     border-radius: 1rem;
     background-color: var(--default-bg-color);
 }
+.img-w-50 {
+    width: 50%;
+}
 .img-w-75 {
-    width: 75%
+    width: 75%;
 }
 .accordion.content-wrapper {
     --bs-accordion-color: none;
@@ -316,8 +319,11 @@ input:autofill:active {
     .mobile-hidden {
         display: none;
     }
+    .img-w-50 {
+        width: 80%;
+    }
     .img-w-75 {
-        width: 100%
+        width: 100%;
     }
     .site-default {
         background-color: var(--default-bg-color);

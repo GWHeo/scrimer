@@ -9,16 +9,14 @@ var myMostIcon = document.getElementById('my-detail-most');
 var myMostText = document.getElementById('my-detail-most-text');
 var champions = '';
 
-function copyLink() {
-    window.navigator.clipboard.writeText(link);
-    copyBtn.innerHTML = `<i class="bi bi-check-lg"></i>`;
-}
-
 copyBtn.addEventListener('click', async function() {
+    const tooltip = bootstrap.Tooltip.getInstance('#copy-button');
     window.navigator.clipboard.writeText(link);
     copyBtn.innerHTML = `<i class="bi bi-check-lg"></i>`;
+    tooltip.setContent({'.tooltip-inner': '복사 완료!'});
     await sleep(5);
     copyBtn.innerHTML = `<i class="bi bi-copy"></i>`;
+    tooltip.setContent({'.tooltip-inner': '복사하기'});
 });
 
 async function sendNewUser() {

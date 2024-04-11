@@ -42,9 +42,15 @@ async function leaveChannel() {
 
 (async () => {
     var detailResponse = await requestGet(userDetailUrl);
-    if (detailResponse.status == 404) {
-        alert('사용자를 찾을 수 없습니다. 다시 참여해 주세요.');
-        window.location.href = '/';
+    switch(detailResponse.status) {
+        case 404:
+            alert('사용자를 찾을 수 없습니다. 다시 참여해 주세요.');
+            window.location.href = '/';
+            break;
+        case 500:
+            alert('서버오류입니다. 잠시 후 다시 시도해주세요.');
+            window.location.href = '/';
+            break;
     }
     var detail = await detailResponse.json();
     //var detail = JSON.parse(detailJson);

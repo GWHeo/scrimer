@@ -264,8 +264,10 @@ input:autofill:active {
     max-height: 3rem;
 }
 .participant-detail-icon {
-    max-width:1.5rem;
-    max-height: 1.5rem;
+    width: 80%;
+    height: 80%;
+    max-width: 3rem;
+    max-height: 3rem;
 }
 .team-board {
     border: 1px solid;

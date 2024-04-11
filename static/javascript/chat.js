@@ -139,23 +139,26 @@ function setParticipantCard(data) {
             <div class="col-auto">
                 <img class="participant-profile-icon rounded-circle" src="${profileIconUrl}/${data.profileIconId}.png">
             </div>
-            <div class="col-auto p-0">
+            <div class="col p-0">
                 <div>
-                    <span>${data.gameName}</span><span class="text-darker fs-small">#${data.tag}</span>
-                    <input type="hidden" id="game-name-${data.userId}" value="${data.gameName}#${data.tag}">
+                    <span>${data.gameName}</span>
                 </div>
+                <div>
+                    <span class="text-darker fs-small">#${data.tag}</span>
+                </div>
+                <input type="hidden" id="game-name-${data.userId}" value="${data.gameName}#${data.tag}">
                 <div class="d-inline-flex" id="card-user-badge-${data.userId}">
                 </div>
             </div>
         </div>
-        <div class="row m-2 justify-content-center align-items-center">
-            <div class="col">
-                <img class="participant-detail-icon" id="card-user-tier-${data.userId}" src="">
+        <div class="row m-2 justify-content-center align-items-center text-center">
+            <div class="col-4 p-1">
+                <img class="participant-detail-icon" id="card-user-tier-${data.userId}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="" src="">
             </div>
-            <div class="col">
-                <img class="participant-detail-icon" id="card-user-most-${data.userId}" src="">
+            <div class="col-4 p-1">
+                <img class="participant-detail-icon" id="card-user-most-${data.userId}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="" src="">
             </div>
-            <div class="col">
+            <div class="col-4 p-1">
                 <img class="participant-detail-icon" id="card-user-lane-${data.userId}" src="">
             </div>
         </div>
@@ -309,6 +312,9 @@ async function handleWebSocketMessage(event) {
             message.data['message'] = `${message.data.gameName}#${message.data.tag}님이 퇴장했습니다.`;
             parseMessage(message);
             removeUser(message.data);
+            if (isCreator) {
+                checkAvailabilityDraftBtn();
+            }
             if (message.data['owner']) {
                 chatSocket.close(1000);
                 if (!isCreator){
@@ -329,6 +335,9 @@ async function handleWebSocketMessage(event) {
             await newUser(message.data);
             if (!isTeamBoardHeightSet) {
                 setTeamBoardHeight();
+            }
+            if (isCreator) {
+                checkAvailabilityDraftBtn();
             }
             break;
         case 'changeRole':
@@ -423,12 +432,39 @@ async function handleWebSocketMessage(event) {
                 await receiveRspComplete(message.data.isDraw);
             }
             break;
+        case 'randomPick':
+            setRandomStatus(1);
+            for (let i=0; i<message.data.blue.length; i++) {
+                moveUserCardToTeamBoard(message.data.blue[i], 'blue')
+            }
+            for (let i=0; i<message.data.red.length; i++) {
+                moveUserCardToTeamBoard(message.data.red[i], 'red')
+            }
+            message.data['message'] = '랜덤 팀 뽑기가 완료되었습니다.';
+            parseMessage(message);
+            break;
         case 'reset':
-            setDraftStatus(0);
+            if (isCreator) {
+                switch(divideMode) {
+                    case 'draft':
+                        setDraftStatus(0);
+                        break;
+                    case 'random':
+                        setRandomStatus(0)
+                        break;
+                }
+                divideMode = '';
+            } else {
+                setDraftStatus(0);
+            }
             resetTeam();
             message.data['message'] = '팀이 초기화 되었습니다.';
-            parseMessage(data);
+            parseMessage(message);
     }
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 }
 
 function handleWebSocketClosure(event) {

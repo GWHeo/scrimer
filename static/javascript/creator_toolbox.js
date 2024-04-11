@@ -32,6 +32,27 @@ function applyMaxParticipants(value) {
     input.value = value;
 }
 
+function setDivideMethodToolBox(method) {
+    var element = '';
+    switch(method) {
+        case 'draft':
+            element = getDraftToolBoxEl();
+            showLeaderCheckBox();
+            break;
+        case 'random':
+            element = getRandomToolBoxEl();
+            hideLeaderCheckBox();
+            break;
+    }
+
+    var toolboxDiv = document.getElementById('divide-method-toolbox');
+    toolboxDiv.innerHTML = element;
+    if (method == 'draft') {
+        setDraftConsole();
+    }
+    divideMode = method;
+}
+
 function showLeaderCheckBox() {
     var leaderCheckBoxes = document.getElementsByClassName('leader-check-box');
     for (let i=0; i<leaderCheckBoxes.length; i++) {
@@ -49,6 +70,19 @@ function hideLeaderCheckBox() {
         if (!classList.contains('d-none')) {
             classList.add('d-none');
         }
+    }
+}
+
+
+// draft pick
+
+function checkAvailabilityDraftBtn() {
+    var userCards = document.getElementsByClassName('participant-card');
+    var draftPickBtn = document.getElementById('method-option-draft');
+    if (userCards.length != 10) {
+        draftPickBtn.disabled = true;
+    } else {
+        draftPickBtn.disabled = false;
     }
 }
 
@@ -94,27 +128,6 @@ function setDraftConsole() {
             creatorToolBoxStep2Btn.disabled = true;
         }
     }
-}
-
-function setDivideMethodToolBox(method) {
-    var element = '';
-    switch(method) {
-        case 'draft':
-            element = getDraftToolBoxEl();
-            showLeaderCheckBox();
-            break;
-        case 'random':
-            element = getRandomToolBoxEl();
-            hideLeaderCheckBox();
-            break;
-    }
-
-    var toolboxDiv = document.getElementById('divide-method-toolbox');
-    toolboxDiv.innerHTML = element;
-    if (method == 'draft') {
-        setDraftConsole();
-    }
-    divideMode = method;
 }
 
 function draftStepText(step) {
@@ -207,4 +220,54 @@ async function stopDraftPick() {
 
 async function sendResetTeam() {
     await wsSend('reset', {})
+}
+
+
+// random pick
+
+async function startRandomPick() {
+    var userCards = document.getElementsByClassName('participant-card');
+    var userIds = []
+    for (let i=0; i<userCards.length; i++) {
+        var id = userCards[i].id.split('-').pop();
+        userIds.push(id)
+    }
+    await wsSend('randomPick', {
+        'userIds': userIds
+    })
+}
+
+function setRandomStatus(step) {
+    var stopDraftBtn = document.getElementById('stop-draft-btn');
+    var statusCircle = document.getElementById('status-circle');
+    var statusConsole = document.getElementById('status-console');
+    var randomPickBtn = document.getElementById('random-pick-btn');
+    switch(step) {
+        case 0:
+            if (isCreator) {
+                randomPickBtn.disabled = false;
+            }
+            if (statusCircle.classList.contains('text-success')) {
+                statusCircle.classList.remove('text-success')
+            }
+            if (statusCircle.classList.contains('text-warning')) {
+                statusCircle.classList.remove('text-warning')
+            }
+            statusCircle.classList.add('text-danger');
+            statusConsole.innerHTML = draftStepText(0)
+            break;
+        case 1:
+            if (isCreator) {
+                randomPickBtn.disabled = true;
+            }
+            if (statusCircle.classList.contains('text-danger')) {
+                statusCircle.classList.remove('text-danger')
+            }
+            if (statusCircle.classList.contains('text-warning')) {
+                statusCircle.classList.remove('text-warning')
+            }
+            statusCircle.classList.add('text-success');
+            statusConsole.innerHTML = '(랜덤) 팀 선정 완료!'
+            break;
+    }
 }

@@ -6,6 +6,7 @@ from asgiref.sync import async_to_sync, sync_to_async
 from room.models import ChannelUser, Room
 import redis
 import json
+import random
 
 
 def set_ws_send_data(message_type, status, data):
@@ -120,7 +121,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         elif data['type'] == 'rspResult':
             value = data['message']['value']
             if value == '' or value is None:
-                import random
                 choices = ['rock', 'scissor', 'paper']
                 value = choices[random.randrange(0, 3)]
             user_rsp_key = self.rsp_cache_key + f":{data['message']['userId']}"
@@ -147,6 +147,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 ws_data = self.set_ws_data('system', f'rspResult', json_data)
         elif data['type'] == 'rspComplete':
             ws_data = self.set_ws_data('system', 'rspComplete', data['message'])
+        elif data['type'] == 'randomPick':
+            blue_team = []
+            red_team = []
+            # decide number of team members
+            user_all = data['message']['userIds']
+            each_team_members, remainder = divmod(len(user_all), 2)
+            blue_members, red_members = each_team_members, each_team_members
+            if remainder != 0:
+                teams = ['blue', 'red']
+                add = teams[random.randrange(0, len(teams))]
+                if add == 'blue':
+                    blue_members += remainder
+                else:
+                    red_members += remainder
+            # divide users randomly
+            for i in range(0, blue_members):
+                selected = user_all.pop(random.randrange(0, len(user_all)))
+                blue_team.append(selected)
+            red_team = user_all
+            ws_data = self.set_ws_data('system', 'randomPick', {
+                'blue': blue_team,
+                'red': red_team
+            })
         elif data['type'] == 'reset':
             room = await Room.objects.aget(code=self.room_name)
             room.status = 'ready'

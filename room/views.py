@@ -15,6 +15,7 @@ import requests
 import json
 import uuid
 import time
+import time
 
 
 def link_access(request, room_id):
@@ -56,10 +57,6 @@ def user_validation(request):
         return HttpResponse(response.status_code)
     user_data = response.json()
     
-    # upper or lower case-sensitive
-    if user_data['gameName'] != data['gameName']:
-        return HttpResponse(status=401)
-
     # user save
     if user_role == 'creator':
         user = ChannelUser.objects.filter(game_name=user_data['gameName'], tag=user_data['tagLine'], owner=True)
@@ -132,9 +129,14 @@ def enter_room(request):
     form = EnterRoom(request.POST)
     if form.is_valid():
         room = Room.objects.get(code=form.cleaned_data['room_id'])
-        if room.status != 'ready':
-            return HttpResponse(status=204)
-        user = ChannelUser.objects.get(room=room, game_name=form.cleaned_data['gamename'], tag=form.cleaned_data['tag'].upper())
+        users = ChannelUser.objects.all()
+        user = None
+        for u in users:
+            if u.game_name.lower().replace(' ', '') == form.cleaned_data['gamename'].lower().replace(' ', ''):
+                user = u
+                break
+        if user is None:
+            return HttpResponse(status=404)
         return redirect('room:room_view', room_id=room.code, user_id=user.pk)
     return HttpResponse(status=400)
 
@@ -234,6 +236,8 @@ def fetch_user_detail(request, room_id, user_id):
     if user.most is None:
         riot_most_url = f"{endpoints['champion_mastery']}/{user.puuid}/top?count=1"
         most_response = request_get(riot_most_url)
+        from pprint import pprint
+        pprint(most_response)
         most = most_response.json()[0]['championId']
         user.most = most
         user.save()

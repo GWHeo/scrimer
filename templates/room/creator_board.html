@@ -1,11 +1,11 @@
 <div class="accordion content-wrapper mx-2" id="creator-box">
     <div class="accordion-item">
         <div class="accordion-header text-center m-2 p-2">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#creator-box-content" aria-expanded="true" aria-controls="creator-box-contnet">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#creator-box-content" aria-expanded="true" aria-controls="creator-box-content">
                 <span class="h4">팀 뽑기 설정</span>
             </button>
         </div>
-        <div class="accordion-collapse" id="creator-box-content" data-bs-parent="creator-box">
+        <div class="accordion-collapse collapse show" id="creator-box-content" data-bs-parent="#creator-box">
             <div class="accordion-body">
                 <div class="row g-2 my-2 align-items-center">
                     <label for="max-participants" class="col-lg-3 col-form-label">최대 참가 인원</label>
@@ -26,7 +26,7 @@
                         (최소 2명, 최대 10명)
                     </div>
                 </div>
-                <div class="row g-2 align-items-center">
+                <div class="row g-2 my-2 align-items-top">
                     <div class="col-lg-3 col-form-label">팀 가르기 방식</div>
                     <div class="col-auto">
                         <div class="row g-2 align-items-center">
@@ -38,10 +38,13 @@
                                 <input type="radio" class="btn-check" name="divide-method-options" id="method-option-random" value="random" onclick="setDivideMethodToolBox(this.value)" autocomplete="off">
                                 <label class="btn btn-theme-outline" for="method-option-random">올랜덤</label>
                             </div>
-                            <div class="col-auto">
+                            <div class="col-auto" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="업데이트 예정">
                                 <input type="radio" class="btn-check" name="divide-method-options" id="method-option-auto" value="auto" onclick="setDivideMethodToolBox(this.value)" autocomplete="off" disabled>
                                 <label class="btn btn-theme-outline" for="method-option-auto">자동</label>
                             </div>
+                        </div>
+                        <div class="m-1 text-darker fs-small">
+                            * 드래프트 픽은 참가인원이 10명일 때에만 가능합니다.
                         </div>
                     </div>
                 </div>

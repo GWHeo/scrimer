@@ -15,6 +15,11 @@ async function submitMaxParticipants() {
         alert('최대인원은 2인 이상 10인 이하로 입력해야합니다.');
         return;
     }
+    var currentUsers = document.getElementsByClassName('participant-card');
+    if (input.value < currentUsers.length) {
+        alert('현재 참여 중인 인원보다 적게 설정할 수 없습니다.');
+        return;
+    }
     submitBtn.disabled = true;
     submitBtn.innerHTML = spinnerDOM();
     input.readOnly = true;
@@ -216,6 +221,19 @@ async function stopDraftPick() {
         await wsSend('draftPick', {
             'step': 0
         });
+    }
+}
+
+function clearDraftLeaders() {
+    var draftStorage = document.getElementById('draft-variable-storage');
+    if (draftStorage != null) {
+        draftStorage.remove();
+    }
+    showLeaderCheckBox();
+    var checkboxes = document.getElementsByName('card-tool-set-leader');
+    for (let i=0; i<checkboxes.length; i++) {
+        checkboxes[i].checked = false;
+        changeUserRole(checkboxes[i].id.split('-').pop());
     }
 }
 

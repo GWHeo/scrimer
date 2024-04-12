@@ -40,13 +40,17 @@ chatMarginSetting(992);
 chatBodySizing();
 
 chatBubble.addEventListener('click', () => {
-    chatBox.style.visibility = 'visible';
-    chatBubble.style.visibility = 'hidden';
+    chatBox.classList.remove('d-none');
+    chatBubble.classList.add('d-none');
+    var unreadBadge = document.getElementById('chat-unread-badge');
+    if (!unreadBadge.classList.contains('d-none')){
+        unreadBadge.classList.add('d-none');
+    }
 });
 
 minimizeButton.addEventListener('click', () => {
-    chatBox.style.visibility = 'hidden';
-    chatBubble.style.visibility = 'visible';
+    chatBox.classList.add('d-none');
+    chatBubble.classList.remove('d-none');
 });
 
 chatInput.addEventListener('keyup', function(e) {
@@ -106,7 +110,6 @@ function parseMessage(data) {
                 break;
         }
     }
-
     var messageContainers = document.getElementsByClassName('chat-div');
     var container = messageContainers[messageContainers.length - 1];
     if (msgType != 'system') {
@@ -131,6 +134,13 @@ function parseMessage(data) {
         }
     }
     chatBody.scrollTo(0, chatBody.scrollHeight);
+
+    var unreadBadge = document.getElementById('chat-unread-badge');
+    if (chatBox.classList.contains('d-none')) {
+        if (unreadBadge.classList.contains('d-none')) {
+            unreadBadge.classList.remove('d-none');
+        }
+    }
 }
 
 function setParticipantCard(data) {
@@ -179,7 +189,7 @@ function setLeaderCheckbox(data) {
     var html = `
         <div class="col-auto leader-check-box ${display}">
             <div class="form-check">
-                <input class="from-check-input" type="checkbox" value="" name="card-tool-set-leader" id="card-tool-set-leader-${data.userId}" onclick="changeRole(${data.userId})" ${toolDisable}>
+                <input class="from-check-input" type="checkbox" value="" name="card-tool-set-leader" id="card-tool-set-leader-${data.userId}" onclick="changeUserRole(${data.userId})" ${toolDisable}>
                 <label class="form-check-label" for="card-tool-set-leader-${data.userId}">
                     주장
                 </label>
@@ -189,7 +199,7 @@ function setLeaderCheckbox(data) {
     return html;
 }
 
-async function changeRole(userId) {
+async function changeUserRole(userId) {
     var checkbox = document.getElementById(`card-tool-set-leader-${userId}`);
     var creatorToolBoxStep1 = document.getElementById('divide-method-toolbox-select-leader');
     var creatorToolBoxStep2 = document.getElementById('divide-method-toolbox-select-first');
@@ -453,7 +463,6 @@ async function handleWebSocketMessage(event) {
                         setRandomStatus(0)
                         break;
                 }
-                divideMode = '';
             } else {
                 setDraftStatus(0);
             }

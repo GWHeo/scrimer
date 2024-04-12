@@ -105,30 +105,26 @@ function setChampIcon(imgNode, textNode, champData, champId) {
 
 function setRankIcon(imgNode, textNode, data) {
     var rank = '';
-    if (data.length == 0) {
-        if (textNode != null) {
-            textNode.innerHTML = 'Unranked';
-        }
-        imgNode.src = localImages['tier_unranked'];
-        if (imgNode.getAttribute('data-bs-toggle') != null) {
-            imgNode.setAttribute('data-bs-title', 'Unranked');
-        }
-    } else {
-        for (let i=0; i<data.length; i++) {
-            if (data[i].queueType == 'RANKED_SOLO_5x5') {
-                if (textNode != null) {
-                    textNode.innerHTML = data[i].tier + ' ' + data[i].rank;
-                }
-                var filename = 'tier_' + data[i].tier.toLowerCase();
-                imgNode.src = localImages[filename];
-                if (imgNode.getAttribute('data-bs-toggle') != null) {
-                    imgNode.setAttribute('data-bs-title', data[i].tier + ' ' + data[i].rank);
-                }
-                break;
+    if (textNode != null) {
+        textNode.innerHTML = 'Unranked';
+    }
+    imgNode.src = localImages['tier_unranked'];
+    if (imgNode.getAttribute('data-bs-toggle') != null) {
+        imgNode.setAttribute('data-bs-title', 'Unranked');
+    }
+    for (let i=0; i<data.length; i++) {
+        if (data[i].queueType == 'RANKED_SOLO_5x5') {
+            if (textNode != null) {
+                textNode.innerHTML = data[i].tier + ' ' + data[i].rank;
             }
+            var filename = 'tier_' + data[i].tier.toLowerCase();
+            imgNode.src = localImages[filename];
+            if (imgNode.getAttribute('data-bs-toggle') != null) {
+                imgNode.setAttribute('data-bs-title', data[i].tier + ' ' + data[i].rank);
+            }
+            break;
         }
     }
-
 }
 
 function setMainLane(imgNode, textNode, lane) {

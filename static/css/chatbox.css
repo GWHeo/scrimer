@@ -1,5 +1,4 @@
 .chat-icon {
-    visibility: visible;
     display: flex;
     position: fixed;
     justify-content: center;
@@ -18,7 +17,6 @@
 }
 
 .chat-box {
-    visibility: hidden;
     flex-direction: column;
     max-width: 25rem;
     width: 25rem;

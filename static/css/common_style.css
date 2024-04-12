@@ -202,6 +202,7 @@ input:autofill:active {
 .img-w-75 {
     width: 75%;
 }
+
 .accordion.content-wrapper {
     --bs-accordion-color: none;
     --bs-accordion-bg: none;

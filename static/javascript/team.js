@@ -209,17 +209,13 @@ function resetTeam() {
         myRole = 'participant';
         changeRoleBadge(data);
         changeCardBorder(data);
-        if (isCreator && divideMode == 'draft') {
-            var draftStorage = document.getElementById('draft-variable-storage');
-            if (draftStorage != null) {
-                draftStorage.remove();
-            }
-            showLeaderCheckBox();
-            var checkboxes = document.getElementsByName('card-tool-set-leader');
-            for (let i=0; i<checkboxes.length; i++) {
-                checkboxes[i].checked = false;
-            }
+    }
+
+    if (isCreator) {
+        if (divideMode == 'draft'){
+            clearDraftLeaders();
             setDraftConsole();
         }
+        setDivideMethodToolBox(divideMode);
     }
 }

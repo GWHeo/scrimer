@@ -5,8 +5,12 @@ var myProfileGameName = document.getElementById('my-profile-gamename');
 var myProfileTag = document.getElementById('my-profile-tag');
 var myTierIcon = document.getElementById('my-detail-tier');
 var myTierText = document.getElementById('my-detail-tier-text');
-var myMostIcon = document.getElementById('my-detail-most');
-var myMostText = document.getElementById('my-detail-most-text');
+var myMost1Icon = document.getElementById('my-detail-most1');
+var myMost1Text = document.getElementById('my-detail-most1-text');
+var myMost2Icon = document.getElementById('my-detail-most2');
+var myMost2Text = document.getElementById('my-detail-most2-text');
+var myMost3Icon = document.getElementById('my-detail-most3');
+var myMost3Text = document.getElementById('my-detail-most3-text');
 var champions = '';
 
 copyBtn.addEventListener('click', async function() {
@@ -71,7 +75,9 @@ async function leaveChannel() {
         // tier
         setRankIcon(myTierIcon, myTierText, detail.rank),
         // most
-        setChampIcon(myMostIcon, myMostText, champions, detail.most)
+        setChampIcon(myMost1Icon, myMost1Text, champions, detail.most1),
+        setChampIcon(myMost2Icon, myMost2Text, champions, detail.most2),
+        setChampIcon(myMost3Icon, myMost3Text, champions, detail.most3)
     ]
 
     var initMyDetails = await Promise.all(
@@ -81,7 +87,7 @@ async function leaveChannel() {
     )
 
     // lane
-    changeMyLane(true);
+    await changeMyLane(true);
 
     // set participant card
     await setOldUsers();

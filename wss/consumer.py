@@ -96,7 +96,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await change_user.asave()
             ws_data = self.set_change_ws_message(change_user, message_type='changeRole')
         elif data['type'] == 'changeLane':
-            user.lane = data['message']['laneSelect']
+            user.lane1 = data['message']['laneSelect'][0]
+            user.lane2 = data['message']['laneSelect'][1]
             await user.asave()
             ws_data = self.set_change_ws_message(user, message_type='onchange')
         elif data['type'] == 'changeMaxParticipants':
@@ -208,8 +209,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'gameName': user.game_name,
             'tag': user.tag,
             'rank': user.rank,
-            'most': user.most,
-            'lane': user.lane
+            'most1': user.most1,
+            'most2': user.most2,
+            'most3': user.most3,
+            'lane1': user.lane1,
+            'lane2': user.lane2
         })
 
 

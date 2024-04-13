@@ -157,14 +157,17 @@ function setMainLane(imgNode, textNode, lane) {
 }
 
 async function changeMyLane(init) {
-    var selectBox = document.getElementById('lane-select');
-    var imgNode = document.getElementById('my-detail-lane');
+    var selectBox1 = document.getElementById('lane1-select');
+    var selectBox2 = document.getElementById('lane2-select');
+    var imgNode1 = document.getElementById('my-detail-lane1');
+    var imgNode2 = document.getElementById('my-detail-lane2');
 
     if (!init) {
         await wsSend('changeLane', {
-            'laneSelect': selectBox.value
+            'laneSelect': [selectBox1.value, selectBox2.value]
         });
     }
 
-    await setMainLane(imgNode, null, selectBox.value);
+    setMainLane(imgNode1, null, selectBox1.value);
+    setMainLane(imgNode2, null, selectBox2.value);
 }

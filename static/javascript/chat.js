@@ -162,14 +162,23 @@ function setParticipantCard(data) {
             </div>
         </div>
         <div class="row m-2 justify-content-center align-items-center text-center">
-            <div class="col-4 p-1">
+            <div class="col-2 p-1">
                 <img class="participant-detail-icon" id="card-user-tier-${data.userId}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="" src="">
             </div>
-            <div class="col-4 p-1">
-                <img class="participant-detail-icon" id="card-user-most-${data.userId}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="" src="">
+            <div class="col-2 p-1">
+                <img class="participant-detail-icon" id="card-user-most1-${data.userId}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="" src="">
             </div>
-            <div class="col-4 p-1">
-                <img class="participant-detail-icon" id="card-user-lane-${data.userId}" src="">
+            <div class="col-2 p-1">
+                <img class="participant-detail-icon" id="card-user-most2-${data.userId}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="" src="">
+            </div>
+            <div class="col-2 p-1">
+                <img class="participant-detail-icon" id="card-user-most3-${data.userId}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="" src="">
+            </div>
+            <div class="col-2 p-1">
+                <img class="participant-detail-icon" id="card-user-lane1-${data.userId}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="희망라인1" src="">
+            </div>
+            <div class="col-2 p-1">
+                <img class="participant-detail-icon" id="card-user-lane2-${data.userId}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="희망라인2" src="">
             </div>
         </div>
     `;
@@ -241,10 +250,16 @@ function changeRoleBadge(data) {
 function changeCardDetail(data) {
     var tierImg = document.getElementById(`card-user-tier-${data.userId}`);
     setRankIcon(tierImg, null, data.rank);
-    var mostImg = document.getElementById(`card-user-most-${data.userId}`);
-    setChampIcon(mostImg, null, champions, data.most);
-    var laneImg = document.getElementById(`card-user-lane-${data.userId}`);
-    setMainLane(laneImg, null, data.lane);
+    var most1Img = document.getElementById(`card-user-most1-${data.userId}`);
+    var most2Img = document.getElementById(`card-user-most2-${data.userId}`);
+    var most3Img = document.getElementById(`card-user-most3-${data.userId}`);
+    setChampIcon(most1Img, null, champions, data.most1);
+    setChampIcon(most2Img, null, champions, data.most2);
+    setChampIcon(most3Img, null, champions, data.most3);
+    var lane1Img = document.getElementById(`card-user-lane1-${data.userId}`);
+    var lane2Img = document.getElementById(`card-user-lane2-${data.userId}`);
+    setMainLane(lane1Img, null, data.lane1);
+    setMainLane(lane2Img, null, data.lane2);
 }
 
 const board = document.getElementById('participant-board');

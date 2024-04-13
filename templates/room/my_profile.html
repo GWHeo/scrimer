@@ -1,10 +1,10 @@
-<div class="row justify-content-center align-items-center p-1 my-4 mx-2 g-2 content-wrapper">
+<div class="row justify-content-between align-items-center p-4 my-4 mx-2 g-2 content-wrapper">
     <div class="col-lg-5">
-        <div class="row justify-content-center align-items-center">
+        <div class="row align-items-center">
             <div class="col-auto my-profile-icon-wrapper m-2">
                 <img class="my-profile-icon rounded-circle" src="" id="my-profile-icon">
             </div>
-            <div class="col-auto">
+            <div class="col">
                 <div>
                     <span class="h4 me-1" id="my-profile-gamename"></span>
                     <span class="h5 text-darker" id="my-profile-tag"></span>
@@ -26,10 +26,9 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-1"></div>
-    <div class="col-lg-6">
+    <div class="col-lg-7">
         <div class="row justify-content-center align-items-center fs-small text-darker text-center">
-            <div class="col-3">
+            <div class="col-lg-2">
                 <div class="my-1">
                     티어
                 </div>
@@ -40,29 +39,72 @@
 
                 </div>
             </div>
-            <div class="col-3">
-                <div class="my-1">
-                    모스트
-                </div>
-                <div class="my-detail-wrapper my-1">
-                    <img class="my-detail-icon" src="" id="my-detail-most">
-                </div>
-                <div class="my-1" id="my-detail-most-text">
+            <div class="col-lg-6">
+                <div class="row justify-content-center">
+                    <div class="col-auto">
+                        <div class="my-1">
+                            모스트1
+                        </div>
+                        <div class="my-detail-wrapper my-1">
+                            <img class="my-detail-icon" src="" id="my-detail-most1">
+                        </div>
+                        <div class="my-1" id="my-detail-most1-text">
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="my-1">
+                            모스트2
+                        </div>
+                        <div class="my-detail-wrapper my-1">
+                            <img class="my-detail-icon" src="" id="my-detail-most2">
+                        </div>
+                        <div class="my-1" id="my-detail-most2-text">
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="my-1">
+                            모스트3
+                        </div>
+                        <div class="my-detail-wrapper my-1">
+                            <img class="my-detail-icon" src="" id="my-detail-most3">
+                        </div>
+                        <div class="my-1" id="my-detail-most3-text">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-3">
-                <div class="my-1">
-                    희망 라인
-                </div>
-                <div class="my-detail-wrapper my-1">
-                    <img class="my-detail-icon" src="" id="my-detail-lane">
-                </div>
-                <div class="my-1" id="my-detail-lane-text">
-                    <select id="lane-select" class="text-center" onchange="changeMyLane(false)">
-                        {% for choice in lane_choices %}
-                        <option value="{{ choice.0 }}" {% if channel_user.lane == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                        {% endfor %}
-                    </select>
+            <div class="col-lg-4">
+                <div class="row justify-content-center">
+                    <div class="col-auto">
+                        <div class="my-1">
+                            희망 라인1
+                        </div>
+                        <div class="my-detail-wrapper my-1">
+                            <img class="my-detail-icon" src="" id="my-detail-lane1">
+                        </div>
+                        <div class="my-1" id="my-detail-lane1-text">
+                            <select id="lane1-select" class="text-center" onchange="changeMyLane(false)">
+                                {% for choice in lane_choices %}
+                                <option value="{{ choice.0 }}" {% if channel_user.lane1 == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="my-1">
+                            희망 라인2
+                        </div>
+                        <div class="my-detail-wrapper my-1">
+                            <img class="my-detail-icon" src="" id="my-detail-lane2">
+                        </div>
+                        <div class="my-1" id="my-detail-lane2-text">
+                            <select id="lane2-select" class="text-center" onchange="changeMyLane(false)">
+                                {% for choice in lane_choices %}
+                                <option value="{{ choice.0 }}" {% if channel_user.lane2 == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!--

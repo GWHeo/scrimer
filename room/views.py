@@ -189,8 +189,11 @@ def fetch_old_users(request, room_id, user_id):
             'gameName': user.game_name,
             'tag': user.tag,
             'rank': user.rank,
-            'most': user.most,
-            'lane': user.lane
+            'most1': user.most1,
+            'most2': user.most2,
+            'most3': user.most3,
+            'lane1': user.lane1,
+            'lane2': user.lane2
         })
     data = json.dumps(user_list, ensure_ascii=False, cls=DjangoJSONEncoder)
     return HttpResponse(data, status=200)
@@ -234,17 +237,23 @@ def fetch_user_detail(request, room_id, user_id):
     data['rank'] = rank
     
     # most champion
-    if user.most is None:
-        riot_most_url = f"{endpoints['champion_mastery']}/{user.puuid}/top?count=1"
+    if user.most1 is None:
+        riot_most_url = f"{endpoints['champion_mastery']}/{user.puuid}/top?count=3"
         most_response = request_get(riot_most_url)
-        from pprint import pprint
-        pprint(most_response)
-        most = most_response.json()[0]['championId']
-        user.most = most
+        most1 = most_response.json()[0]['championId']
+        most2 = most_response.json()[1]['championId']
+        most3 = most_response.json()[2]['championId']
+        user.most1 = most1
+        user.most2 = most2
+        user.most3 = most3
         user.save()
     else:
-        most = user.most
-    data['most'] = most
+        most1 = user.most1
+        most2 = user.most2
+        most3 = user.most3
+    data['most1'] = most1
+    data['most2'] = most2
+    data['most3'] = most3
     
     json_data = json.dumps(data, ensure_ascii=False, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, status=200)

@@ -112,6 +112,23 @@ input:autofill:active {
     --bs-btn-active-border-color: var(--theme-color);
 }
 
+.btn.btn-discord {
+    --bs-btn-font-weight: 600;
+    --bs-btn-color: var(--default-font-color);
+    --bs-btn-bg: #5865F2;
+    --bs-btn-border-color: #5865F2;
+    --bs-btn-hover-color: var(--default-font-color);
+    --bs-btn-hover-bg: #A5ABF2;
+    --bs-btn-hover-border-color: #A5ABF2;
+    /*--bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);*/
+    --bs-btn-active-color: var(--bs-btn-color);
+    --bs-btn-active-bg: #5865F2;
+    --bs-btn-active-border-color: #5865F2;
+    --bs-btn-disabled-color: var(--bs-btn-color);
+    --bs-btn-disabled-bg: rgba(88,101,242,0.5);
+    --bs-btn-disabled-border-color: rgba(88,101,242,0.5);
+}
+
 .btn.btn-theme {
     --bs-btn-font-weight: 600;
     --bs-btn-color: var(--default-font-color);

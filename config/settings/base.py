@@ -270,3 +270,7 @@ RIOT_API_ENDPOINTS = {
     'champion_mastery': 'https://kr.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid',
     'league': 'https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner'
 }
+
+
+# Discord
+DISCORD_CHANNEL_URL = 'https://discord.gg/mZgg6pU3fD'

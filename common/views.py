@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import FileResponse
-import os
+from django.conf import settings
 
 
 def index(request):
@@ -18,3 +18,10 @@ def create_guide(request):
 
 def participate_guide(request):
     return render(request, 'guide/participate.html')
+
+
+def contact(request):
+    urls = {
+        'discord': settings.DISCORD_CHANNEL_URL
+    }
+    return render(request, 'contact.html', {'urls': urls})

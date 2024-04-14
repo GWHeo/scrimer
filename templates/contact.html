@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main_content %}
+<div class="mobile-hidden" style="height:15dvh;"></div>
+<div class="p-2"></div>
+<div class="row justify-content-center align-items-center m-2 p-2 text-center">
+    <div class="col-3">
+        <div class="m-2">
+            <img class="w-50" src="{% static 'images/discord-icon.svg' %}">
+        </div>
+        <a class="btn btn-discord" href="{{ urls.discord }}">디스코드 채널에서 문의</a>
+        <div class="text-darker m-2 p-2 fs-small">
+            {{ urls.discord }}
+        </div>
+    </div>
+</div>
+{% endblock %}

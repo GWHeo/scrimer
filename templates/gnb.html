@@ -5,14 +5,34 @@
         <div class="h-100">
             {% if request.path != '/' %}
             <a class="navbar-brand" href="{% url 'common:index' %}">
-                <img src="{% static 'images/banner.png' %}" style="height: 40px;">
+                <img src="{% static 'images/banner.png' %}" alt="스크리머 배너" style="height: 40px;">
             </a>
             {% endif %}
         </div>
-        <div>
-            <a class="btn btn-sm btn-white-outline" href="{% url 'common:contact' %}">
-                <i class="bi bi-question-circle me-2"></i><span>문의하기</span>
-            </a>
+        <div class="d-none row align-items-center" id="hamburger-desktop">
+            {% if request.path != '/' %}
+            <div class="col-auto">
+                <a class="btn btn-sm btn-white-outline" href="{% url 'common:guide_participate' %}" target="_blank">참가자 가이드<i class="ms-2 bi bi-box-arrow-up-right"></i></a>
+            </div>
+            <div class="col-auto">
+                <a class="btn btn-sm btn-white-outline" href="{% url 'common:guide_create' %}" target="_blank">방장 가이드<i class="ms-2 bi bi-box-arrow-up-right"></i></a>
+            </div>
+            {% endif %}
+            <div class="col-auto">
+                <a class="btn btn-sm btn-white-outline" href="{% url 'common:contact' %}">
+                    <i class="bi bi-question-circle me-2"></i><span>문의하기</span>
+                </a>
+            </div>
+        </div>
+        <div class="d-none dropdown" id="hamburger-mobile">
+            <button class="btn btn-sm btn-white-outline dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-list fs-5"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'common:guide_participate' %}">참가자 가이드<i class="ms-2 bi bi-box-arrow-up-right"></i></a></li>
+                <li><a class="dropdown-item" href="{% url 'common:guide_create' %}">방장 가이드<i class="ms-2 bi bi-box-arrow-up-right"></i></a></li>
+                <li><a class="dropdown-item" href="{% url 'common:contact' %}"><i class="bi bi-question-circle me-2"></i><span>문의하기</span></a></li>
+            </ul>
         </div>
     </div>
 </nav>

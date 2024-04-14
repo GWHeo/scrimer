@@ -22,7 +22,7 @@
                 방 만들기 클릭
             </div>
         </div>
-        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info1.png' %}">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info1.png' %}" alt="방 만들기 클릭">
 
         <div class="row g-1 justify-content-start m-2 pt-3 pb-2">
             <div class="col-auto">
@@ -32,7 +32,7 @@
                 소환사 닉네임과 태그 입력 후 "생성" 클릭
             </div>
         </div>
-        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info2.png' %}">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info2.png' %}" alt="소환사 닉네임과 태그 입력 후 생성 클릭">
     </div>
 
     <div class="py-2"></div>
@@ -48,7 +48,7 @@
                 링크 복사
             </div>
         </div>
-        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info3.png' %}">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info3.png' %}" alt="사용자 설정게임 참여자 초대 링크 복사">
 
         <div class="row g-1 justify-content-start m-2 pt-3 pb-2">
             <div class="col-auto">
@@ -58,7 +58,7 @@
                 사용자 설정게임 참가자 초대
             </div>
         </div>
-        <img class="img-w-50 img-border" src="{% static 'images/guide/create/info4.png' %}">
+        <img class="img-w-50 img-border" src="{% static 'images/guide/create/info4.png' %}" alt="사용자 설정게임 참가자 초대">
     </div>
 
     <div class="py-2"></div>
@@ -79,7 +79,7 @@
                 </ol>
             </div>
         </div>
-        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info5.png' %}">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info5.png' %}" alt="최대 참가 인원 변경 방법">
 
         <div class="row g-1 justify-content-start m-2 pt-3 pb-2">
             <div class="col-auto">
@@ -94,7 +94,7 @@
                 </ol>
             </div>
         </div>
-        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info6.png' %}">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info6.png' %}" alt="팀 가르기 방식 선택">
     </div>
 
     <div class="py-2"></div>
@@ -116,7 +116,7 @@
                 <p class="fst-italic">* 드래프트 팀 가르기는 참가자가 10명이 되어야 활성화 됩니다.</p>
             </div>
         </div>
-        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info7.png' %}">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info7.png' %}" alt="드래프트 모드 설정 순서">
 
         <div class="row g-1 justify-content-start m-2 pt-3 pb-2">
             <div class="col-auto">
@@ -130,7 +130,7 @@
                 </ol>
             </div>
         </div>
-        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info8.png' %}">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/create/info8.png' %}" alt="올랜덤 모드 설정 순서">
     </div>
 
     <div class="py-2"></div>
@@ -145,7 +145,7 @@
             </ol>
         </div>
     </div>
-    <img class="img-w-75 img-border" src="{% static 'images/guide/create/info9.png' %}">
+    <img class="img-w-75 img-border" src="{% static 'images/guide/create/info9.png' %}" alt="팀 초기화 방법">
 
     <div class="py-2"></div>
 
@@ -164,4 +164,12 @@
 
     <div class="py-4"></div>
 </div>
+{% endblock %}
+
+{% block body_scripts %}
+<script>
+    window.onresize = function(e) {
+        hamburger(992);
+    }
+</script>
 {% endblock %}

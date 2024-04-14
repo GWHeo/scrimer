@@ -58,6 +58,26 @@ async function wsSend(type, message) {
     chatSocket.send(context);
 }
 
+function hamburger(breakPoint) {
+    var desktop = document.getElementById('hamburger-desktop');
+    var mobile = document.getElementById('hamburger-mobile');
+    if (window.innerWidth > breakPoint) {
+        if (desktop.classList.contains('d-none')) {
+            desktop.classList.remove('d-none');
+        }
+        if (!mobile.classList.contains('d-none')) {
+            mobile.classList.add('d-none');
+        }
+    } else {
+        if (!desktop.classList.contains('d-none')) {
+            desktop.classList.add('d-none');
+        }
+        if (mobile.classList.contains('d-none')) {
+            mobile.classList.remove('d-none');
+        }
+    }
+}
+
 function changeRole(userRole) {
     var roleSpan = document.querySelectorAll('.user-role');
     role = userRole;

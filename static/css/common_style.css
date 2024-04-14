@@ -103,13 +103,15 @@ input:autofill:active {
     --bs-btn-color: var(--default-font-color);
     /*--bs-btn-bg: var(--bd-violet-bg);*/
     --bs-btn-border-color: var(--default-font-color);
-    --bs-btn-hover-color: var(--default-bg-color);
-    --bs-btn-hover-bg: var(--default-font-color);
+    --bs-btn-hover-color: var(--default-font-color);
+    --bs-btn-hover-bg: var(--default-bg-light);
     --bs-btn-hover-border-color: var(--default-font-color);
-    --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-    --bs-btn-active-color: var(--bs-btn-hover-color);
-    --bs-btn-active-bg: var(--bs-btn-hover-bg);
-    --bs-btn-active-border-color: var(--theme-color);
+    --bs-btn-active-color: var(--default-font-color);
+    --bs-btn-active-bg: var(--default-bg-light));
+    --bs-btn-active-border-color: var(--default-font-color);
+}
+.btn.btn-white-outline.dropdown-toggle::after {
+    display: none;
 }
 
 .btn.btn-discord {

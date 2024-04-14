@@ -27,7 +27,7 @@
                 </ol>
             </div>
         </div>
-        <img class="img-w-75 img-border" src="{% static 'images/guide/participate/info1.png' %}">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/participate/info1.png' %}" alt="소환사 명 및 태그 입력 후 생성 버튼 클릭으로 참가">
 
         <div class="row g-1 justify-content-start m-2 pt-3 pb-2">
             <div class="col-auto">
@@ -42,9 +42,9 @@
                 </ol>
             </div>
         </div>
-        <img class="img-w-75 mb-1 img-border" src="{% static 'images/guide/participate/info2.png' %}">
-        <img class="img-w-75 mb-1 img-border" src="{% static 'images/guide/participate/info3.png' %}">
-        <img class="img-w-75 img-border" src="{% static 'images/guide/participate/info1.png' %}">
+        <img class="img-w-75 mb-1 img-border" src="{% static 'images/guide/participate/info2.png' %}" alt="참여하기 버튼 클릭">
+        <img class="img-w-75 mb-1 img-border" src="{% static 'images/guide/participate/info3.png' %}" alt="전달받은 링크 입력 후 입장 버튼 클릭">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/participate/info1.png' %}" alt="소환사 명 및 태그 입력 후 생성 버튼 클릭으로 참가">
     </div>
 
     <div class="py-2"></div>
@@ -55,7 +55,7 @@
         <div class="m-2 pt-3 pb-2">
             제 1 희망 라인 및 제 2 희망 라인 선택 (모든 참가자들에게 공유되며, 팀 가르기 할 때 팀을 뽑는 주장에게 참고가 됩니다.)
         </div>
-        <img class="img-w-75 img-border" src="{% static 'images/guide/participate/info4.png' %}">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/participate/info4.png' %}" alt="제 1 희망 라인 및 제 2 희망 라인 선택">
     </div>
 
     <div class="py-2"></div>
@@ -76,9 +76,9 @@
                 </ol>
             </div>
         </div>
-        <img class="img-w-75 mb-1 img-border" src="{% static 'images/guide/participate/info5.png' %}">
-        <img class="img-w-75 mb-1 img-border" src="{% static 'images/guide/participate/info6.png' %}">
-        <img class="img-w-75 img-border" src="{% static 'images/guide/participate/info7.png' %}">
+        <img class="img-w-75 mb-1 img-border" src="{% static 'images/guide/participate/info5.png' %}" alt="가위바위보 게임으로 상대 주장과 선 정하기">
+        <img class="img-w-75 mb-1 img-border" src="{% static 'images/guide/participate/info6.png' %}" alt="가위바위보 게임 결과">
+        <img class="img-w-75 img-border" src="{% static 'images/guide/participate/info7.png' %}" alt="팀 뽑기 방식 설명 화면">
         <div class="row g-1 justify-content-start m-2 pt-3 pb-2">
             <div class="col-auto">
                 C-2.
@@ -124,4 +124,12 @@
     <div class="py-4"></div>
 </div>
 
+{% endblock %}
+
+{% block body_scripts %}
+<script>
+    window.onresize = function(e) {
+        hamburger(992);
+    }
+</script>
 {% endblock %}

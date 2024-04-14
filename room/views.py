@@ -6,6 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.db.transaction import atomic
 from django.core.serializers.json import DjangoJSONEncoder
 from .models import Room, ChannelUser
+from common.models import RoomLog, UserLog
 from .forms import EnterRoom
 from .decorators import method_only, room_api
 from .external import request_get
@@ -74,6 +75,17 @@ def user_validation(request):
             owner=True,
             role='participant',
         )
+        RoomLog.objects.create(
+            room_code=room.code,
+            creator=user_data['puuid'] + '#' + user_data['gameName'],
+            status='created'
+        )
+        UserLog.objects.create(
+            room_code=room.code,
+            user=user_data['puuid'] + '#' + user_data['gameName'],
+            is_creator=True,
+            status='connected'
+        )
         return JsonResponse({'roomId': room.code}, status=200)
     
     elif user_role == 'participant':
@@ -101,6 +113,12 @@ def user_validation(request):
                 tag=user_data['tagLine'],
                 owner=False,
                 role='participant',
+            )
+            UserLog.objects.create(
+                room_code=room.code,
+                user=user_data['puuid'] + '#' + user_data['gameName'],
+                is_creator=False,
+                status='connected'
             )
             return JsonResponse({'roomId': room.code}, status=200)
        

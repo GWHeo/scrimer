@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from asgiref.sync import async_to_sync, sync_to_async
 from room.models import ChannelUser, Room
+from common.models import RoomLog, UserLog
 import redis
 import json
 import random
@@ -66,7 +67,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'tag': user.tag
             })
             if user.owner:
+                room_log = RoomLog(
+                    room_code=self.room_name,
+                    creator=user.gameName + '#' + user.tag,
+                    status='removed'
+                )
+                await room_log.asave()
                 await Room.objects.filter(code=self.room_name).adelete()
+            user_log = UserLog(
+                room_code=self.room_name,
+                user=user.gameName + '#' + user.tag,
+                is_creator=user.owner,
+                status='disconnected'
+            )
+            await user_log.asave()
             await user.adelete()
             await self.send_to_group(ws_data)
             await self.channel_layer.group_discard(self.room_name, self.channel_name)

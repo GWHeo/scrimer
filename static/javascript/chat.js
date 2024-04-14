@@ -314,7 +314,7 @@ function setRspDraw(user1, user2) {
 // websocket
 var chatSocket;
 var reconnectionAttempts = 0;
-const maxReconnectionAttempts = 1800;
+const maxReconnectionAttempts = 10;
 const reconnectionTimeInterval = 2000;
 
 function startWebSocket() {
@@ -491,11 +491,11 @@ async function handleWebSocketMessage(event) {
     })
 }
 
-function handleWebSocketClosure(event) {
+async function handleWebSocketClosure(event) {
     var code = event.code;
     // Abnormal closure
     if (!event.wasClean) {
-        setTimeout(startWebSocket(), reconnectionTimeInterval);
+        await setTimeout(startWebSocket(), reconnectionTimeInterval);
         reconnectionAttempts += 1;
         if (reconnectionAttempts > maxReconnectionAttempts) {
             return

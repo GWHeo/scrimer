@@ -116,7 +116,7 @@ def user_validation(request):
             )
             UserLog.objects.create(
                 room_code=room.code,
-                user=user_data['puuid'] + '#' + user_data['gameName'],
+                user=user_data['gameName'] + '#' + user_data['tagLine'],
                 is_creator=False,
                 status='connected'
             )

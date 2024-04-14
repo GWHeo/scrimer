@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from asgiref.sync import async_to_sync, sync_to_async
 from room.models import ChannelUser, Room
-from common.models import RoomLog, UserLog
+from common.models import RoomLog, UserLog, ActionLog
 import redis
 import json
 import random
@@ -69,14 +69,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if user.owner:
                 room_log = RoomLog(
                     room_code=self.room_name,
-                    creator=user.gameName + '#' + user.tag,
+                    creator=user.game_name + '#' + user.tag,
                     status='removed'
                 )
                 await room_log.asave()
                 await Room.objects.filter(code=self.room_name).adelete()
             user_log = UserLog(
                 room_code=self.room_name,
-                user=user.gameName + '#' + user.tag,
+                user=user.game_name + '#' + user.tag,
                 is_creator=user.owner,
                 status='disconnected'
             )
@@ -129,6 +129,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             elif data['message']['step'] == 1:
                 room = await Room.objects.aget(code=self.room_name)
                 room.status = 'progress'
+                action_log = ActionLog(
+                    room_code=self.room_name,
+                    mode='draft'
+                )
+                await action_log.asave()
                 await room.asave()
             elif data['message']['step'] in [2, 3, 4, 5, 6, 7]:
                 pass
@@ -185,10 +190,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'blue': blue_team,
                 'red': red_team
             })
+            action_log = ActionLog(
+                room_code=self.room_name,
+                mode='random'
+            )
+            await action_log.asave()
         elif data['type'] == 'reset':
             room = await Room.objects.aget(code=self.room_name)
             room.status = 'ready'
             await room.asave()
+            action_log = ActionLog(
+                room_code=self.room_name,
+                mode='reset'
+            )
+            await action_log.asave()
             ws_data = self.set_ws_data('system', 'reset', {})
         else:
             return

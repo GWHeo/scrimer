@@ -29,8 +29,10 @@
                 <i class="bi bi-list fs-5"></i>
             </button>
             <ul class="dropdown-menu">
+                {% if request.path != '/' %}
                 <li><a class="dropdown-item" href="{% url 'common:guide_participate' %}">참가자 가이드<i class="ms-2 bi bi-box-arrow-up-right"></i></a></li>
                 <li><a class="dropdown-item" href="{% url 'common:guide_create' %}">방장 가이드<i class="ms-2 bi bi-box-arrow-up-right"></i></a></li>
+                {% endif %}
                 <li><a class="dropdown-item" href="{% url 'common:contact' %}"><i class="bi bi-question-circle me-2"></i><span>문의하기</span></a></li>
             </ul>
         </div>

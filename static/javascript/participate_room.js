@@ -34,4 +34,6 @@ window.onload = function() {
         $('#userNameModal').modal('show');
         changeRole('participant');
     }
+    initGnb(992);
+    setMargin();
 }

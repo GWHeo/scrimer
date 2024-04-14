@@ -16,6 +16,6 @@ function initGnb(breakPoint) {
 }
 
 window.onload = function() {
+    initGnb(992);
     setMargin();
-    initGnb();
 }

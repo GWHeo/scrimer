@@ -25,5 +25,5 @@ urlpatterns = [
     path('errors/', include('errors.urls')),
     path('sitemap.txt', TemplateView.as_view(template_name='sitemap.txt', content_type='text/plain')),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
-    path('Ads.txt', TemplateView.as_view(template_name='Ads.txt', content_type='text/plain')),
+    path('ads.txt', TemplateView.as_view(template_name='ads.txt', content_type='text/plain')),
 ]

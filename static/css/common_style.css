@@ -130,6 +130,22 @@ input:autofill:active {
     --bs-btn-disabled-bg: rgba(88,101,242,0.5);
     --bs-btn-disabled-border-color: rgba(88,101,242,0.5);
 }
+.btn.btn-kakaotalk {
+    --bs-btn-font-weight: 600;
+    --bs-btn-color: #3B1D1E;
+    --bs-btn-bg: #FAE100;
+    --bs-btn-border-color: #FAE100;
+    --bs-btn-hover-color: #3B1D1E;
+    --bs-btn-hover-bg: #FAED7D;
+    --bs-btn-hover-border-color: #FAED7D;
+    /*--bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);*/
+    --bs-btn-active-color: var(--bs-btn-color);
+    --bs-btn-active-bg: #FAE100;
+    --bs-btn-active-border-color: #FAE100;
+    --bs-btn-disabled-color: var(--bs-btn-color);
+    --bs-btn-disabled-bg: rgba(88,101,242,0.5);
+    --bs-btn-disabled-border-color: rgba(88,101,242,0.5);
+}
 
 .btn.btn-theme {
     --bs-btn-font-weight: 600;

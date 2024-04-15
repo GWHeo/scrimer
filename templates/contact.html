@@ -10,9 +10,18 @@
         <div class="m-2">
             <img class="w-50" src="{% static 'images/discord-icon.svg' %}" alt="디스코드 로고">
         </div>
-        <a class="btn btn-discord" href="{{ urls.discord }}">디스코드 채널에서 문의</a>
+        <a class="btn btn-discord" href="{{ urls.discord }}">스크리머 디스코드 채널</a>
         <div class="text-darker m-2 p-2 fs-small">
             {{ urls.discord }}
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="m-2">
+            <img class="w-50" src="{% static 'images/kakaotalk-logo.svg' %}" alt="카카오톡 로고">
+        </div>
+        <a class="btn btn-kakaotalk" href="{{ urls.kakaotalk }}">카카오톡 1대1 문의</a>
+        <div class="text-darker m-2 p-2 fs-small">
+            {{ urls.kakaotalk }}
         </div>
     </div>
 </div>

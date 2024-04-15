@@ -274,3 +274,4 @@ RIOT_API_ENDPOINTS = {
 
 # Discord
 DISCORD_CHANNEL_URL = 'https://discord.gg/mZgg6pU3fD'
+KAKAO_OPENCHAT_URL = 'https://open.kakao.com/o/s360wlmg'

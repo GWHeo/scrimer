@@ -22,6 +22,7 @@ def participate_guide(request):
 
 def contact(request):
     urls = {
-        'discord': settings.DISCORD_CHANNEL_URL
+        'discord': settings.DISCORD_CHANNEL_URL,
+        'kakaotalk': settings.KAKAO_OPENCHAT_URL
     }
     return render(request, 'contact.html', {'urls': urls})

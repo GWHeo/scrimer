@@ -16,10 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('site-admin/', admin.site.urls),
     path('', include('common.urls')),
     path('room/', include('room.urls')),
     path('errors/', include('errors.urls')),
+    path('sitemap.txt', TemplateView.as_view(template_name='sitemap.txt', content_type='text/plain')),
 ]

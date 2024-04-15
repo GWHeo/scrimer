@@ -7,13 +7,16 @@ STATICFILES_DIRS = []
 
 ALLOWED_HOSTS = [
     '129.154.200.84',
-    'www.scrimer.site'
+    'www.scrimer.site',
+    'scrimer.site'
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'https://www.scrimer.site'
+    'https://www.scrimer.site',
+    'https://scrimer.site',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://www.scrimer.site'
+    'https://www.scrimer.site',
+    'https://scrimer.site'
 ]

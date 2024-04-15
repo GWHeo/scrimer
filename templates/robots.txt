@@ -1,0 +1,6 @@
+User-agent: Googlebot
+User-agent: Yeti
+User-agent: Daum
+User-agent: Bingbot
+Allow: /
+Sitemap: https://www.scrimer.site/sitemap.txt

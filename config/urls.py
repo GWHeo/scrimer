@@ -24,4 +24,5 @@ urlpatterns = [
     path('room/', include('room.urls')),
     path('errors/', include('errors.urls')),
     path('sitemap.txt', TemplateView.as_view(template_name='sitemap.txt', content_type='text/plain')),
+    path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
 ]

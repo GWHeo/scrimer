@@ -4,3 +4,4 @@ User-agent: Daum
 User-agent: Bingbot
 Allow: /
 Sitemap: https://www.scrimer.site/sitemap.txt
+DaumWebMasterTool:de75a6b5bacca62b9e82a44f85aacb78db6491dc3d0b075e901807caf75b4e6c:3RcKnm7DHskbMnuf6V3ORA==
